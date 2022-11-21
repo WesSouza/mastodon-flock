@@ -1,0 +1,36 @@
+{
+  "private": true,
+  "name": "mastodon-flock",
+  "version": "1.0.0",
+  "description": "Migration assistant from Twitter to Mastodon",
+  "homepage": "https://mastodon-flock.vercel.app/",
+  "repository": "github:WesSouza/mastodon-flock",
+  "author": "Wes Souza <hey@wes.dev>",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "astro": "astro",
+    "build": "astro build",
+    "check": "astro check && tsc --noEmit && rome ci src",
+    "dev": "astro dev",
+    "preview": "astro preview",
+    "start": "astro dev"
+  },
+  "engines": {
+    "node": ">=18",
+    "pnpm": ">=7"
+  },
+  "packageManager": "pnpm@7.16.1",
+  "dependencies": {
+    "@astrojs/preact": "^1.2.0",
+    "@astrojs/vercel": "^2.3.4",
+    "astro": "^1.6.10",
+    "preact": "^10.6.5",
+    "twitter-api-v2": "^1.12.9"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.9",
+    "rome": "^10.0.1",
+    "typescript": "^4.9.3"
+  }
+}
