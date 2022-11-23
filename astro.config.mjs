@@ -10,7 +10,7 @@ export default defineConfig({
       ? "https://mastodon-flock-preview.vercel.app"
       : process.env.VERCEL_URL
       ? `https://${VERCEL_URL}`
-      : "https://localhost:3000",
+      : "http://localhost:3000",
   output: "server",
   adapter: vercel(),
   integrations: [preact()],
