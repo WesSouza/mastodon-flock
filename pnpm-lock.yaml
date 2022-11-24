@@ -7,6 +7,7 @@ specifiers:
   '@types/node': ^18.11.9
   astro: ^1.6.10
   cookie: ^0.5.0
+  node-fetch: ^3.3.0
   preact: ^10.6.5
   rome: ^10.0.1
   twitter-api-v2: ^1.12.9
@@ -17,6 +18,7 @@ dependencies:
   '@astrojs/vercel': 2.3.4
   astro: 1.6.10_@types+node@18.11.9
   cookie: 0.5.0
+  node-fetch: 3.3.0
   preact: 10.11.3
   twitter-api-v2: 1.12.9
 
