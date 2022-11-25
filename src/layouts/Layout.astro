@@ -1,10 +1,15 @@
 ---
+import { styleReset } from "react95";
+
+import { Taskbar } from "../react-islands/Taskbar";
+
 export interface Props {
   title: string;
   description?: string;
+  canonicalUrl?: string;
 }
 
-const { title, description = "" } = Astro.props;
+const { title, description = "", canonicalUrl } = Astro.props;
 
 const domain = new URL(Astro.site ?? "").hostname;
 ---
@@ -19,6 +24,7 @@ const domain = new URL(Astro.site ?? "").hostname;
 
     <title>{title}</title>
     <meta name="description" content={description} />
+    {canonicalUrl ? <link rel="canonical" href={canonicalUrl} /> : undefined}
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
@@ -41,8 +47,44 @@ const domain = new URL(Astro.site ?? "").hostname;
         />
       ) : null
     }
+
+    <style set:html={styleReset}></style>
   </head>
   <body>
     <slot />
+    <Taskbar client:only="react" />
   </body>
 </html>
+
+<style>
+  :global(*, *::before, *::after) {
+    box-sizing: inherit;
+  }
+
+  @font-face {
+    font-family: "WindowsRegular";
+    src: url("/fonts/WindowsRegular.ttf");
+  }
+
+  @font-face {
+    font-family: "PerfectDOS";
+    src: url("/fonts/PerfectDOS.ttf");
+  }
+
+  html {
+    box-sizing: border-box;
+    height: 100%;
+    font-size: 1.5625em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    font-family: "WindowsRegular";
+    background-color: teal;
+    padding-bottom: 46px;
+  }
+</style>

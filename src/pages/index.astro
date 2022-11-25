@@ -1,11 +1,54 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import { MastodonFlock } from "../react-islands/MastodonFlock";
+
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site).toString();
+const step = Astro.url.searchParams.get("step") ?? undefined;
 ---
 
-<Layout title="Mastodon Flock">
+<Layout
+  title="Mastodon Flock"
+  description="Migrate your tweeps to the Fediverse"
+  canonicalUrl={canonicalUrl}
+>
   <main>
-    <p>hello!</p>
-    <p><a href="./twitter/login">Login on Twitter</a></p>
+    <h1>Mastodon Flock</h1>
+    <section>
+      <MastodonFlock client:only="react" step={step} />
+    </section>
   </main>
-  <footer><address>{Astro.site}</address></footer>
 </Layout>
+
+<style>
+  body {
+    background-image: linear-gradient(180deg, #0000ff 0%, #000000 100%);
+    background-color: #0000ff;
+  }
+
+  main {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    flex-grow: 1;
+  }
+
+  h1 {
+    font-family: "Times New Roman", Times, serif;
+    font-weight: bold;
+    font-style: italic;
+    color: #fff;
+    font-size: 48pt;
+    line-height: 1.1;
+    padding-left: 10px;
+    text-shadow: 4px 4px #000;
+  }
+
+  section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+    width: 100%;
+  }
+</style>

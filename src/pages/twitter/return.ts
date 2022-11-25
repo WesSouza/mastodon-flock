@@ -3,6 +3,9 @@ import { TwitterApi } from "twitter-api-v2";
 import { config } from "../../config";
 import { Session } from "../../utils/session";
 
+const currentWizardStep = "welcome";
+const nextWizardStep = "chooseMethod";
+
 export const get: APIRoute = async function get(context) {
   const { redirect, request } = context;
   const url = new URL(request.url);
@@ -17,19 +20,28 @@ export const get: APIRoute = async function get(context) {
 
   if (!sessionCodeVerifier || !sessionState) {
     session.reset();
-    return redirect(`${config.urls.home}?error=invalidSession`, 302);
+    return redirect(
+      `${config.urls.home}?step=${currentWizardStep}$errorCode=missingTwitterSessionData`,
+      302,
+    );
   }
 
   const state = url.searchParams.get("state");
   const code = url.searchParams.get("code");
   if (!state || !code) {
     session.reset();
-    return redirect(`${config.urls.home}?error=missingStateOrCode`, 302);
+    return redirect(
+      `${config.urls.home}?step=${currentWizardStep}&errorCode=missingTwitterState`,
+      302,
+    );
   }
 
   if (state !== sessionState) {
     session.reset();
-    return redirect(`${config.urls.home}?error=invalidState`, 302);
+    return redirect(
+      `${config.urls.home}?step=${currentWizardStep}&error=invalidTwitterState`,
+      302,
+    );
   }
 
   try {
@@ -40,13 +52,16 @@ export const get: APIRoute = async function get(context) {
     });
 
     session.set("twitterAccessToken", data.accessToken);
-    session.set("twitterOauthCodeVerifier", null);
-    session.set("twitterOauthState", null);
 
-    return redirect(`${config.urls.home}?state=twitterConnected`, 302);
+    return redirect(`${config.urls.home}?step=${nextWizardStep}`, 302);
   } catch (error) {
     console.error(error);
+    return redirect(
+      `${config.urls.home}?step=${currentWizardStep}&errorCode=twitterAuthError`,
+      302,
+    );
+  } finally {
+    session.set("twitterOauthCodeVerifier", null);
+    session.set("twitterOauthState", null);
   }
-
-  return redirect(`${config.urls.home}?error=authError`, 302);
 };
