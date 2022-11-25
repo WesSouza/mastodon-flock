@@ -1,4 +1,4 @@
-import preact from "@astrojs/preact";
+import react from "@astrojs/react";
 import vercel from "@astrojs/vercel/serverless";
 import { defineConfig } from "astro/config";
 
@@ -13,5 +13,5 @@ export default defineConfig({
       : "http://localhost:3000",
   output: "server",
   adapter: vercel(),
-  integrations: [preact()],
+  integrations: [react()],
 });
