@@ -10,6 +10,11 @@ export const config = {
     activityPubApp: !isLocal
       ? `${import.meta.env.SITE}app`
       : "https://mastodon-flock-preview.vercel.app/app",
+    mastodonInstance: `${import.meta.env.SITE}mastodon/instance`,
+    mastodonLogin: `${import.meta.env.SITE}mastodon/login`,
+    mastodonReturn: `${import.meta.env.SITE}mastodon/return`,
+    mastodonAccountLookup: `${import.meta.env.SITE}mastodon/account-lookup`,
+    mastodonAccountFollow: `${import.meta.env.SITE}mastodon/account-follow`,
     twitterLogin: `${import.meta.env.SITE}twitter/login`,
     twitterReturn: `${import.meta.env.SITE}twitter/return`,
   },
