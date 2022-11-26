@@ -9,16 +9,11 @@ const nextWizardStep = "chooseMethod";
 export const get: APIRoute = async function get(context) {
   const { redirect, request } = context;
   const url = new URL(request.url);
-  const client = new TwitterApi({
-    clientId: import.meta.env.TWITTER_OAUTH_CLIENT_ID,
-    clientSecret: import.meta.env.TWITTER_OAUTH_CLIENT_SECRET,
-  });
-
   const session = Session.withAstro(context);
-  const sessionCodeVerifier = session.get("twitterOauthCodeVerifier");
-  const sessionState = session.get("twitterOauthState");
+  const sessionToken = session.get("twitterOauthToken");
+  const sessionTokenSecret = session.get("twitterOauthTokenSecret");
 
-  if (!sessionCodeVerifier || !sessionState) {
+  if (!sessionToken || !sessionTokenSecret) {
     session.reset();
     return redirect(
       `${config.urls.home}?step=${currentWizardStep}$errorCode=missingTwitterSessionData`,
@@ -26,9 +21,15 @@ export const get: APIRoute = async function get(context) {
     );
   }
 
-  const state = url.searchParams.get("state");
-  const code = url.searchParams.get("code");
-  if (!state || !code) {
+  const denied = url.searchParams.get("denied");
+  if (denied) {
+    session.reset();
+    return redirect(`${config.urls.home}?step=${currentWizardStep}`, 302);
+  }
+
+  const oauthToken = url.searchParams.get("oauth_token");
+  const oauthVerifier = url.searchParams.get("oauth_verifier");
+  if (!oauthToken || !oauthVerifier) {
     session.reset();
     return redirect(
       `${config.urls.home}?step=${currentWizardStep}&errorCode=missingTwitterState`,
@@ -36,7 +37,7 @@ export const get: APIRoute = async function get(context) {
     );
   }
 
-  if (state !== sessionState) {
+  if (oauthToken !== sessionToken) {
     session.reset();
     return redirect(
       `${config.urls.home}?step=${currentWizardStep}&error=invalidTwitterState`,
@@ -45,13 +46,17 @@ export const get: APIRoute = async function get(context) {
   }
 
   try {
-    const data = await client.loginWithOAuth2({
-      code,
-      codeVerifier: sessionCodeVerifier,
-      redirectUri: config.urls.twitterReturn,
+    const client = new TwitterApi({
+      appKey: import.meta.env.TWITTER_API_KEY,
+      appSecret: import.meta.env.TWITTER_API_SECRET,
+      accessToken: oauthToken,
+      accessSecret: sessionTokenSecret,
     });
 
+    const data = await client.login(oauthVerifier);
+
     session.set("twitterAccessToken", data.accessToken);
+    session.set("twitterAccessSecret", data.accessSecret);
 
     return redirect(`${config.urls.home}?step=${nextWizardStep}`, 302);
   } catch (error) {
@@ -61,7 +66,7 @@ export const get: APIRoute = async function get(context) {
       302,
     );
   } finally {
-    session.set("twitterOauthCodeVerifier", null);
-    session.set("twitterOauthState", null);
+    session.set("twitterOauthToken", null);
+    session.set("twitterOauthTokenSecret", null);
   }
 };

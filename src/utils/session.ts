@@ -1,20 +1,22 @@
 import type { APIContext } from "astro";
 import { config } from "../config";
-import { createEncryptor } from "./symple-encryptor";
+import { createEncryptor } from "./simple-encryptor";
 
 const secret = import.meta.env.COOKIE_SESSION_SECRET as string;
 const cookieName = "mastodon-flock";
 
 const initialSession: SessionProps = {
   twitterAccessToken: null,
-  twitterOauthCodeVerifier: null,
-  twitterOauthState: null,
+  twitterAccessSecret: null,
+  twitterOauthToken: null,
+  twitterOauthTokenSecret: null,
 };
 
 export type SessionProps = {
   twitterAccessToken: string | null;
-  twitterOauthCodeVerifier: string | null;
-  twitterOauthState: string | null;
+  twitterAccessSecret: string | null;
+  twitterOauthToken: string | null;
+  twitterOauthTokenSecret: string | null;
 };
 
 const enc = createEncryptor(secret);

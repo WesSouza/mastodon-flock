@@ -1,12 +1,14 @@
 import type { APIRoute } from "astro";
 import { TwitterApi } from "twitter-api-v2";
 
+import { responseJsonError } from "../../utils/api";
 import { Session } from "../../utils/session";
 
 export const get: APIRoute = async function get(context) {
   const session = Session.withAstro(context);
   const accessToken = session.get("twitterAccessToken");
-  if (!accessToken) {
+  const accessSecret = session.get("twitterAccessSecret");
+  if (!accessToken || !accessSecret) {
     return {
       status: 403,
       statusText: "Forbidden",
@@ -17,18 +19,28 @@ export const get: APIRoute = async function get(context) {
     };
   }
 
-  const client = new TwitterApi(accessToken);
-
-  const response = await client.v2.me({
-    "user.fields": ["name", "description", "url", "location", "entities"],
-    expansions: ["pinned_tweet_id"],
-    "tweet.fields": ["text", "entities"],
+  const client = new TwitterApi({
+    appKey: import.meta.env.TWITTER_API_KEY,
+    appSecret: import.meta.env.TWITTER_API_SECRET,
+    accessToken,
+    accessSecret,
   });
 
-  return {
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(response.data),
-  };
+  try {
+    const response = await client.v2.me({
+      "user.fields": ["name", "description", "url", "location", "entities"],
+      expansions: ["pinned_tweet_id"],
+      "tweet.fields": ["text", "entities"],
+    });
+
+    return {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(response.data),
+    };
+  } catch (e) {
+    console.error(e);
+    return responseJsonError(500, "unknownError");
+  }
 };
