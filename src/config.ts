@@ -20,8 +20,14 @@ export const config = {
   },
   activityPub: {
     appUsername: "mastodon-flock",
-    publicKey: import.meta.env.ACTIVITYPUB_APP_PUBLIC.replace(/\\n/g, "\n"),
-    privateKey: import.meta.env.ACTIVITYPUB_APP_PRIVATE.replace(/\\n/g, "\n"),
+    publicKey: (import.meta.env.ACTIVITYPUB_APP_PUBLIC ?? "").replace(
+      /\\n/g,
+      "\n",
+    ),
+    privateKey: (import.meta.env.ACTIVITYPUB_APP_PRIVATE ?? "").replace(
+      /\\n/g,
+      "\n",
+    ),
   },
   twitter: {
     maxResultsPerPage: 1000,
