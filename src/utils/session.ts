@@ -6,6 +6,8 @@ const secret = import.meta.env.COOKIE_SESSION_SECRET as string;
 const cookieName = "mastodon-flock";
 
 const initialSession: SessionProps = {
+  mastodonAccessToken: null,
+  mastodonUri: null,
   twitterAccessToken: null,
   twitterAccessSecret: null,
   twitterOauthToken: null,
@@ -13,6 +15,8 @@ const initialSession: SessionProps = {
 };
 
 export type SessionProps = {
+  mastodonAccessToken: string | null;
+  mastodonUri: string | null;
   twitterAccessToken: string | null;
   twitterAccessSecret: string | null;
   twitterOauthToken: string | null;

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { config } from "../../config";
 
-import { ChooseMastodonServer } from "./ChooseMastodonServer";
+import { ChooseMastodonInstance } from "./ChooseMastodonInstance";
 import { ChooseMethod } from "./ChooseMethod";
 import { LoadingInformation } from "./LoadingInformation";
 import { Welcome } from "./Welcome";
@@ -9,7 +9,7 @@ import { Welcome } from "./Welcome";
 export type WizardStep =
   | "welcome"
   | "chooseMethod"
-  | "chooseMastodonServer"
+  | "chooseMastodonInstance"
   | "loadingInformation";
 
 export type WizardProps = {
@@ -68,19 +68,34 @@ export function Wizard({ step: initialStep }: WizardProps) {
   const chooseMethod = useCallback((newMethod: "typical" | "advanced") => {
     setMethod(newMethod);
     if (newMethod === "typical") {
-      navigateTo("chooseMastodonServer");
+      navigateTo("chooseMastodonInstance");
     } else {
       navigateTo("loadingInformation");
     }
   }, []);
 
-  const loadData = useCallback(() => {
-    navigateTo("loadingInformation");
-  }, []);
+  const loadData = useCallback(
+    (mastodonUri: string | undefined) => {
+      if (method === "typical" && !mastodonUri) {
+        alert("Please enter or select a server.");
+        return;
+      }
+
+      if (method === "typical" && mastodonUri) {
+        location.href = `${config.urls.mastodonLogin}?uri=${encodeURIComponent(
+          mastodonUri,
+        )}`;
+        return;
+      }
+
+      navigateTo("loadingInformation");
+    },
+    [method],
+  );
 
   const cancelLoad = useCallback(() => {
     if (method === "typical") {
-      navigateTo("chooseMastodonServer");
+      navigateTo("chooseMastodonInstance");
     } else {
       navigateTo("chooseMethod");
     }
@@ -104,9 +119,9 @@ export function Wizard({ step: initialStep }: WizardProps) {
         />
       );
     }
-    case "chooseMastodonServer": {
+    case "chooseMastodonInstance": {
       return (
-        <ChooseMastodonServer
+        <ChooseMastodonInstance
           cancel={closeWizard}
           goBack={goChooseMethod}
           goNext={loadData}

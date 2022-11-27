@@ -1,4 +1,7 @@
 const isLocal = import.meta.env.SITE?.startsWith("http://localhost:");
+const isPreview = import.meta.env.SITE?.startsWith(
+  "http://mastodon-flock-preview.",
+);
 
 const siteUrl = new URL(import.meta.env.SITE);
 
@@ -6,7 +9,13 @@ const origin = import.meta.env.SITE.replace(/\/$/, "");
 
 export const config = {
   isLocal,
+  isPreview,
   host: siteUrl.hostname,
+  name: isLocal
+    ? "Mastodon Flock Development"
+    : isPreview
+    ? "Mastodon Flock Preview"
+    : "Mastodon Flock",
   urls: {
     home: origin,
     activityPubApp: !isLocal
