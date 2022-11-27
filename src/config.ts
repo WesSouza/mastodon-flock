@@ -2,21 +2,25 @@ const isLocal = import.meta.env.SITE?.startsWith("http://localhost:");
 
 const siteUrl = new URL(import.meta.env.SITE);
 
+const origin = import.meta.env.SITE.replace(/\/$/, "");
+
 export const config = {
   isLocal,
   host: siteUrl.hostname,
   urls: {
-    home: import.meta.env.SITE,
+    home: origin,
     activityPubApp: !isLocal
-      ? `${import.meta.env.SITE}app`
+      ? `${origin}/app`
       : "https://mastodon-flock-preview.vercel.app/app",
-    mastodonInstance: `${import.meta.env.SITE}mastodon/instance`,
-    mastodonLogin: `${import.meta.env.SITE}mastodon/login`,
-    mastodonReturn: `${import.meta.env.SITE}mastodon/return`,
-    mastodonAccountLookup: `${import.meta.env.SITE}mastodon/account-lookup`,
-    mastodonAccountFollow: `${import.meta.env.SITE}mastodon/account-follow`,
-    twitterLogin: `${import.meta.env.SITE}twitter/login`,
-    twitterReturn: `${import.meta.env.SITE}twitter/return`,
+    desktop: `${origin}/desktop`,
+    mastodonInstance: `${origin}/mastodon/instance`,
+    mastodonLogin: `${origin}/mastodon/login`,
+    mastodonReturn: `${origin}/mastodon/return`,
+    mastodonAccountLookup: `${origin}/mastodon/account-lookup`,
+    mastodonAccountFollow: `${origin}/mastodon/account-follow`,
+    twitterLogin: `${origin}/twitter/login`,
+    twitterReturn: `${origin}/twitter/return`,
+    TEMP_fediverseDirectory: `${origin}/data/fedifinder_known_instances.json`,
   },
   activityPub: {
     appUsername: "mastodon-flock",

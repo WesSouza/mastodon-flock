@@ -61,6 +61,10 @@ const domain = new URL(Astro.site ?? "").hostname;
     box-sizing: inherit;
   }
 
+  :global(.react95 *, .react95 *::before, .react95 *::after) {
+    box-sizing: unset;
+  }
+
   @font-face {
     font-family: "WindowsRegular";
     src: url("/fonts/WindowsRegular.ttf");

@@ -18,6 +18,7 @@ export type WizardProps = {
 
 export function Wizard({ step: initialStep }: WizardProps) {
   const [step, setStep] = useState(initialStep ?? "welcome");
+  const [method, setMethod] = useState<"typical" | "advanced">("typical");
 
   useEffect(() => {
     const url = new URL(location.href);
@@ -64,8 +65,13 @@ export function Wizard({ step: initialStep }: WizardProps) {
     navigateTo("chooseMethod");
   }, []);
 
-  const chooseMethod = useCallback(() => {
-    navigateTo("chooseMastodonServer");
+  const chooseMethod = useCallback((newMethod: "typical" | "advanced") => {
+    setMethod(newMethod);
+    if (newMethod === "typical") {
+      navigateTo("chooseMastodonServer");
+    } else {
+      navigateTo("loadingInformation");
+    }
   }, []);
 
   const loadData = useCallback(() => {
@@ -73,18 +79,39 @@ export function Wizard({ step: initialStep }: WizardProps) {
   }, []);
 
   const cancelLoad = useCallback(() => {
-    navigateTo("chooseMastodonServer");
+    if (method === "typical") {
+      navigateTo("chooseMastodonServer");
+    } else {
+      navigateTo("chooseMethod");
+    }
+  }, [method]);
+
+  const closeWizard = useCallback(() => {
+    location.href = config.urls.desktop;
   }, []);
 
   switch (step) {
     case "welcome": {
-      return <Welcome goNext={connectTwitter} />;
+      return <Welcome cancel={closeWizard} goNext={connectTwitter} />;
     }
     case "chooseMethod": {
-      return <ChooseMethod goBack={goWelcome} goNext={chooseMethod} />;
+      return (
+        <ChooseMethod
+          initialMethod={method}
+          cancel={closeWizard}
+          goBack={goWelcome}
+          goNext={chooseMethod}
+        />
+      );
     }
     case "chooseMastodonServer": {
-      return <ChooseMastodonServer goBack={goChooseMethod} goNext={loadData} />;
+      return (
+        <ChooseMastodonServer
+          cancel={closeWizard}
+          goBack={goChooseMethod}
+          goNext={loadData}
+        />
+      );
     }
     case "loadingInformation": {
       return <LoadingInformation cancel={cancelLoad} />;
