@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { React95 } from "../layouts/React95";
 
 const TaskbarComponent = styled(Frame)`
-  position: absolute;
+  position: fixed;
   top: auto;
   width: 100%;
   bottom: 0;
