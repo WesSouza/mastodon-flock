@@ -76,7 +76,7 @@ export const WizardFooterPhantomButton = styled.span`
 `;
 
 export const WizardFooterButton = styled(Button)`
-  width: 120px;
+  width: 160px;
 `;
 
 export function WizardWindow({
