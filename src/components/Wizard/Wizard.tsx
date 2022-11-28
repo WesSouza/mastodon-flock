@@ -129,7 +129,14 @@ export function Wizard({ step: initialStep }: WizardProps) {
       );
     }
     case "loadingInformation": {
-      return <LoadingInformation cancel={cancelLoad} />;
+      return (
+        <LoadingInformation
+          status={status}
+          subStatus={subStatus}
+          progress={progress}
+          cancel={cancelLoad}
+        />
+      );
     }
   }
 
