@@ -3,19 +3,18 @@ import { TwitterApi } from "twitter-api-v2";
 
 import { config } from "../../config";
 import { responseJsonError } from "../../utils/api";
+import {
+  findPotentialInstanceUrlsFromTwitter,
+  findPotentialUserEmails,
+} from "../../utils/fediverse";
 import { Session } from "../../utils/session";
 
 const endpointTypes = new Set(["following", "followers"]);
 
 export const get: APIRoute = async function get(context) {
-  const { params, url } = context;
+  const { params } = context;
   if (!endpointTypes.has(params["type"] as string)) {
     return responseJsonError(404, "notFound");
-  }
-
-  const userId = url.searchParams.get("userId");
-  if (!userId) {
-    return responseJsonError(400, "missingUserId");
   }
 
   const session = Session.withAstro(context);
@@ -33,6 +32,12 @@ export const get: APIRoute = async function get(context) {
   });
 
   try {
+    const userId = (
+      await client.v2.me({
+        "user.fields": ["id"],
+      })
+    ).data.id;
+
     const response = await client.v2[
       params["type"] as "following" | "followers"
     ](userId, {
@@ -43,19 +48,55 @@ export const get: APIRoute = async function get(context) {
       "tweet.fields": ["text", "entities"],
     });
 
+    const result: {
+      items: {
+        username: string;
+        potentialEmails: {
+          hostname: string;
+          prefix: string | undefined;
+          username: string;
+        }[];
+        potentialInstances: {
+          hostname: string;
+          pathname: string;
+        }[];
+      }[];
+    } = { items: [] };
+
     for await (const user of response) {
-      console.log(
-        user.username,
-        user.pinned_tweet_id,
-        response.includes.pinnedTweet(user),
-      );
+      const { description, location, name, username } = user;
+      const potentialEmails = findPotentialUserEmails(name)
+        .concat(findPotentialUserEmails(description))
+        .concat(findPotentialUserEmails(location));
+
+      const potentialInstances = findPotentialInstanceUrlsFromTwitter(
+        user.entities?.url?.urls,
+      )
+        .concat(
+          findPotentialInstanceUrlsFromTwitter(
+            user.entities?.description?.urls,
+          ),
+        )
+        .concat(
+          findPotentialInstanceUrlsFromTwitter(
+            response.includes.pinnedTweet(user)?.entities?.urls,
+          ),
+        );
+
+      if (potentialEmails.length || potentialInstances.length) {
+        result.items.push({
+          username,
+          potentialEmails,
+          potentialInstances,
+        });
+      }
     }
 
     return {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify("ok"),
+      body: JSON.stringify(result),
     };
   } catch (e) {
     console.error(e);
