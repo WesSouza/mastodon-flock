@@ -7,6 +7,7 @@ const TaskbarComponent = styled(Frame)`
   position: fixed;
   top: auto;
   width: 100%;
+  height: 45px;
   bottom: 0;
   padding: 4px;
   border-left: none;
@@ -16,11 +17,15 @@ const TaskbarComponent = styled(Frame)`
 `;
 
 export function Taskbar() {
+  const url = new URL(location.href);
+
   return (
     <React95>
       <footer>
         <TaskbarComponent>
-          <Button active={true}>Mastodon Flock</Button>
+          {url.pathname === "/" ? (
+            <Button active={true}>Mastodon Flock</Button>
+          ) : undefined}
         </TaskbarComponent>
       </footer>
     </React95>
