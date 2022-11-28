@@ -19,7 +19,7 @@ export const get: APIRoute = async function get(context) {
   if (!uri) {
     session.reset();
     return redirect(
-      `${config.urls.home}?step=${currentWizardStep}$errorCode=missingTwitterSessionData`,
+      `${config.urls.home}?step=${currentWizardStep}$errorCode=missingMastodonSessionData`,
       302,
     );
   }
@@ -55,6 +55,8 @@ export const get: APIRoute = async function get(context) {
       302,
     );
   }
+
+  session.set("mastodonInstanceUrl", federatedInstance.instanceUrl);
 
   const encryptor = createEncryptor(import.meta.env.MONGODB_DATA_SECRET);
 
@@ -105,7 +107,10 @@ export const get: APIRoute = async function get(context) {
 
     session.set("mastodonAccessToken", oauthTokenData.access_token);
 
-    return redirect(`${config.urls.home}?step=${nextWizardStep}`, 302);
+    return redirect(
+      `${config.urls.home}?step=${nextWizardStep}&method=typical`,
+      302,
+    );
   } catch (e) {
     console.error(e);
     return redirect(

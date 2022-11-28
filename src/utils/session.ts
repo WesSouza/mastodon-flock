@@ -7,6 +7,7 @@ const cookieName = "mastodon-flock";
 
 const initialSession: SessionProps = {
   mastodonAccessToken: null,
+  mastodonInstanceUrl: null,
   mastodonUri: null,
   twitterAccessToken: null,
   twitterAccessSecret: null,
@@ -16,6 +17,7 @@ const initialSession: SessionProps = {
 
 export type SessionProps = {
   mastodonAccessToken: string | null;
+  mastodonInstanceUrl: string | null;
   mastodonUri: string | null;
   twitterAccessToken: string | null;
   twitterAccessSecret: string | null;

@@ -1,4 +1,4 @@
-import { Results } from "../components/Results";
+import { Results } from "../components/Results/Results";
 import { React95 } from "../layouts/React95";
 
 export function People() {

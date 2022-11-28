@@ -1,16 +1,19 @@
 import { useCallback, useEffect, useState } from "react";
 import { config } from "../../config";
+import { MastodonFlockResults, useResults } from "../Results/useResults";
 
 import { ChooseMastodonInstance } from "./ChooseMastodonInstance";
 import { ChooseMethod } from "./ChooseMethod";
-import { LoadingInformation } from "./LoadingInformation";
+import { Installer } from "./LoadingInformation";
 import { Welcome } from "./Welcome";
 
 export type WizardStep =
   | "welcome"
   | "chooseMethod"
   | "chooseMastodonInstance"
-  | "loadingInformation";
+  | "loadingInformation"
+  | "error"
+  | "finish";
 
 export type WizardProps = {
   step: WizardStep | string | undefined;
@@ -18,20 +21,28 @@ export type WizardProps = {
 
 export function Wizard({ step: initialStep }: WizardProps) {
   const [step, setStep] = useState(initialStep ?? "welcome");
-  const [method, setMethod] = useState<"typical" | "advanced">("typical");
+  const [method, setMethod] = useState<"typical" | "advanced" | undefined>();
 
   useEffect(() => {
     const url = new URL(location.href);
     const urlStep = url.searchParams.get("step");
-    if (urlStep !== step) {
+    const urlMethod = url.searchParams.get("method");
+    if (urlStep !== step || urlMethod !== method) {
       if (step) {
         url.searchParams.set("step", step);
       } else {
         url.searchParams.delete("step");
       }
+
+      if (method) {
+        url.searchParams.set("method", method);
+      } else {
+        url.searchParams.delete("method");
+      }
+
       history.pushState(null, "", url);
     }
-  }, [step]);
+  }, [method, step]);
 
   useEffect(() => {
     function handlePopState() {
@@ -53,26 +64,47 @@ export function Wizard({ step: initialStep }: WizardProps) {
     setStep(step);
   }, []);
 
+  const { saveResults } = useResults();
+
+  const handleFlockResults = useCallback(
+    (results: MastodonFlockResults) => {
+      saveResults(results);
+      navigateTo("finish");
+    },
+    [navigateTo],
+  );
+
+  const handleFlockError = useCallback(
+    (error: string) => {
+      console.error(error);
+      navigateTo("error");
+    },
+    [navigateTo],
+  );
+
   const connectTwitter = useCallback(() => {
     location.href = config.urls.twitterLogin;
   }, []);
 
   const goWelcome = useCallback(() => {
     navigateTo("welcome");
-  }, []);
+  }, [navigateTo]);
 
   const goChooseMethod = useCallback(() => {
     navigateTo("chooseMethod");
-  }, []);
+  }, [navigateTo]);
 
-  const chooseMethod = useCallback((newMethod: "typical" | "advanced") => {
-    setMethod(newMethod);
-    if (newMethod === "typical") {
-      navigateTo("chooseMastodonInstance");
-    } else {
-      navigateTo("loadingInformation");
-    }
-  }, []);
+  const chooseMethod = useCallback(
+    (newMethod: "typical" | "advanced") => {
+      setMethod(newMethod);
+      if (newMethod === "typical") {
+        navigateTo("chooseMastodonInstance");
+      } else {
+        navigateTo("loadingInformation");
+      }
+    },
+    [navigateTo],
+  );
 
   const loadData = useCallback(
     (mastodonUri: string | undefined) => {
@@ -90,16 +122,8 @@ export function Wizard({ step: initialStep }: WizardProps) {
 
       navigateTo("loadingInformation");
     },
-    [method],
+    [navigateTo],
   );
-
-  const cancelLoad = useCallback(() => {
-    if (method === "typical") {
-      navigateTo("chooseMastodonInstance");
-    } else {
-      navigateTo("chooseMethod");
-    }
-  }, [method]);
 
   const closeWizard = useCallback(() => {
     location.href = config.urls.desktop;
@@ -112,7 +136,7 @@ export function Wizard({ step: initialStep }: WizardProps) {
     case "chooseMethod": {
       return (
         <ChooseMethod
-          initialMethod={method}
+          initialMethod={method ?? "typical"}
           cancel={closeWizard}
           goBack={goWelcome}
           goNext={chooseMethod}
@@ -130,11 +154,10 @@ export function Wizard({ step: initialStep }: WizardProps) {
     }
     case "loadingInformation": {
       return (
-        <LoadingInformation
-          status={status}
-          subStatus={subStatus}
-          progress={progress}
-          cancel={cancelLoad}
+        <Installer
+          method={method ?? "advanced"}
+          onError={handleFlockError}
+          onResults={handleFlockResults}
         />
       );
     }

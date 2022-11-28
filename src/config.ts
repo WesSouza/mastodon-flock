@@ -28,6 +28,7 @@ export const config = {
     mastodonAccountLookup: `${origin}/mastodon/account-lookup`,
     mastodonAccountFollow: `${origin}/mastodon/account-follow`,
     twitterLogin: `${origin}/twitter/login`,
+    twitterFollowing: `${origin}/twitter/following`,
     twitterReturn: `${origin}/twitter/return`,
     TEMP_fediverseDirectory: `${origin}/data/fedifinder_known_instances.json`,
   },

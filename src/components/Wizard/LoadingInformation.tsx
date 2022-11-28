@@ -1,8 +1,11 @@
+import { useEffect } from "react";
 import { Frame, ProgressBar } from "react95";
 import styled from "styled-components";
 import { Button } from "../React95/Button";
 
 import { Paragraph } from "../React95/Paragraph";
+import type { MastodonFlockResults } from "../Results/useResults";
+import { useMastodonFlock } from "./useMastodonFlock";
 
 const FrameStyled = styled(Frame)`
   width: min(calc(100% - 4em), 700px);
@@ -16,17 +19,25 @@ const Center = styled.div`
   align-self: center;
 `;
 
-export function LoadingInformation({
-  cancel,
-  status,
-  subStatus,
-  progress,
+export function Installer({
+  method,
+  onError,
+  onResults,
 }: {
-  cancel: () => void;
-  status: string;
-  subStatus: string;
-  progress: number;
+  method: "typical" | "advanced";
+  onError: (error: string) => void;
+  onResults: (results: MastodonFlockResults) => void;
 }) {
+  const { cancel, findBirdsAndMammoths, progress, status, subStatus } =
+    useMastodonFlock({
+      onError,
+      onResults,
+    });
+
+  useEffect(() => {
+    findBirdsAndMammoths({ method });
+  }, []);
+
   return (
     <FrameStyled className="react95">
       <Paragraph>

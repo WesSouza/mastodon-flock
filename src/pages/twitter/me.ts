@@ -3,7 +3,7 @@ import { TwitterApi } from "twitter-api-v2";
 
 import { responseJsonError } from "../../utils/api";
 import {
-  findPotentialInstanceUrlsFromTwitter,
+  findPotentialInstanceProfilesFromTwitter,
   findPotentialUserEmails,
 } from "../../utils/fediverse";
 import { Session } from "../../utils/session";
@@ -41,10 +41,12 @@ export const get: APIRoute = async function get(context) {
       .concat(findPotentialUserEmails(description))
       .concat(findPotentialUserEmails(location));
 
-    const potentialInstances = findPotentialInstanceUrlsFromTwitter(
+    const potentialInstances = findPotentialInstanceProfilesFromTwitter(
       user.entities?.url?.urls,
     ).concat(
-      findPotentialInstanceUrlsFromTwitter(user.entities?.description?.urls),
+      findPotentialInstanceProfilesFromTwitter(
+        user.entities?.description?.urls,
+      ),
     );
 
     return {

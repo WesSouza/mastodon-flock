@@ -10,7 +10,9 @@ const forbiddenHostnames = new Set([
   "youtube.com",
 ]);
 
-export function findPotentialInstanceUrls(urls: string[] | undefined) {
+export function findPotentialInstanceProfilesFromUrls(
+  urls: string[] | undefined,
+) {
   if (!Array.isArray(urls)) {
     return [];
   }
@@ -19,6 +21,9 @@ export function findPotentialInstanceUrls(urls: string[] | undefined) {
     .map((urlString) => {
       const url = new URL(urlString);
       return {
+        href: `${url.origin.replace("https://www.", "https://")}${
+          url.pathname
+        }`,
         protocol: url.protocol.toLowerCase(),
         hostname: url.hostname.toLowerCase(),
         pathname: url.pathname,
@@ -33,14 +38,16 @@ export function findPotentialInstanceUrls(urls: string[] | undefined) {
     );
 }
 
-export function findPotentialInstanceUrlsFromTwitter(
+export function findPotentialInstanceProfilesFromTwitter(
   urls: { expanded_url: string }[] | undefined,
 ) {
   if (!Array.isArray(urls)) {
     return [];
   }
 
-  return findPotentialInstanceUrls(urls.map((url) => url.expanded_url));
+  return findPotentialInstanceProfilesFromUrls(
+    urls.map((url) => url.expanded_url),
+  );
 }
 
 export function findPotentialUserEmails(string: string | undefined) {
@@ -52,8 +59,9 @@ export function findPotentialUserEmails(string: string | undefined) {
     /(@?)([a-z0-9\-\._]+)@([a-z0-9]+[a-z0-9\-\.]*\.[a-z0-9]{2,})/gi,
   );
   return Array.from(matches, (match) => ({
+    email: `${match[2]?.toLowerCase()}@${match[3]?.toLowerCase()}`,
     prefix: match[1] ? "@" : undefined,
     username: match[2] as string,
     hostname: match[3]?.toLowerCase() as string,
-  }));
+  })).filter((email) => !forbiddenHostnames.has(email.hostname));
 }
