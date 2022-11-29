@@ -46,11 +46,12 @@ const ScrollViewStyled = styled(ScrollView)`
   }
 `;
 
-const PeopleListHeader = styled.div`
+const PeopleListHeader = styled.div<{ method: string | undefined }>`
   position: sticky;
   top: 0;
   display: grid;
-  grid-template-columns: 40px 2fr 2fr 1fr;
+  grid-template-columns: 40px ${({ method }) =>
+    method === "typical" ? "2fr" : ""} 2fr 1fr;
   z-index: 2;
 `;
 
@@ -63,7 +64,7 @@ const PeopleList = styled.ul`
 `;
 
 export function Results() {
-  const { followUnfollow, loadingAccountIds, loadResults, results } =
+  const { followUnfollow, loadingAccountIds, loadResults, method, results } =
     useResults();
 
   useEffect(() => {
@@ -101,7 +102,7 @@ export function Results() {
       </WindowHeaderStyled>
       <WindowContentStyled>
         <ScrollViewStyled shadow={false}>
-          <PeopleListHeader>
+          <PeopleListHeader method={method}>
             <PeopleListHeaderCell>
               <Checkbox
                 checked={allSelected}
@@ -109,7 +110,9 @@ export function Results() {
               />
             </PeopleListHeaderCell>
             <PeopleListHeaderCell>Account</PeopleListHeaderCell>
-            <PeopleListHeaderCell>Details</PeopleListHeaderCell>
+            {method === "typical" ? (
+              <PeopleListHeaderCell>Details</PeopleListHeaderCell>
+            ) : undefined}
             <PeopleListHeaderCell>Actions</PeopleListHeaderCell>
           </PeopleListHeader>
           <PeopleList>
@@ -118,6 +121,7 @@ export function Results() {
                 key={account.id}
                 account={account}
                 followUnfollow={followUnfollow}
+                method={method}
                 loading={loadingAccountIds.includes(account.id)}
                 twitterUsers={twitterUserMap}
               />
@@ -129,9 +133,10 @@ export function Results() {
   );
 }
 
-const PersonListItem = styled.li`
+const PersonListItem = styled.li<{ method: string | undefined }>`
   display: grid;
-  grid-template-columns: 40px 2fr 2fr 1fr;
+  grid-template-columns: 40px ${({ method }) =>
+    method === "typical" ? "2fr" : ""} 2fr 1fr;
   &:not(:last-child) {
     border-bottom: 2px solid ${({ theme }) => theme.flatLight};
   }
@@ -140,9 +145,16 @@ const PersonListItem = styled.li`
 const PersonCell = styled.div`
   display: grid;
   padding: 10px;
+
   &:not(:last-child) {
     border-right: 2px solid ${({ theme }) => theme.flatLight};
   }
+`;
+
+const PersonCellButtons = styled(PersonCell)`
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  place-content: center;
 `;
 
 const PersonSocialAccount = styled.div`
@@ -206,11 +218,13 @@ function Person({
   account,
   loading,
   followUnfollow,
+  method,
   twitterUsers,
 }: {
   account: AccountWithTwitter;
   loading: boolean;
   followUnfollow: (accountId: string, operation: "follow" | "unfollow") => void;
+  method: string | undefined;
   twitterUsers: Map<string, TwitterSearchUser>;
 }) {
   const [selected, setSelected] = useState(false);
@@ -227,13 +241,17 @@ function Person({
     followUnfollow(account.id, "unfollow");
   }, [account.id, followUnfollow]);
 
+  const handleCopyClick = useCallback(() => {
+    navigator.clipboard.writeText(account.account);
+  }, [account.account]);
+
   const twitterUser = twitterUsers.get(account.twitterUsername);
   if (!twitterUser) {
     return null;
   }
 
   return (
-    <PersonListItem>
+    <PersonListItem method={method}>
       <PersonCell>
         <Checkbox
           disabled={loading}
@@ -269,49 +287,52 @@ function Person({
               rel="noreferrer noopener nofollow"
               target="_blank"
             >
-              @{account.account}
+              {account.account.startsWith("https://") ? "" : "@"}
+              {account.account}
             </Anchor>
           </PersonSocialAccountDetails>
         </PersonSocialAccount>
       </PersonCell>
-      <PersonCell>
-        {account.followersCount ||
-        account.followingCount ||
-        account.statusesCount ? (
-          <PersonSocialStats>
-            {account.followersCount ? (
+      {method === "typical" ? (
+        <PersonCell>
+          {account.followersCount ||
+          account.followingCount ||
+          account.statusesCount ? (
+            <PersonSocialStats>
+              {account.followersCount ? (
+                <PersonSocialStat>
+                  <em>{numberFormatter.format(account.followersCount)}</em>{" "}
+                  Followers
+                </PersonSocialStat>
+              ) : undefined}
+              {account.followingCount ? (
+                <PersonSocialStat>
+                  <em>{numberFormatter.format(account.followingCount)}</em>{" "}
+                  Following
+                </PersonSocialStat>
+              ) : undefined}
+              {account.statusesCount ? (
+                <PersonSocialStat>
+                  <em>{numberFormatter.format(account.statusesCount)}</em> Posts
+                </PersonSocialStat>
+              ) : undefined}
+            </PersonSocialStats>
+          ) : undefined}
+          {account.lastStatusAt ? (
+            <PersonSocialStats>
               <PersonSocialStat>
-                <em>{numberFormatter.format(account.followersCount)}</em>{" "}
-                Followers
+                last active{" "}
+                <em>
+                  {formatDistanceToNow(Date.parse(account.lastStatusAt), {
+                    addSuffix: true,
+                  })}
+                </em>
               </PersonSocialStat>
-            ) : undefined}
-            {account.followingCount ? (
-              <PersonSocialStat>
-                <em>{numberFormatter.format(account.followingCount)}</em>{" "}
-                Following
-              </PersonSocialStat>
-            ) : undefined}
-            {account.statusesCount ? (
-              <PersonSocialStat>
-                <em>{numberFormatter.format(account.statusesCount)}</em> Posts
-              </PersonSocialStat>
-            ) : undefined}
-          </PersonSocialStats>
-        ) : undefined}
-        {account.lastStatusAt ? (
-          <PersonSocialStats>
-            <PersonSocialStat>
-              last active{" "}
-              <em>
-                {formatDistanceToNow(Date.parse(account.lastStatusAt), {
-                  addSuffix: true,
-                })}
-              </em>
-            </PersonSocialStat>
-          </PersonSocialStats>
-        ) : undefined}
-      </PersonCell>
-      <PersonCell>
+            </PersonSocialStats>
+          ) : undefined}
+        </PersonCell>
+      ) : undefined}
+      <PersonCellButtons>
         {account.following === true ? (
           <Button
             disabled={loading}
@@ -325,12 +346,23 @@ function Person({
             Follow
           </Button>
         ) : (
-          // @ts-ignore `href` is not part of button's expected properties
-          <Button as="a" variant="flat" href={account.url}>
-            Open
-          </Button>
+          <>
+            <Button
+              variant="flat"
+              as="a"
+              // @ts-ignore `href` is not part of button's expected properties
+              href={account.url}
+              rel="noreferrer noopener nofollow"
+              target="_blank"
+            >
+              Open
+            </Button>
+            <Button variant="flat" onClick={handleCopyClick}>
+              Copy
+            </Button>
+          </>
         )}
-      </PersonCell>
+      </PersonCellButtons>
     </PersonListItem>
   );
 }

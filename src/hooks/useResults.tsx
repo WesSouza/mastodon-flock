@@ -10,6 +10,7 @@ export type MastodonFlockResults = {
 const currentVersion = 1;
 
 export function useResults() {
+  const [method, setMethod] = useState<string | undefined>(undefined);
   const [results, setResults] = useState<MastodonFlockResults | undefined>(
     undefined,
   );
@@ -19,7 +20,13 @@ export function useResults() {
     const version = sessionStorage.getItem("version");
     if (version !== "1") {
       sessionStorage.removeItem("version");
+      sessionStorage.removeItem("method");
       sessionStorage.removeItem("results");
+      return;
+    }
+
+    const method = sessionStorage.getItem("method");
+    if (!method) {
       return;
     }
 
@@ -28,14 +35,19 @@ export function useResults() {
       return;
     }
 
+    setMethod(method);
     setResults(JSON.parse(resultsString));
   }, []);
 
-  const saveResults = useCallback((results: MastodonFlockResults) => {
-    sessionStorage.setItem("version", String(currentVersion));
-    sessionStorage.setItem("results", JSON.stringify(results));
-    setResults(results);
-  }, []);
+  const saveResults = useCallback(
+    (method: string, results: MastodonFlockResults) => {
+      sessionStorage.setItem("version", String(currentVersion));
+      sessionStorage.setItem("method", method);
+      sessionStorage.setItem("results", JSON.stringify(results));
+      setResults(results);
+    },
+    [],
+  );
 
   const followUnfollow = useCallback(
     async (accountId: string, operation: "follow" | "unfollow") => {
@@ -51,8 +63,8 @@ export function useResults() {
         });
         const data = (await response.json()) as { result: boolean };
 
-        if (data.result && results) {
-          saveResults({
+        if (data.result && results && method) {
+          saveResults(method, {
             ...results,
             accounts: results?.accounts.map((account) =>
               account.id === accountId
@@ -72,13 +84,14 @@ export function useResults() {
         );
       }
     },
-    [results],
+    [method, results],
   );
 
   return {
     followUnfollow,
     loadingAccountIds,
     loadResults,
+    method,
     results,
     saveResults,
   };

@@ -15,7 +15,7 @@ export const get: APIRoute = async function get(context) {
     return responseJsonError(400, "badAccountId");
   }
 
-  const { hostname, account } = splitAccountParts(accountId);
+  const { hostname, account, email } = splitAccountParts(accountId);
 
   if (!hostname || !account) {
     return responseJsonError(400, "badAccountId");
@@ -74,7 +74,9 @@ export const get: APIRoute = async function get(context) {
 
     return new Response(
       JSON.stringify({
-        account: mapApiPerson(personData, { lookedUpAccount: account }),
+        account: mapApiPerson(personData, {
+          lookedUpAccount: email ?? account,
+        }),
       }),
       {
         headers: { "Content-type": "application/json" },

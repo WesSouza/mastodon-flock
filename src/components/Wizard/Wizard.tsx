@@ -30,10 +30,10 @@ export function Wizard() {
 
   const handleFlockResults = useCallback(
     (results: MastodonFlockResults) => {
-      saveResults(results);
+      saveResults(method ?? "", results);
       navigateTo("finish");
     },
-    [navigateTo],
+    [method, navigateTo],
   );
 
   const handleFlockError = useCallback(
