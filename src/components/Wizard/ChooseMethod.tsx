@@ -23,8 +23,8 @@ export function ChooseMethod({
 }: {
   cancel: () => void;
   goBack: () => void;
-  goNext: (method: "typical" | "advanced") => void;
-  initialMethod: "typical" | "advanced";
+  goNext: (method: string) => void;
+  initialMethod: string;
 }) {
   const [method, setMethod] = useState(initialMethod);
 

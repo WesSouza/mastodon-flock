@@ -24,7 +24,7 @@ export function Installer({
   onError,
   onResults,
 }: {
-  method: "typical" | "advanced";
+  method: string;
   onError: (error: string) => void;
   onResults: (results: MastodonFlockResults) => void;
 }) {

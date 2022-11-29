@@ -3,7 +3,6 @@ import Layout from "../layouts/Layout.astro";
 import { MastodonFlock } from "../react-islands/MastodonFlock";
 
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site).toString();
-const step = Astro.url.searchParams.get("step") ?? undefined;
 ---
 
 <Layout
@@ -14,7 +13,7 @@ const step = Astro.url.searchParams.get("step") ?? undefined;
   <main>
     <h1>Mastodon Flock</h1>
     <section>
-      <MastodonFlock client:only="react" step={step} />
+      <MastodonFlock client:only="react" />
     </section>
   </main>
 </Layout>

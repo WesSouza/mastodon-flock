@@ -1,7 +1,9 @@
 import type { APIRoute } from "astro";
 import fetch from "node-fetch";
+import type { MastodonLookupAccountResult } from "../../types";
 
 import { responseJsonError } from "../../utils/api";
+import { APIAccount, mapApiAccount } from "../../utils/mastodon";
 import { Session } from "../../utils/session";
 
 export const get: APIRoute = async function get(context) {
@@ -35,34 +37,15 @@ export const get: APIRoute = async function get(context) {
     });
 
     if (lookupResponse.status === 200) {
-      const lookupData = (await lookupResponse.json()) as {
-        id: string;
-        account: string;
-        username: string;
-        display_name: string;
-        followers_count: number;
-        following_count: number;
-        statuses_count: number;
-        url: string;
-        avatar: string;
+      const lookupData = (await lookupResponse.json()) as APIAccount;
+
+      const responseData: MastodonLookupAccountResult = {
+        account: mapApiAccount(lookupData, { following: false, uri }),
       };
 
-      return new Response(
-        JSON.stringify({
-          id: lookupData.id,
-          account: lookupData.account,
-          username: lookupData.username,
-          displayName: lookupData.display_name,
-          followersCount: lookupData.followers_count,
-          followingCount: lookupData.following_count,
-          statusesCount: lookupData.statuses_count,
-          url: lookupData.url,
-          avatarImageUrl: lookupData.avatar,
-        }),
-        {
-          headers: { "Content-type": "application/json" },
-        },
-      );
+      return new Response(JSON.stringify(responseData), {
+        headers: { "Content-type": "application/json" },
+      });
     }
 
     if (lookupResponse.status === 404) {

@@ -1,10 +1,11 @@
 import type { APIRoute } from "astro";
-import fetch from "node-fetch";
 import type { Response as FetchResponse } from "node-fetch";
+import fetch from "node-fetch";
 
-import type { MastodonFollowAccount } from "../../types";
+import type { MastodonFollowAccountResults } from "../../types";
 import { responseJsonError } from "../../utils/api";
 import { getLinkHrefWithRel } from "../../utils/http-headers";
+import { APIAccount, mapApiAccount } from "../../utils/mastodon";
 import { Session } from "../../utils/session";
 
 export const get: APIRoute = async function get(context) {
@@ -47,7 +48,7 @@ export const get: APIRoute = async function get(context) {
       instanceUrl,
     ).href;
 
-    const result: { following: MastodonFollowAccount[] } = { following: [] };
+    const result: MastodonFollowAccountResults = { following: [] };
 
     while (followingURL) {
       const followingResponse: FetchResponse = await fetch(followingURL, {
@@ -58,16 +59,12 @@ export const get: APIRoute = async function get(context) {
       });
 
       if (followingResponse.status === 200) {
-        const followingData = (await followingResponse.json()) as {
-          id: string;
-          acct: string;
-        }[];
+        const followingData = (await followingResponse.json()) as APIAccount[];
 
         result.following = result.following.concat(
-          followingData.map((followingAccount) => ({
-            id: followingAccount.id,
-            account: followingAccount.acct,
-          })),
+          followingData.map((followingAccount) =>
+            mapApiAccount(followingAccount, { following: true, uri }),
+          ),
         );
 
         const link = followingResponse.headers.get("link");

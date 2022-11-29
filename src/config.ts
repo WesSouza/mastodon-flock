@@ -21,12 +21,13 @@ export const config = {
     activityPubApp: !isLocal
       ? `${origin}/app`
       : "https://mastodon-flock-preview.vercel.app/app",
+    activityPubAccountLookup: `${origin}/activity-pub/account-lookup`,
     desktop: `${origin}/desktop`,
     mastodonInstance: `${origin}/mastodon/instance`,
     mastodonLogin: `${origin}/mastodon/login`,
     mastodonReturn: `${origin}/mastodon/return`,
     mastodonAccountLookup: `${origin}/mastodon/account-lookup`,
-    mastodonAccountFollow: `${origin}/mastodon/account-follow`,
+    mastodonAccountFollowing: `${origin}/mastodon/account-following`,
     twitterLogin: `${origin}/twitter/login`,
     twitterFollowing: `${origin}/twitter/following`,
     twitterReturn: `${origin}/twitter/return`,

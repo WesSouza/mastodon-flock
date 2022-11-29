@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 import { config } from "../../config";
+import { useSearchParamsState } from "../../hooks/useSearchParamsState";
 import { MastodonFlockResults, useResults } from "../Results/useResults";
 
 import { ChooseMastodonInstance } from "./ChooseMastodonInstance";
@@ -15,52 +16,12 @@ export type WizardStep =
   | "error"
   | "finish";
 
-export type WizardProps = {
-  step: WizardStep | string | undefined;
-};
-
-export function Wizard({ step: initialStep }: WizardProps) {
-  const [step, setStep] = useState(initialStep ?? "welcome");
-  const [method, setMethod] = useState<"typical" | "advanced" | undefined>();
-
-  useEffect(() => {
-    const url = new URL(location.href);
-    const urlStep = url.searchParams.get("step");
-    const urlMethod = url.searchParams.get("method");
-    if (urlStep !== step || urlMethod !== method) {
-      if (step) {
-        url.searchParams.set("step", step);
-      } else {
-        url.searchParams.delete("step");
-      }
-
-      if (method) {
-        url.searchParams.set("method", method);
-      } else {
-        url.searchParams.delete("method");
-      }
-
-      history.pushState(null, "", url);
-    }
-  }, [method, step]);
-
-  useEffect(() => {
-    function handlePopState() {
-      const url = new URL(location.href);
-      const urlStep = url.searchParams.get("step") ?? undefined;
-      setStep(urlStep ?? "welcome");
-    }
-
-    window.addEventListener("popstate", handlePopState);
-    return () => {
-      window.removeEventListener("popstate", handlePopState);
-    };
-  }, []);
+export function Wizard() {
+  const [step, setStep] = useSearchParamsState("step", "welcome");
+  const [method, setMethod] = useSearchParamsState("method", "typical");
+  const [error] = useSearchParamsState("error");
 
   const navigateTo = useCallback((step: string) => {
-    const url = new URL(location.href);
-    url.searchParams.set("step", step);
-    history.pushState(null, "", url);
     setStep(step);
   }, []);
 
@@ -77,9 +38,13 @@ export function Wizard({ step: initialStep }: WizardProps) {
   const handleFlockError = useCallback(
     (error: string) => {
       console.error(error);
-      navigateTo("error");
+      if (method === "typical") {
+        navigateTo("chooseMastodonInstance");
+      } else {
+        navigateTo("chooseMethod");
+      }
     },
-    [navigateTo],
+    [method, navigateTo],
   );
 
   const connectTwitter = useCallback(() => {
@@ -95,7 +60,7 @@ export function Wizard({ step: initialStep }: WizardProps) {
   }, [navigateTo]);
 
   const chooseMethod = useCallback(
-    (newMethod: "typical" | "advanced") => {
+    (newMethod: string) => {
       setMethod(newMethod);
       if (newMethod === "typical") {
         navigateTo("chooseMastodonInstance");
@@ -122,19 +87,22 @@ export function Wizard({ step: initialStep }: WizardProps) {
 
       navigateTo("loadingInformation");
     },
-    [navigateTo],
+    [method, navigateTo],
   );
 
   const closeWizard = useCallback(() => {
     location.href = config.urls.desktop;
   }, []);
 
+  let stepNode = null;
+
   switch (step) {
     case "welcome": {
-      return <Welcome cancel={closeWizard} goNext={connectTwitter} />;
+      stepNode = <Welcome cancel={closeWizard} goNext={connectTwitter} />;
+      break;
     }
     case "chooseMethod": {
-      return (
+      stepNode = (
         <ChooseMethod
           initialMethod={method ?? "typical"}
           cancel={closeWizard}
@@ -142,26 +110,36 @@ export function Wizard({ step: initialStep }: WizardProps) {
           goNext={chooseMethod}
         />
       );
+      break;
     }
     case "chooseMastodonInstance": {
-      return (
+      stepNode = (
         <ChooseMastodonInstance
           cancel={closeWizard}
           goBack={goChooseMethod}
           goNext={loadData}
         />
       );
+      break;
     }
     case "loadingInformation": {
-      return (
+      stepNode = (
         <Installer
           method={method ?? "advanced"}
           onError={handleFlockError}
           onResults={handleFlockResults}
         />
       );
+      break;
     }
+    default:
+      stepNode = <div>BSOD</div>;
   }
 
-  return <>BSOD</>;
+  return (
+    <>
+      {error ? <div>error</div> : null}
+      {stepNode}
+    </>
+  );
 }

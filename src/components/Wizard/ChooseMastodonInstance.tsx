@@ -63,7 +63,7 @@ export function ChooseMastodonInstance({
   goNext: (mastodonUri: string | undefined) => void;
 }) {
   const [instances, setInstances] = useState<Instance[]>([]);
-  const [instanceURI, setInstanceURI] = useState("");
+  const [instanceUri, setInstanceUri] = useState("");
   const [filter, setFilter] = useState("");
 
   useEffect(() => {
@@ -77,13 +77,13 @@ export function ChooseMastodonInstance({
   const handleServerChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       setFilter(event.target.value);
-      setInstanceURI(event.target.value);
+      setInstanceUri(event.target.value);
     },
     [],
   );
 
   const handleServerSelect = useCallback((server: Instance) => {
-    setInstanceURI(server.hostname);
+    setInstanceUri(server.hostname);
   }, []);
 
   const serverMatches = useCallback(
@@ -94,8 +94,8 @@ export function ChooseMastodonInstance({
   );
 
   const handleGoNext = useCallback(() => {
-    goNext(instanceURI);
-  }, [instanceURI]);
+    goNext(instanceUri);
+  }, [instanceUri]);
 
   return (
     <WizardWindow
@@ -122,7 +122,7 @@ export function ChooseMastodonInstance({
           id="mastodon-instance-url"
           type="url"
           placeholder="mastodon.social"
-          value={instanceURI}
+          value={instanceUri}
           onChange={handleServerChange}
         />
       </Paragraph>
@@ -131,7 +131,7 @@ export function ChooseMastodonInstance({
           {instances.filter(serverMatches).map((instance) => (
             <InstanceItem
               key={instance.hostname}
-              instanceURI={instanceURI}
+              instanceURI={instanceUri}
               instance={instance}
               onSelect={handleServerSelect}
             />

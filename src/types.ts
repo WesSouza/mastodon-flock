@@ -1,7 +1,25 @@
+export type Account = {
+  id: string;
+  account: string;
+  username: string;
+  name: string;
+  followersCount: number | undefined;
+  followingCount: number | undefined;
+  statusesCount: number | undefined;
+  url: string;
+  avatarImageUrl: string | undefined;
+  following: boolean;
+};
+
+export type AccountWithTwitter = Account & {
+  twitterUsername: string;
+};
+
 export type APIResult<T> = T | { error: string };
 
 export type PotentialEmail = {
   twitterUsername: string;
+  email: string;
   prefix: string | undefined;
   username: string;
   hostname: string;
@@ -9,6 +27,7 @@ export type PotentialEmail = {
 
 export type PotentialInstanceProfile = {
   twitterUsername: string;
+  href: string;
   hostname: string;
   pathname: string;
 };
@@ -25,19 +44,10 @@ export type TwitterSearchUser = {
   username: string;
 };
 
-export type MastodonLookupAccount = {
-  id: string;
-  account: string;
-  username: string;
-  displayName: string;
-  followersCount: number;
-  followingCount: number;
-  statusesCount: number;
-  url: string;
-  avatarImageUrl: string;
+export type MastodonLookupAccountResult = {
+  account: Account;
 };
 
-export type MastodonFollowAccount = {
-  id: string;
-  account: string;
+export type MastodonFollowAccountResults = {
+  following: Account[];
 };

@@ -3,16 +3,23 @@ export type WebFingerResource = {
   links: { rel: string; type: string; href: string }[];
 };
 
-export function splitAccountParts(accountId: string) {
-  if (typeof accountId !== "string") {
-    return { domain: undefined, username: undefined };
+export function splitAccountParts(account: string) {
+  if (typeof account !== "string") {
+    return { hostname: undefined, account: undefined };
   }
 
-  accountId = accountId.replace(/^@/, "");
-  if (!accountId.match(/^[a-z0-9-\.]+@[a-z0-9-][a-z0-9-\.]+[a-z0-9-]+$/i)) {
-    return { domain: undefined, username: undefined };
+  if (account.startsWith("https://")) {
+    const url = new URL(account);
+    return { hostname: url.hostname, account: `${url.origin}${url.pathname}` };
   }
 
-  const [username, domain] = accountId.split("@");
-  return { domain, username };
+  account = account.replace(/^@/, "");
+  if (
+    !account.match(/^[a-z0-9\-\._]+@[a-z0-9]+[a-z0-9\-\.]*\.[a-z0-9]{2,}$/i)
+  ) {
+    return { hostname: undefined, account: undefined };
+  }
+
+  const [, hostname] = account.split("@");
+  return { hostname, account: `acct:${account}` };
 }
