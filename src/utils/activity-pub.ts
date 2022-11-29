@@ -8,6 +8,7 @@ export type APIPerson = {
   icon?: APIImage;
   image?: APIImage;
   url?: string;
+  published?: string;
 };
 
 export type APIImage = {
@@ -26,6 +27,8 @@ export function mapApiPerson(
     account: email,
     username: apiPerson.preferredUsername ?? email,
     name: apiPerson.name ?? email,
+    createdAt: apiPerson.published,
+    lastStatusAt: undefined,
     followersCount: undefined,
     followingCount: undefined,
     statusesCount: undefined,

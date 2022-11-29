@@ -137,7 +137,6 @@ export const get: APIRoute = async function get(context) {
       const mastodonCreateAppResponse = await fetch(mastodonCreateAppURL.href, {
         headers: {
           Accept: "application/json",
-          "Content-Type": "application/x-www-form-urlencoded",
         },
         method: "post",
         body: appDetails,
@@ -210,25 +209,17 @@ export const get: APIRoute = async function get(context) {
     );
   }
 
-  try {
-    const oauthUrl = new URL("/oauth/authorize", federatedInstance.instanceUrl);
-    oauthUrl.searchParams.set("client_id", federatedInstance.app.clientId);
-    oauthUrl.searchParams.set(
-      "scope",
-      "read:accounts read:follows write:follows",
-    );
-    oauthUrl.searchParams.set("redirect_uri", config.urls.mastodonReturn);
-    oauthUrl.searchParams.set("response_type", "code");
+  const oauthUrl = new URL("/oauth/authorize", federatedInstance.instanceUrl);
+  oauthUrl.searchParams.set("client_id", federatedInstance.app.clientId);
+  oauthUrl.searchParams.set(
+    "scope",
+    "read:accounts read:follows write:follows",
+  );
+  oauthUrl.searchParams.set("redirect_uri", config.urls.mastodonReturn);
+  oauthUrl.searchParams.set("response_type", "code");
 
-    const session = Session.withAstro(context);
-    session.set("mastodonUri", uri);
+  const session = Session.withAstro(context);
+  session.set("mastodonUri", uri);
 
-    return redirect(oauthUrl.href, 302);
-  } catch (e) {
-    console.error(e);
-    return redirect(
-      `${config.urls.home}?step=${currentWizardStep}&errorCode=mastodonAuthError`,
-      302,
-    );
-  }
+  return redirect(oauthUrl.href, 302);
 };

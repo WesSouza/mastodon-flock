@@ -5,6 +5,8 @@ export type APIAccount = {
   acct: string;
   username: string;
   display_name: string;
+  created_at: string;
+  last_status_at: string;
   followers_count: number;
   following_count: number;
   statuses_count: number;
@@ -23,6 +25,8 @@ export function mapApiAccount(
       : `${apiAccount.acct}@${options.uri}`,
     username: apiAccount.username,
     name: apiAccount.display_name,
+    createdAt: apiAccount.created_at,
+    lastStatusAt: apiAccount.last_status_at,
     followersCount: apiAccount.followers_count,
     followingCount: apiAccount.following_count,
     statusesCount: apiAccount.statuses_count,

@@ -3,6 +3,8 @@ export type Account = {
   account: string;
   username: string;
   name: string;
+  createdAt: string | undefined;
+  lastStatusAt: string | undefined;
   followersCount: number | undefined;
   followingCount: number | undefined;
   statusesCount: number | undefined;

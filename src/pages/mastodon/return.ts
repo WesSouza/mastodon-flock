@@ -83,7 +83,6 @@ export const get: APIRoute = async function get(context) {
     const oauthTokenResponse = await fetch(oauthTokenRequestURL.href, {
       headers: {
         Accept: "application/json",
-        "Content-Type": "application/x-www-form-urlencoded",
       },
       method: "post",
       body: oauthTokenRequestData,

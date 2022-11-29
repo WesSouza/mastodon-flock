@@ -9,7 +9,7 @@ import { WizardWindow } from "./WizardWindow";
 const ScrollViewStyled = styled(ScrollView)`
   background: #fff;
   width: 100%;
-  height: 250px;
+  height: 150px;
 `;
 
 const InstanceList = styled.ul``;
@@ -108,12 +108,8 @@ export function ChooseMastodonInstance({
       title="Mastodon Instance"
     >
       <Paragraph>
-        Enter your Mastodon instance URL below or pick from the list then click
+        Enter your Mastodon instance URL below or pick from the list, then click
         Next.
-      </Paragraph>
-      <Paragraph>
-        You will be directed to your instance to log in and authorize the
-        program to find accounts and follow them if you chose later.
       </Paragraph>
       <Paragraph>
         <label htmlFor="mastodon-instance-url">Your instance URL:</label>
@@ -126,7 +122,7 @@ export function ChooseMastodonInstance({
           onChange={handleServerChange}
         />
       </Paragraph>
-      <ScrollViewStyled>
+      <ScrollViewStyled shadow={false}>
         <InstanceList>
           {instances.filter(serverMatches).map((instance) => (
             <InstanceItem

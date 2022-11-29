@@ -60,10 +60,8 @@ export function ChooseMethod({
           name='method'
         />
         <OptionDescription>
-          Typical setup will connect to your Mastodon instance and use it to
-          look for the found contacts in your Twitter accounts. You are able
-          then to see who you already follow, and also follow multiple accounts
-          from the Mastodon Flock program.
+          Connects to your Mastodon instance. You are able to see who you
+          already follow, as well as follow people in bulk.
         </OptionDescription>
       </Option>
       <Option>
@@ -75,10 +73,8 @@ export function ChooseMethod({
           name='method'
         />
         <OptionDescription>
-          Advanced setup will search the Fediverse and find contacts on any
-          supported service. You will not be able to see who you already follow,
-          and will need to manually follow each person on each instance
-          individually.
+          Searches the Fediverse directly. You must manually follow each account
+          externally.
         </OptionDescription>
       </Option>
     </WizardWindow>

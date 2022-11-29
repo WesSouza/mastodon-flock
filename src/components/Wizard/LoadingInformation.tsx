@@ -4,8 +4,8 @@ import styled from "styled-components";
 import { Button } from "../React95/Button";
 
 import { Paragraph } from "../React95/Paragraph";
-import type { MastodonFlockResults } from "../Results/useResults";
-import { useMastodonFlock } from "./useMastodonFlock";
+import type { MastodonFlockResults } from "../../hooks/useResults";
+import { useMastodonFlock } from "../../hooks/useMastodonFlock";
 
 const FrameStyled = styled(Frame)`
   width: min(calc(100% - 4em), 700px);
@@ -39,7 +39,7 @@ export function Installer({
   }, []);
 
   return (
-    <FrameStyled className="react95">
+    <FrameStyled>
       <Paragraph>
         {status}
         <br />

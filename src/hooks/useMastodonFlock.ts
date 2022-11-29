@@ -1,14 +1,25 @@
 import { useCallback, useMemo, useRef, useState } from "react";
-import { config } from "../../config";
+import { config } from "../config";
 import type {
   AccountWithTwitter,
   APIResult,
   MastodonFollowAccountResults,
   MastodonLookupAccountResult,
   TwitterSearchResults,
-} from "../../types";
+} from "../types";
 
-import type { MastodonFlockResults } from "../Results/useResults";
+import type { MastodonFlockResults } from "./useResults";
+
+function dedupeAccounts(accounts: AccountWithTwitter[]) {
+  const ids = new Set<string>();
+  return accounts.filter((account) => {
+    if (ids.has(account.id)) {
+      return false;
+    }
+    ids.add(account.id);
+    return true;
+  });
+}
 
 export function useMastodonFlock({
   onError,
@@ -152,9 +163,7 @@ export function useMastodonFlock({
             });
           }
 
-          console.log(foundAccounts);
-
-          onResults({ accounts: foundAccounts, twitterUsers });
+          onResults({ accounts: dedupeAccounts(foundAccounts), twitterUsers });
         } else {
           potentialEmails.forEach(({ email, twitterUsername }) => {
             accountLookups.push({
@@ -207,12 +216,11 @@ export function useMastodonFlock({
             });
           }
 
-          console.log(foundAccounts);
-
           setStatus("Fingering contacts...");
           setStatus("actipub.exe");
           setProgress(100);
-          onResults({});
+
+          onResults({ accounts: dedupeAccounts(foundAccounts), twitterUsers });
         }
       } catch (e) {
         if (e instanceof Error && e.name === "AbortError") {

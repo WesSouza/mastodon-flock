@@ -4,8 +4,9 @@ import styled from "styled-components";
 import { Button } from "../React95/Button";
 
 export type WizardWindowAction = {
+  disabled?: boolean;
   label: string;
-  onClick: () => void;
+  onClick?: () => void;
 };
 
 export type WizardWindowProps = {
@@ -20,11 +21,12 @@ export type WizardWindowProps = {
 };
 
 const WindowStyled = styled(Window)`
-  max-width: 958px;
+  width: min(100%, 700px);
 `;
 
 const WindowHeaderStyled = styled(WindowHeader)`
   display: flex;
+  align-items: center;
 `;
 
 const WindowTitle = styled.span`
@@ -38,9 +40,9 @@ const WindowContentStyled = styled(WindowContent)`
   column-gap: 32px;
   padding: 20px;
   grid-template:
-    "Image Content" 592px
+    "Image Content" 293px
     "Separator Separator" 4px
-    "Footer Footer" 46px / 304px 1fr;
+    "Footer Footer" 36px / 150px 1fr;
 `;
 
 const WizardImageWell = styled(Frame)`
@@ -50,7 +52,6 @@ const WizardImageWell = styled(Frame)`
 const WizardImage = styled.img`
   width: 100%;
   height: 100%;
-  image-rendering: pixelated;
 `;
 
 const WizardContent = styled.div`
@@ -76,7 +77,7 @@ export const WizardFooterPhantomButton = styled.span`
 `;
 
 export const WizardFooterButton = styled(Button)`
-  width: 160px;
+  width: 120px;
 `;
 
 export function WizardWindow({
@@ -90,7 +91,7 @@ export function WizardWindow({
   title,
 }: WizardWindowProps) {
   return (
-    <WindowStyled className="react95">
+    <WindowStyled>
       <WindowHeaderStyled>
         <WindowTitle>{title}</WindowTitle>
         <Button onClick={onClose}>&times;</Button>
@@ -103,14 +104,21 @@ export function WizardWindow({
         <Separator style={{ gridArea: "Separator" }} orientation="horizontal" />
         <WizardFooter>
           {previousAction ? (
-            <WizardFooterButton onClick={previousAction.onClick}>
+            <WizardFooterButton
+              disabled={previousAction.disabled ?? false}
+              onClick={previousAction.onClick}
+            >
               {previousAction.label}
             </WizardFooterButton>
           ) : (
             <WizardFooterPhantomButton />
           )}
           {nextAction ? (
-            <WizardFooterButton primary={true} onClick={nextAction.onClick}>
+            <WizardFooterButton
+              disabled={nextAction.disabled ?? false}
+              primary={true}
+              onClick={nextAction.onClick}
+            >
               {nextAction.label}
             </WizardFooterButton>
           ) : (
@@ -118,7 +126,10 @@ export function WizardWindow({
           )}
           <WizardFooterSpacer />
           {cancelAction ? (
-            <WizardFooterButton onClick={cancelAction.onClick}>
+            <WizardFooterButton
+              disabled={cancelAction.disabled ?? false}
+              onClick={cancelAction.onClick}
+            >
               {cancelAction.label}
             </WizardFooterButton>
           ) : (

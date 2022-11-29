@@ -28,6 +28,7 @@ export const config = {
     mastodonReturn: `${origin}/mastodon/return`,
     mastodonAccountLookup: `${origin}/mastodon/account-lookup`,
     mastodonAccountFollowing: `${origin}/mastodon/account-following`,
+    results: `${origin}/results`,
     twitterLogin: `${origin}/twitter/login`,
     twitterFollowing: `${origin}/twitter/following`,
     twitterReturn: `${origin}/twitter/return`,

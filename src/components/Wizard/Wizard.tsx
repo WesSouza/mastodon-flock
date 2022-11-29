@@ -1,10 +1,11 @@
 import { useCallback } from "react";
 import { config } from "../../config";
 import { useSearchParamsState } from "../../hooks/useSearchParamsState";
-import { MastodonFlockResults, useResults } from "../Results/useResults";
+import { MastodonFlockResults, useResults } from "../../hooks/useResults";
 
 import { ChooseMastodonInstance } from "./ChooseMastodonInstance";
 import { ChooseMethod } from "./ChooseMethod";
+import { Finish } from "./Finish";
 import { Installer } from "./LoadingInformation";
 import { Welcome } from "./Welcome";
 
@@ -94,6 +95,10 @@ export function Wizard() {
     location.href = config.urls.desktop;
   }, []);
 
+  const goResults = useCallback(() => {
+    location.href = config.urls.results;
+  }, []);
+
   let stepNode = null;
 
   switch (step) {
@@ -130,6 +135,10 @@ export function Wizard() {
           onResults={handleFlockResults}
         />
       );
+      break;
+    }
+    case "finish": {
+      stepNode = <Finish cancel={closeWizard} goNext={goResults} />;
       break;
     }
     default:

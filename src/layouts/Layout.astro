@@ -57,38 +57,22 @@ const domain = new URL(Astro.site ?? "").hostname;
 </html>
 
 <style>
-  :global(*, *::before, *::after) {
-    box-sizing: inherit;
-  }
-
-  :global(.react95 *, .react95 *::before, .react95 *::after) {
-    box-sizing: unset;
-  }
-
-  @font-face {
-    font-family: "WindowsRegular";
-    src: url("/fonts/WindowsRegular.ttf");
-  }
-
-  @font-face {
-    font-family: "PerfectDOS";
-    src: url("/fonts/PerfectDOS.ttf");
-  }
-
   html {
-    box-sizing: border-box;
     height: 100%;
-    font-size: 1.5625em;
+    font-size: 1em;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
   body {
+    box-sizing: border-box;
     min-height: 100%;
     display: flex;
     flex-direction: column;
-    font-family: "WindowsRegular";
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+      Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
+      sans-serif;
     background-color: teal;
-    padding-bottom: 46px;
+    padding-bottom: 62px;
   }
 </style>
