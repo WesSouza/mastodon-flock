@@ -85,19 +85,19 @@ export function useMastodonFlock({
 
           const followingEmails = new Map(
             following.map((followAccount) => [
-              followAccount.account,
+              followAccount.account.toLowerCase(),
               followAccount,
             ]),
           );
           const followingUrls = new Map(
             following.map((followAccount) => [
-              followAccount.url,
+              followAccount.url.toLowerCase(),
               followAccount,
             ]),
           );
 
           potentialEmails.forEach(({ email, twitterUsername }) => {
-            const followingEmail = followingEmails.get(email);
+            const followingEmail = followingEmails.get(email.toLowerCase());
             if (followingEmail) {
               foundAccounts.push({
                 ...followingEmail,
@@ -112,7 +112,7 @@ export function useMastodonFlock({
           });
 
           potentialInstanceProfiles.forEach(({ href, twitterUsername }) => {
-            const followingUrl = followingUrls.get(href);
+            const followingUrl = followingUrls.get(href.toLowerCase());
             if (followingUrl) {
               foundAccounts.push({
                 ...followingUrl,
