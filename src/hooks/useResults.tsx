@@ -1,4 +1,5 @@
 import { useCallback, useState } from "react";
+import { config } from "../config";
 import type { AccountWithTwitter, TwitterSearchUser } from "../types";
 
 export type MastodonFlockResults = {
@@ -12,6 +13,7 @@ export function useResults() {
   const [results, setResults] = useState<MastodonFlockResults | undefined>(
     undefined,
   );
+  const [loadingAccountIds, setLoadingAccountIds] = useState<string[]>([]);
 
   const loadResults = useCallback(() => {
     const version = sessionStorage.getItem("version");
@@ -35,9 +37,49 @@ export function useResults() {
     setResults(results);
   }, []);
 
+  const followUnfollow = useCallback(
+    async (accountId: string, operation: "follow" | "unfollow") => {
+      try {
+        setLoadingAccountIds((loadingAccountIds) => [
+          ...loadingAccountIds,
+          accountId,
+        ]);
+        const response = await fetch(config.urls.mastodonAccountFollow, {
+          method: operation === "follow" ? "post" : "delete",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ accountId }),
+        });
+        const data = (await response.json()) as { result: boolean };
+
+        if (data.result && results) {
+          saveResults({
+            ...results,
+            accounts: results?.accounts.map((account) =>
+              account.id === accountId
+                ? { ...account, following: operation === "follow" }
+                : account,
+            ),
+          });
+        }
+      } catch (e) {
+        console.error(e);
+        alert("Unable to follow account.");
+      } finally {
+        setLoadingAccountIds((loadingAccountIds) =>
+          loadingAccountIds.filter(
+            (loadingAccountId) => loadingAccountId !== accountId,
+          ),
+        );
+      }
+    },
+    [results],
+  );
+
   return {
-    results,
+    followUnfollow,
+    loadingAccountIds,
     loadResults,
+    results,
     saveResults,
   };
 }

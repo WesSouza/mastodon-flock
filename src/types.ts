@@ -10,7 +10,7 @@ export type Account = {
   statusesCount: number | undefined;
   url: string;
   avatarImageUrl: string | undefined;
-  following: boolean;
+  following: boolean | null;
 };
 
 export type AccountWithTwitter = Account & {

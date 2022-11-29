@@ -34,7 +34,7 @@ export function mapApiPerson(
     statusesCount: undefined,
     url: apiPerson.url ?? apiPerson.id,
     avatarImageUrl: apiPerson.icon?.url,
-    following: false,
+    following: null,
   };
 
   return account;

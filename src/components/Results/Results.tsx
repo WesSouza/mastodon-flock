@@ -63,7 +63,8 @@ const PeopleList = styled.ul`
 `;
 
 export function Results() {
-  const { loadResults, results } = useResults();
+  const { followUnfollow, loadingAccountIds, loadResults, results } =
+    useResults();
 
   useEffect(() => {
     loadResults();
@@ -84,6 +85,10 @@ export function Results() {
     setAllSelected((allSelected) => !allSelected);
   }, []);
 
+  const handleClose = useCallback(() => {
+    location.href = "/desktop";
+  }, []);
+
   if (!results) {
     return null;
   }
@@ -92,7 +97,7 @@ export function Results() {
     <WindowStyled>
       <WindowHeaderStyled>
         <WindowTitle>Mastodon Flock</WindowTitle>
-        <Button>&times;</Button>
+        <Button onClick={handleClose}>&times;</Button>
       </WindowHeaderStyled>
       <WindowContentStyled>
         <ScrollViewStyled shadow={false}>
@@ -112,6 +117,8 @@ export function Results() {
               <Person
                 key={account.id}
                 account={account}
+                followUnfollow={followUnfollow}
+                loading={loadingAccountIds.includes(account.id)}
                 twitterUsers={twitterUserMap}
               />
             ))}
@@ -197,9 +204,13 @@ const Anchor = styled.a`
 
 function Person({
   account,
+  loading,
+  followUnfollow,
   twitterUsers,
 }: {
   account: AccountWithTwitter;
+  loading: boolean;
+  followUnfollow: (accountId: string, operation: "follow" | "unfollow") => void;
   twitterUsers: Map<string, TwitterSearchUser>;
 }) {
   const [selected, setSelected] = useState(false);
@@ -207,6 +218,14 @@ function Person({
   const handleSelectedChange = useCallback(() => {
     setSelected((selected) => !selected);
   }, []);
+
+  const handleFollowClick = useCallback(() => {
+    followUnfollow(account.id, "follow");
+  }, [account.id, followUnfollow]);
+
+  const handleUnfollowClick = useCallback(() => {
+    followUnfollow(account.id, "unfollow");
+  }, [account.id, followUnfollow]);
 
   const twitterUser = twitterUsers.get(account.twitterUsername);
   if (!twitterUser) {
@@ -217,6 +236,7 @@ function Person({
     <PersonListItem>
       <PersonCell>
         <Checkbox
+          disabled={loading}
           checked={selected}
           onChange={handleSelectedChange}
           variant="flat"
@@ -292,7 +312,24 @@ function Person({
         ) : undefined}
       </PersonCell>
       <PersonCell>
-        <Button variant="flat">Follow</Button>
+        {account.following === true ? (
+          <Button
+            disabled={loading}
+            variant="flat"
+            onClick={handleUnfollowClick}
+          >
+            Unfollow
+          </Button>
+        ) : account.following === false ? (
+          <Button disabled={loading} variant="flat" onClick={handleFollowClick}>
+            Follow
+          </Button>
+        ) : (
+          // @ts-ignore `href` is not part of button's expected properties
+          <Button as="a" variant="flat" href={account.url}>
+            Open
+          </Button>
+        )}
       </PersonCell>
     </PersonListItem>
   );
