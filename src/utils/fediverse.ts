@@ -39,14 +39,16 @@ export function findPotentialInstanceProfilesFromUrls(
 }
 
 export function findPotentialInstanceProfilesFromTwitter(
-  urls: { expanded_url: string }[] | undefined,
+  urls: { url: string; expanded_url: string }[] | undefined,
 ) {
   if (!Array.isArray(urls)) {
     return [];
   }
 
   return findPotentialInstanceProfilesFromUrls(
-    urls.map((url) => url.expanded_url),
+    urls
+      .map((url) => url.expanded_url ?? url.url)
+      .filter((url) => typeof url === "string"),
   );
 }
 
