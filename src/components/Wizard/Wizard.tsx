@@ -1,8 +1,9 @@
 import { useCallback } from "react";
 
 import { config } from "../../config";
-import { useSearchParamsState } from "../../hooks/useSearchParamsState";
+import { useErrorInSearchParams } from "../../hooks/useErrorInSearchParams";
 import { MastodonFlockResults, useResults } from "../../hooks/useResults";
+import { useSearchParamsState } from "../../hooks/useSearchParamsState";
 import { useWindowManager } from "../../hooks/useWindowManager";
 import { ChooseMastodonInstance } from "./ChooseMastodonInstance";
 import { ChooseMethod } from "./ChooseMethod";
@@ -19,12 +20,13 @@ export type WizardStep =
   | "finish";
 
 export function Wizard() {
-  const [error] = useSearchParamsState("error");
   const [step, setStep] = useSearchParamsState("step");
   const [method, setMethod] = useSearchParamsState("method");
   const [mastodonHostname] = useSearchParamsState("uri");
   const { registerSelf } = useWindowManager();
   const windowId = registerSelf();
+
+  const { setError } = useErrorInSearchParams();
 
   const navigateTo = useCallback((step: string | undefined) => {
     setStep(step);
@@ -42,14 +44,22 @@ export function Wizard() {
 
   const handleFlockError = useCallback(
     (error: string) => {
-      console.error(error);
+      if (error === "noAccountsFound") {
+        handleFlockResults({ accounts: [], twitterUsers: [] });
+        return;
+      }
+
+      if (error !== "aborted") {
+        console.error(error);
+        setError(error);
+      }
       if (method === "typical") {
         navigateTo("chooseMastodonInstance");
       } else {
         navigateTo("chooseMethod");
       }
     },
-    [method, navigateTo],
+    [handleFlockResults, method, navigateTo, setError],
   );
 
   const connectTwitter = useCallback(() => {
@@ -160,10 +170,5 @@ export function Wizard() {
       stepNode = <div>BSOD</div>;
   }
 
-  return (
-    <>
-      {error ? <div>error</div> : null}
-      {stepNode}
-    </>
-  );
+  return stepNode;
 }

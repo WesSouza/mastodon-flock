@@ -15,26 +15,33 @@ const currentWizardStep = "chooseMastodonInstance";
 export const get: APIRoute = async function get(context) {
   const { redirect } = context;
 
+  function redirectWithError(error: string) {
+    const url = new URL(config.urls.home);
+    url.searchParams.set("step", currentWizardStep);
+    url.searchParams.set("method", "typical");
+    if (uri) {
+      url.searchParams.set("uri", uri);
+    }
+    if (error) {
+      url.searchParams.set("error", error);
+    }
+    return redirect(url.toString(), 302);
+  }
+
   const uri = context.url.searchParams.get("uri");
 
   if (
     typeof uri !== "string" ||
     !uri.match(/^[a-z0-9]+[a-z0-9\-\.]*\.[a-z0-9]{2,}$/)
   ) {
-    return redirect(
-      `${config.urls.home}?step=${currentWizardStep}&errorCode=invalidURI`,
-      302,
-    );
+    return redirectWithError("invalidUri");
   }
 
   try {
     await mongoose.connect(import.meta.env.MONGODB_URI);
   } catch (e) {
     console.error(e);
-    return redirect(
-      `${config.urls.home}?step=${currentWizardStep}&errorCode=databaseConnectionError`,
-      302,
-    );
+    return redirectWithError("databaseConnectionError");
   }
 
   let federatedInstance = await FederatedInstance.findOne({ uri: uri });
@@ -67,10 +74,7 @@ export const get: APIRoute = async function get(context) {
       if (!nodeInfoLink) {
         console.error(`Unable to find nodeinfo data for ${uri}`);
         console.log(nodeInfoLink);
-        return redirect(
-          `${config.urls.home}?step=${currentWizardStep}&errorCode=incompatibleServer`,
-          302,
-        );
+        return redirectWithError("incompatibleServer");
       }
 
       const nodeInfoResponse = await fetch(nodeInfoLink.href, {
@@ -86,20 +90,14 @@ export const get: APIRoute = async function get(context) {
         typeof nodeInfoData?.software?.version !== "string"
       ) {
         console.error(`Invalid nodeinfo data from ${nodeInfoLink.href}`);
-        return redirect(
-          `${config.urls.home}?step=${currentWizardStep}&errorCode=badInstanceResponse`,
-          302,
-        );
+        return redirectWithError("badInstanceResponse");
       }
 
       if (nodeInfoData.software.name !== "mastodon") {
         console.error(
           `Unsupported software on ${uri}: ${nodeInfoData.software.name} (${nodeInfoData.software.version})`,
         );
-        return redirect(
-          `${config.urls.home}?step=${currentWizardStep}&errorCode=incompatibleServerSoftware`,
-          302,
-        );
+        return redirectWithError("incompatibleServerSoftware");
       }
 
       const mastodonInstanceURL = new URL(
@@ -121,10 +119,7 @@ export const get: APIRoute = async function get(context) {
         console.error(
           `Missing Mastodon title or uri on ${mastodonInstanceURL.href}`,
         );
-        return redirect(
-          `${config.urls.home}?step=${currentWizardStep}&errorCode=badInstanceResponse`,
-          302,
-        );
+        return redirectWithError("badInstanceResponse");
       }
 
       const appDetails = new URLSearchParams();
@@ -155,10 +150,7 @@ export const get: APIRoute = async function get(context) {
           typeof mastodonCreateAppData.vapid_key !== "string")
       ) {
         console.error(mastodonCreateAppData);
-        return redirect(
-          `${config.urls.home}?step=${currentWizardStep}&errorCode=badInstanceResponse`,
-          302,
-        );
+        return redirectWithError("mastodonAppCreationError");
       }
 
       const data: Omit<IFederatedInstance, "created"> = {
@@ -195,18 +187,12 @@ export const get: APIRoute = async function get(context) {
       await federatedInstance.save();
     } catch (e) {
       console.error(e);
-      return redirect(
-        `${config.urls.home}?step=${currentWizardStep}&errorCode=mastodonAppCreationError`,
-        302,
-      );
+      return redirectWithError("mastodonAppCreationError");
     }
   }
 
   if (!federatedInstance.app.clientId || !federatedInstance.app.clientSecret) {
-    return redirect(
-      `${config.urls.home}?step=${currentWizardStep}&errorCode=theFuckDidMyDataGo`,
-      302,
-    );
+    return redirectWithError("theFuckDidMyDataGo");
   }
 
   const oauthUrl = new URL("/oauth/authorize", federatedInstance.instanceUrl);

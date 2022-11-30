@@ -4,8 +4,6 @@ import { TwitterApi } from "twitter-api-v2";
 import { config } from "../../config";
 import { Session } from "../../utils/session";
 
-const currentWizardStep = "welcome";
-
 export const get: APIRoute = async function get(context) {
   const { redirect } = context;
   const client = new TwitterApi({
@@ -18,7 +16,7 @@ export const get: APIRoute = async function get(context) {
       url: authUrl,
       oauth_token: oauthToken,
       oauth_token_secret: oauthTokenSecret,
-    } = await client.generateAuthLink(`${config.urls.twitterReturn}`, {
+    } = await client.generateAuthLink(config.urls.twitterReturn, {
       linkMode: "authorize",
     });
 
@@ -29,9 +27,6 @@ export const get: APIRoute = async function get(context) {
     return redirect(authUrl, 302);
   } catch (e) {
     console.error(e);
-    return redirect(
-      `${config.urls.home}?step=${currentWizardStep}&errorCode=twitterAuthError`,
-      302,
-    );
+    return redirect(`${config.urls.home}?error=twitterAuthError`, 302);
   }
 };

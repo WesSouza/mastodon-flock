@@ -120,7 +120,15 @@ export function ChooseMastodonInstance({
   );
 
   const handleGoNext = useCallback(() => {
-    goNext(instanceUri);
+    const uri = instanceUri
+      .replace(/^.*@/, "")
+      .replace(/^[a-z]+:\/\//i, "")
+      .replace(/\/.*/, "");
+    if (!uri.match(/^[a-z0-9]+[a-z0-9\-\.]*\.[a-z0-9]{2,}$/)) {
+      alert("Invalid instance URL");
+      return;
+    }
+    goNext(uri);
   }, [instanceUri]);
 
   return (

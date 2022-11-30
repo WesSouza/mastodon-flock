@@ -3,7 +3,6 @@ import { TwitterApi } from "twitter-api-v2";
 import { config } from "../../config";
 import { Session } from "../../utils/session";
 
-const currentWizardStep = "welcome";
 const nextWizardStep = "chooseMethod";
 
 export const get: APIRoute = async function get(context) {
@@ -15,34 +14,25 @@ export const get: APIRoute = async function get(context) {
 
   if (!sessionToken || !sessionTokenSecret) {
     session.reset();
-    return redirect(
-      `${config.urls.home}?step=${currentWizardStep}$errorCode=missingTwitterSessionData`,
-      302,
-    );
+    return redirect(`${config.urls.home}?error=missingTwitterSessionData`, 302);
   }
 
   const denied = url.searchParams.get("denied");
   if (denied) {
     session.reset();
-    return redirect(`${config.urls.home}?step=${currentWizardStep}`, 302);
+    return redirect(config.urls.home, 302);
   }
 
   const oauthToken = url.searchParams.get("oauth_token");
   const oauthVerifier = url.searchParams.get("oauth_verifier");
   if (!oauthToken || !oauthVerifier) {
     session.reset();
-    return redirect(
-      `${config.urls.home}?step=${currentWizardStep}&errorCode=missingTwitterState`,
-      302,
-    );
+    return redirect(`${config.urls.home}?error=missingTwitterState`, 302);
   }
 
   if (oauthToken !== sessionToken) {
     session.reset();
-    return redirect(
-      `${config.urls.home}?step=${currentWizardStep}&error=invalidTwitterState`,
-      302,
-    );
+    return redirect(`${config.urls.home}?error=invalidTwitterState`, 302);
   }
 
   try {
@@ -61,10 +51,7 @@ export const get: APIRoute = async function get(context) {
     return redirect(`${config.urls.home}?step=${nextWizardStep}`, 302);
   } catch (error) {
     console.error(error);
-    return redirect(
-      `${config.urls.home}?step=${currentWizardStep}&errorCode=twitterAuthError`,
-      302,
-    );
+    return redirect(`${config.urls.home}?error=twitterAuthError`, 302);
   } finally {
     session.set("twitterOauthToken", null);
     session.set("twitterOauthTokenSecret", null);

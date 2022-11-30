@@ -11,36 +11,40 @@ const currentWizardStep = "chooseMastodonInstance";
 const nextWizardStep = "loadingInformation";
 
 export const get: APIRoute = async function get(context) {
-  const { redirect } = context;
+  const { redirect: astroRedirect } = context;
+
+  function redirect(error?: string) {
+    const url = new URL(config.urls.home);
+    url.searchParams.set("step", error ? currentWizardStep : nextWizardStep);
+    url.searchParams.set("method", "typical");
+    if (uri) {
+      url.searchParams.set("uri", uri);
+    }
+    if (error) {
+      url.searchParams.set("error", error);
+    }
+    return astroRedirect(url.toString(), 302);
+  }
 
   const session = Session.withAstro(context);
   const uri = session.get("mastodonUri");
 
   if (!uri) {
     session.reset();
-    return redirect(
-      `${config.urls.home}?step=${currentWizardStep}$errorCode=missingMastodonSessionData`,
-      302,
-    );
+    return redirect("missingMastodonSessionData");
   }
 
   const code = context.url.searchParams.get("code");
 
   if (typeof code !== "string" || !code.match(/^[\u0020-\u007e]+$/)) {
-    return redirect(
-      `${config.urls.home}?step=${currentWizardStep}&errorCode=invalidOauthCode`,
-      302,
-    );
+    return redirect("invalidOauthCode");
   }
 
   try {
     await mongoose.connect(import.meta.env.MONGODB_URI);
   } catch (e) {
     console.error(e);
-    return redirect(
-      `${config.urls.home}?step=${currentWizardStep}&errorCode=databaseConnectionError`,
-      302,
-    );
+    return redirect("databaseConnectionError");
   }
 
   const federatedInstance = await FederatedInstance.findOne({ uri });
@@ -50,10 +54,7 @@ export const get: APIRoute = async function get(context) {
     !federatedInstance.app.clientSecret
   ) {
     session.reset();
-    return redirect(
-      `${config.urls.home}?step=${currentWizardStep}&errorCode=unknownMastodonInstance`,
-      302,
-    );
+    return redirect("unknownMastodonInstance");
   }
 
   session.set("mastodonInstanceUrl", federatedInstance.instanceUrl);
@@ -98,23 +99,14 @@ export const get: APIRoute = async function get(context) {
       oauthTokenData.token_type !== "Bearer"
     ) {
       console.error(oauthTokenData);
-      return redirect(
-        `${config.urls.home}?step=${currentWizardStep}&errorCode=badOauthTokenResponse`,
-        302,
-      );
+      return redirect("badOauthTokenResponse");
     }
 
     session.set("mastodonAccessToken", oauthTokenData.access_token);
 
-    return redirect(
-      `${config.urls.home}?step=${nextWizardStep}&method=typical`,
-      302,
-    );
+    return redirect();
   } catch (e) {
     console.error(e);
-    return redirect(
-      `${config.urls.home}?step=${currentWizardStep}&errorCode=mastodonAuthError`,
-      302,
-    );
+    return redirect("mastodonAuthError");
   }
 };
