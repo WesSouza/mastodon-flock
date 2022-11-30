@@ -220,6 +220,11 @@ export function useMastodonFlock({
           setStatus("actipub.exe");
           setProgress(100);
 
+          if (foundAccounts.length < 1) {
+            onError("noAccountsFound");
+            return;
+          }
+
           onResults({ accounts: dedupeAccounts(foundAccounts), twitterUsers });
         }
       } catch (e) {
