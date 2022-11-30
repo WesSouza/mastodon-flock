@@ -4,7 +4,8 @@ import { WizardWindow } from "./WizardWindow";
 export function Welcome({
   cancel,
   goNext,
-}: { cancel: () => void; goNext: () => void }) {
+  windowId,
+}: { cancel: () => void; goNext: () => void; windowId: string }) {
   return (
     <WizardWindow
       cancelAction={{ label: "Cancel", onClick: cancel }}
@@ -13,6 +14,7 @@ export function Welcome({
       nextAction={{ label: "Next >", onClick: goNext }}
       onClose={cancel}
       title="Welcome"
+      windowId={windowId}
     >
       <Paragraph>Welcome to the Mastodon Flock installation wizard.</Paragraph>
       <Paragraph>

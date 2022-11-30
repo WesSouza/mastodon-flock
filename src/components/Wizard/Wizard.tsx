@@ -1,8 +1,9 @@
 import { useCallback } from "react";
+
 import { config } from "../../config";
 import { useSearchParamsState } from "../../hooks/useSearchParamsState";
 import { MastodonFlockResults, useResults } from "../../hooks/useResults";
-
+import { useWindowManager } from "../../hooks/useWindowManager";
 import { ChooseMastodonInstance } from "./ChooseMastodonInstance";
 import { ChooseMethod } from "./ChooseMethod";
 import { Finish } from "./Finish";
@@ -18,11 +19,14 @@ export type WizardStep =
   | "finish";
 
 export function Wizard() {
-  const [step, setStep] = useSearchParamsState("step", "welcome");
-  const [method, setMethod] = useSearchParamsState("method", "typical");
   const [error] = useSearchParamsState("error");
+  const [step, setStep] = useSearchParamsState("step");
+  const [method, setMethod] = useSearchParamsState("method");
+  const [mastodonHostname] = useSearchParamsState("uri");
+  const { registerSelf } = useWindowManager();
+  const windowId = registerSelf();
 
-  const navigateTo = useCallback((step: string) => {
+  const navigateTo = useCallback((step: string | undefined) => {
     setStep(step);
   }, []);
 
@@ -53,7 +57,7 @@ export function Wizard() {
   }, []);
 
   const goWelcome = useCallback(() => {
-    navigateTo("welcome");
+    navigateTo(undefined);
   }, [navigateTo]);
 
   const goChooseMethod = useCallback(() => {
@@ -102,8 +106,14 @@ export function Wizard() {
   let stepNode = null;
 
   switch (step) {
-    case "welcome": {
-      stepNode = <Welcome cancel={closeWizard} goNext={connectTwitter} />;
+    case undefined: {
+      stepNode = (
+        <Welcome
+          cancel={closeWizard}
+          goNext={connectTwitter}
+          windowId={windowId}
+        />
+      );
       break;
     }
     case "chooseMethod": {
@@ -113,6 +123,7 @@ export function Wizard() {
           cancel={closeWizard}
           goBack={goWelcome}
           goNext={chooseMethod}
+          windowId={windowId}
         />
       );
       break;
@@ -120,9 +131,11 @@ export function Wizard() {
     case "chooseMastodonInstance": {
       stepNode = (
         <ChooseMastodonInstance
+          initialMastodonHostname={mastodonHostname}
           cancel={closeWizard}
           goBack={goChooseMethod}
           goNext={loadData}
+          windowId={windowId}
         />
       );
       break;
@@ -138,7 +151,9 @@ export function Wizard() {
       break;
     }
     case "finish": {
-      stepNode = <Finish cancel={closeWizard} goNext={goResults} />;
+      stepNode = (
+        <Finish cancel={closeWizard} goNext={goResults} windowId={windowId} />
+      );
       break;
     }
     default:

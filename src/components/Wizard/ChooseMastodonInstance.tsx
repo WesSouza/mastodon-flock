@@ -77,11 +77,13 @@ export function ChooseMastodonInstance({
   goBack,
   goNext,
   initialMastodonHostname = "",
+  windowId,
 }: {
   cancel: () => void;
   goBack: () => void;
   goNext: (mastodonUri: string | undefined) => void;
   initialMastodonHostname: string | undefined;
+  windowId: string;
 }) {
   const [instances, setInstances] = useState<Instance[]>([]);
   const [instanceUri, setInstanceUri] = useState(initialMastodonHostname);
@@ -130,6 +132,7 @@ export function ChooseMastodonInstance({
       onClose={cancel}
       previousAction={{ label: "< Back", onClick: goBack }}
       title="Mastodon Instance"
+      windowId={windowId}
     >
       <Paragraph>
         Enter your Mastodon instance URL below or pick from the list, then click

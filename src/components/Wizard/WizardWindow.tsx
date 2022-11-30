@@ -8,6 +8,7 @@ import {
 } from "react95";
 import styled from "styled-components";
 
+import { useWindowManager } from "../../hooks/useWindowManager";
 
 export type WizardWindowAction = {
   disabled?: boolean;
@@ -24,6 +25,7 @@ export type WizardWindowProps = {
   onClose: () => void;
   previousAction?: WizardWindowAction;
   title: string;
+  windowId: string;
 };
 
 const WindowStyled = styled(Window)`
@@ -95,10 +97,13 @@ export function WizardWindow({
   onClose,
   previousAction,
   title,
+  windowId,
 }: WizardWindowProps) {
+  const { active } = useWindowManager({ windowId });
+
   return (
     <WindowStyled>
-      <WindowHeaderStyled>
+      <WindowHeaderStyled active={active}>
         <WindowTitle>{title}</WindowTitle>
         <Button onClick={onClose}>&times;</Button>
       </WindowHeaderStyled>

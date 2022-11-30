@@ -20,11 +20,13 @@ export function ChooseMethod({
   goBack,
   goNext,
   initialMethod,
+  windowId,
 }: {
   cancel: () => void;
   goBack: () => void;
   goNext: (method: string) => void;
   initialMethod: string;
+  windowId: string;
 }) {
   const [method, setMethod] = useState(initialMethod);
 
@@ -49,6 +51,7 @@ export function ChooseMethod({
       onClose={cancel}
       previousAction={{ label: "< Back", onClick: goBack }}
       title="Installation Method"
+      windowId={windowId}
     >
       Click the type of Setup you prefer, then click Next.
       <Option>

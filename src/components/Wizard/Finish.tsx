@@ -4,7 +4,8 @@ import { WizardWindow } from "./WizardWindow";
 export function Finish({
   cancel,
   goNext,
-}: { cancel: () => void; goNext: () => void }) {
+  windowId,
+}: { cancel: () => void; goNext: () => void; windowId: string }) {
   return (
     <WizardWindow
       previousAction={{ label: "< Back", disabled: true }}
@@ -13,6 +14,7 @@ export function Finish({
       nextAction={{ label: "Finish", onClick: goNext }}
       onClose={cancel}
       title="Setup Complete"
+      windowId={windowId}
     >
       <Paragraph>Mastodon Flock Setup is complete.</Paragraph>
       <Paragraph>Click Finish to launch Mastodon Flock.</Paragraph>
