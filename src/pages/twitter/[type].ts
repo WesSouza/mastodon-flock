@@ -7,7 +7,7 @@ import type {
   PotentialInstanceProfile,
   TwitterSearchResults,
 } from "../../types";
-import { responseJsonError } from "../../utils/api";
+import { responseJsonError } from "../../utils/http-response";
 import {
   findPotentialInstanceProfilesFromTwitter,
   findPotentialUserEmails,

@@ -3,8 +3,8 @@ import fetch from "node-fetch";
 import { config } from "../../config";
 
 import { APIPerson, mapApiPerson } from "../../utils/activity-pub";
-import { responseJsonError } from "../../utils/api";
-import { sign } from "../../utils/httpSignature";
+import { responseJsonError } from "../../utils/http-response";
+import { sign } from "../../utils/http-signature";
 import type { WebFingerResource } from "../../utils/web-finger";
 import { splitAccountParts } from "../../utils/web-finger";
 

@@ -2,7 +2,7 @@ import type { APIRoute } from "astro";
 import fetch from "node-fetch";
 import type { MastodonLookupAccountResult } from "../../types";
 
-import { responseJsonError } from "../../utils/api";
+import { responseJsonError } from "../../utils/http-response";
 import { APIAccount, mapApiAccount } from "../../utils/mastodon";
 import { Session } from "../../utils/session";
 

@@ -1,7 +1,7 @@
 import type { APIRoute } from "astro";
 import { TwitterApi } from "twitter-api-v2";
 
-import { responseJsonError } from "../../utils/api";
+import { responseJsonError } from "../../utils/http-response";
 import {
   findPotentialInstanceProfilesFromTwitter,
   findPotentialUserEmails,

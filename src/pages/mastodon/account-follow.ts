@@ -2,7 +2,7 @@ import type { APIRoute } from "astro";
 import type { Response as FetchResponse } from "node-fetch";
 import fetch from "node-fetch";
 
-import { responseJsonError } from "../../utils/api";
+import { responseJsonError } from "../../utils/http-response";
 import { Session } from "../../utils/session";
 
 const makeHandler = (operation: "follow" | "unfollow"): APIRoute =>

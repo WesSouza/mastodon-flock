@@ -3,7 +3,7 @@ import type { Response as FetchResponse } from "node-fetch";
 import fetch from "node-fetch";
 
 import type { MastodonFollowAccountResults } from "../../types";
-import { responseJsonError } from "../../utils/api";
+import { responseJsonError } from "../../utils/http-response";
 import { getLinkHrefWithRel } from "../../utils/http-headers";
 import { APIAccount, mapApiAccount } from "../../utils/mastodon";
 import { Session } from "../../utils/session";
