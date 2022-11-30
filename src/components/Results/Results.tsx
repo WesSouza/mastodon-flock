@@ -57,7 +57,9 @@ const PeopleListHeader = styled.div<{ method: string | undefined }>`
 
 const PeopleListHeaderCell = styled(Frame).attrs({
   variant: "button",
-})``;
+})`
+  padding: 4px 8px;
+`;
 
 const PeopleList = styled.ul`
   z-index: 1;

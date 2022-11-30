@@ -1,18 +1,10 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { Radio, ScrollView, TextInput } from "react95";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { Frame, ScrollView, TextInput } from "react95";
 import styled from "styled-components";
 
 import { config } from "../../config";
 import { Paragraph } from "../React95/Paragraph";
 import { WizardWindow } from "./WizardWindow";
-
-const ScrollViewStyled = styled(ScrollView)`
-  background: #fff;
-  width: 100%;
-  height: 150px;
-`;
-
-const InstanceList = styled.ul``;
 
 type FedifinderKnownInstances = {
   data: Record<
@@ -53,18 +45,48 @@ function getInstances(data: FedifinderKnownInstances) {
   return instances;
 }
 
+const ScrollViewStyled = styled(ScrollView)`
+  background: #fff;
+  width: 100%;
+  height: 150px;
+  & > div {
+    padding: 0;
+  }
+`;
+
+const InstanceListHeader = styled.div`
+  position: sticky;
+  top: 0;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  z-index: 2;
+`;
+
+const InstanceListHeaderCell = styled(Frame).attrs({
+  variant: "button",
+})`
+  padding: 1px 8px;
+`;
+
+const InstanceList = styled.ul`
+  margin: 2px;
+`;
+
 export function ChooseMastodonInstance({
   cancel,
   goBack,
   goNext,
+  initialMastodonHostname = "",
 }: {
   cancel: () => void;
   goBack: () => void;
   goNext: (mastodonUri: string | undefined) => void;
+  initialMastodonHostname: string | undefined;
 }) {
   const [instances, setInstances] = useState<Instance[]>([]);
-  const [instanceUri, setInstanceUri] = useState("");
+  const [instanceUri, setInstanceUri] = useState(initialMastodonHostname);
   const [filter, setFilter] = useState("");
+  const [scrollIntoView, setScrollIntoView] = useState(true);
 
   useEffect(() => {
     fetch(config.urls.TEMP_fediverseDirectory)
@@ -76,6 +98,7 @@ export function ChooseMastodonInstance({
 
   const handleServerChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
+      setScrollIntoView(false);
       setFilter(event.target.value);
       setInstanceUri(event.target.value);
     },
@@ -83,6 +106,7 @@ export function ChooseMastodonInstance({
   );
 
   const handleServerSelect = useCallback((server: Instance) => {
+    setScrollIntoView(false);
     setInstanceUri(server.hostname);
   }, []);
 
@@ -123,6 +147,10 @@ export function ChooseMastodonInstance({
         />
       </Paragraph>
       <ScrollViewStyled shadow={false}>
+        <InstanceListHeader>
+          <InstanceListHeaderCell>Domain</InstanceListHeaderCell>
+          <InstanceListHeaderCell>Users</InstanceListHeaderCell>
+        </InstanceListHeader>
         <InstanceList>
           {instances.filter(serverMatches).map((instance) => (
             <InstanceItem
@@ -130,6 +158,7 @@ export function ChooseMastodonInstance({
               instanceURI={instanceUri}
               instance={instance}
               onSelect={handleServerSelect}
+              scrollIntoView={scrollIntoView}
             />
           ))}
         </InstanceList>
@@ -140,34 +169,89 @@ export function ChooseMastodonInstance({
 
 const numberFormatter = new Intl.NumberFormat();
 
-const InstanceItemLI = styled.li``;
+const InstanceItemLI = styled.li<{ checked: boolean }>`
+  position: relative;
+
+  ${({ checked, theme }) =>
+    checked
+      ? `
+          background-color: ${theme.hoverBackground};
+          color: ${theme.canvasTextInvert};
+        `
+      : ""}
+
+  &:hover {
+    background-color: ${({ theme }) => theme.hoverBackground};
+    color: ${({ theme }) => theme.canvasTextInvert};
+  }
+`;
+
+const InstanceRadio = styled.input`
+  pointer-events: none;
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+`;
+
+const InstanceItemLabel = styled.label`
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  z-index: 1;
+`;
+
+const InstanceItemCell = styled.span<{ textAlign?: string }>`
+  padding: 1px 8px;
+  text-align: ${({ textAlign }) => textAlign ?? "left"};
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+`;
 
 function InstanceItem({
   instanceURI,
   instance,
   onSelect,
+  scrollIntoView = false,
 }: {
   instanceURI: string | undefined;
   onSelect: (instance: Instance) => void;
   instance: Instance;
+  scrollIntoView: boolean;
 }) {
+  const checked = useMemo(
+    () => instanceURI === instance.hostname,
+    [instance.hostname, instanceURI],
+  );
   const handleChange = useCallback(() => {
     onSelect(instance);
   }, [onSelect]);
 
+  const setRef = useCallback(
+    (element: HTMLLIElement) => {
+      if (scrollIntoView && element && checked) {
+        element.scrollIntoView({ block: "center" });
+      }
+    },
+    [checked, scrollIntoView],
+  );
+
   return (
-    <InstanceItemLI>
-      <Radio
-        variant="flat"
-        id={`row-${instance.hostname}`}
-        value={instance.hostname}
+    <InstanceItemLI checked={checked} ref={setRef}>
+      <InstanceRadio
+        checked={checked}
+        id={`instance-${instance.hostname}`}
         name={instance.hostname}
         onChange={handleChange}
-        checked={instanceURI === instance.hostname}
+        type="radio"
+        value={instance.hostname}
       />
-      <label htmlFor={`row-${instance.hostname}`}>
-        {instance.hostname} ({numberFormatter.format(instance.statsUserCount)})
-      </label>
+      <InstanceItemLabel htmlFor={`instance-${instance.hostname}`}>
+        <InstanceItemCell>{instance.hostname}</InstanceItemCell>
+        <InstanceItemCell textAlign={"right"}>
+          {numberFormatter.format(instance.statsUserCount)}
+        </InstanceItemCell>
+      </InstanceItemLabel>
     </InstanceItemLI>
   );
 }
