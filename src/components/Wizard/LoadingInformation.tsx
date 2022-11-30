@@ -1,11 +1,10 @@
 import { useEffect } from "react";
-import { Frame, ProgressBar } from "react95";
+import { Button, Frame, ProgressBar } from "react95";
 import styled from "styled-components";
-import { Button } from "../React95/Button";
 
-import { Paragraph } from "../React95/Paragraph";
-import type { MastodonFlockResults } from "../../hooks/useResults";
 import { useMastodonFlock } from "../../hooks/useMastodonFlock";
+import type { MastodonFlockResults } from "../../hooks/useResults";
+import { Paragraph } from "../React95/Paragraph";
 
 const FrameStyled = styled(Frame)`
   width: min(calc(100% - 4em), 700px);

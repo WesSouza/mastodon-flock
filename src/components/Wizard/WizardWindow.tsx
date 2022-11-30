@@ -1,7 +1,13 @@
-import { Frame, Separator, Window, WindowContent, WindowHeader } from "react95";
+import {
+  Button,
+  Frame,
+  Separator,
+  Window,
+  WindowContent,
+  WindowHeader,
+} from "react95";
 import styled from "styled-components";
 
-import { Button } from "../React95/Button";
 
 export type WizardWindowAction = {
   disabled?: boolean;
