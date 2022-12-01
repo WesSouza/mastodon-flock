@@ -98,7 +98,7 @@ export function useResults() {
       setLoadingAccountId(accountId, false);
       return true;
     },
-    [method, results],
+    [method, results, saveResults, setLoadingAccountId],
   );
 
   return {

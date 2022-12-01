@@ -4,7 +4,7 @@
 import crypto from "node:crypto";
 
 // Arbitrary min length, nothing should shorter than this:
-var MIN_KEY_LENGTH = 16;
+const MIN_KEY_LENGTH = 16;
 
 type EncryptorOptions = {
   key: string;
@@ -19,9 +19,9 @@ export function createEncryptor(options: string | EncryptorOptions) {
       hmac: true,
     };
   }
-  var key = options.key;
-  var verifyHmac = options.hmac;
-  var reviver = options.reviver;
+  const key = options.key;
+  const verifyHmac = options.hmac;
+  const reviver = options.reviver;
 
   if (!key || typeof key !== "string") {
     throw new Error("a string key must be specified");
@@ -39,7 +39,7 @@ export function createEncryptor(options: string | EncryptorOptions) {
 
   // Use SHA-256 to derive a 32-byte key from the specified string.
   // NOTE: We could alternatively do some kind of key stretching here.
-  var cryptoKey = crypto.createHash("sha256").update(key).digest();
+  const cryptoKey = crypto.createHash("sha256").update(key).digest();
 
   // Returns the HMAC(text) using the derived cryptoKey
   // Defaults to returning the result as hex.
@@ -60,22 +60,22 @@ export function createEncryptor(options: string | EncryptorOptions) {
   // <iv>               : Randomly generated initialization vector
   // <encryptedJson>    : The encrypted object
   function encrypt(obj: any) {
-    var json = JSON.stringify(obj);
+    const json = JSON.stringify(obj);
 
     // First generate a random IV.
     // AES-256 IV size is sixteen bytes:
-    var iv = crypto.randomBytes(16);
+    const iv = crypto.randomBytes(16);
 
     // Make sure to use the 'iv' variant when creating the cipher object:
-    var cipher = crypto.createCipheriv("aes-256-cbc", cryptoKey, iv);
+    const cipher = crypto.createCipheriv("aes-256-cbc", cryptoKey, iv);
 
     // Generate the encrypted json:
-    var encryptedJson =
+    const encryptedJson =
       cipher.update(json, "utf8", "base64") + cipher.final("base64");
 
     // Include the hex-encoded IV + the encrypted base64 data
     // NOTE: We're using hex for encoding the IV to ensure that it's of constant length.
-    var result = iv.toString("hex") + encryptedJson;
+    let result = iv.toString("hex") + encryptedJson;
 
     if (verifyHmac) {
       // Prepend an HMAC to the result to verify it's integrity prior to decrypting.
@@ -95,11 +95,11 @@ export function createEncryptor(options: string | EncryptorOptions) {
 
     if (verifyHmac) {
       // Extract the HMAC from the start of the message:
-      var expectedHmac = cipherText.substring(0, 64);
+      const expectedHmac = cipherText.substring(0, 64);
       // The remaining message is the IV + encrypted message:
       cipherText = cipherText.substring(64);
       // Calculate the actual HMAC of the message:
-      var actualHmac = hmac(cipherText);
+      const actualHmac = hmac(cipherText);
       if (
         !crypto.timingSafeEqual(
           Buffer.from(actualHmac, "hex"),
@@ -111,14 +111,14 @@ export function createEncryptor(options: string | EncryptorOptions) {
     }
 
     // Extract the IV from the beginning of the message:
-    var iv = Buffer.from(cipherText.substring(0, 32), "hex");
+    const iv = Buffer.from(cipherText.substring(0, 32), "hex");
     // The remaining text is the encrypted JSON:
-    var encryptedJson = cipherText.substring(32);
+    const encryptedJson = cipherText.substring(32);
 
     // Make sure to use the 'iv' variant when creating the decipher object:
-    var decipher = crypto.createDecipheriv("aes-256-cbc", cryptoKey, iv);
+    const decipher = crypto.createDecipheriv("aes-256-cbc", cryptoKey, iv);
     // Decrypt the JSON:
-    var json =
+    const json =
       decipher.update(encryptedJson, "base64", "utf8") + decipher.final("utf8");
 
     // Return the parsed object:

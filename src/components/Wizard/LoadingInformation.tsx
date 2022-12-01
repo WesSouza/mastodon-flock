@@ -35,7 +35,7 @@ export function Installer({
 
   useEffect(() => {
     findBirdsAndMammoths({ method });
-  }, []);
+  }, [findBirdsAndMammoths, method]);
 
   return (
     <FrameStyled>

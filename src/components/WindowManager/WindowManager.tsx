@@ -53,7 +53,7 @@ export function WindowManager({ children }: { children: React.ReactNode }) {
 
       return windowId;
     },
-    [],
+    [rerender],
   );
 
   const closeWindow = useCallback(

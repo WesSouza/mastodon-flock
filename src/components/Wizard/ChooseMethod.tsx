@@ -40,7 +40,7 @@ export function ChooseMethod({
 
   const next = useCallback(() => {
     goNext(method);
-  }, [method]);
+  }, [goNext, method]);
 
   return (
     <WizardWindow

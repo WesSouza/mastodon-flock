@@ -119,7 +119,7 @@ export function useMastodonFlock({
         setStatus("Searching Mastodon Account...");
 
         let count = 0;
-        let total = accountLookups.length;
+        const total = accountLookups.length;
         for (const accountLookup of accountLookups) {
           count += 1;
           setSubStatus(accountLookup.account);
@@ -166,7 +166,7 @@ export function useMastodonFlock({
         setStatus("Searching the Fediverse...");
 
         let count = 0;
-        let total = accountLookups.length;
+        const total = accountLookups.length;
         for (const accountLookup of accountLookups) {
           count += 1;
           setSubStatus(accountLookup.account);
@@ -205,7 +205,7 @@ export function useMastodonFlock({
         onResults({ accounts: dedupeAccounts(foundAccounts), twitterUsers });
       }
     },
-    [setStatus, setSubStatus, setProgress],
+    [onError, onResults],
   );
 
   const cancel = useCallback(() => {

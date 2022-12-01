@@ -28,9 +28,12 @@ export function Wizard() {
 
   const { setError } = useErrorInSearchParams();
 
-  const navigateTo = useCallback((step: string | undefined) => {
-    setStep(step);
-  }, []);
+  const navigateTo = useCallback(
+    (step: string | undefined) => {
+      setStep(step);
+    },
+    [setStep],
+  );
 
   const { saveResults } = useResults();
 
@@ -39,7 +42,7 @@ export function Wizard() {
       saveResults(method ?? "", results);
       navigateTo("finish");
     },
-    [method, navigateTo],
+    [method, navigateTo, saveResults],
   );
 
   const handleFlockError = useCallback(
@@ -85,7 +88,7 @@ export function Wizard() {
         navigateTo("loadingInformation");
       }
     },
-    [navigateTo],
+    [navigateTo, setMethod],
   );
 
   const loadData = useCallback(

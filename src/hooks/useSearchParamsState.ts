@@ -24,13 +24,13 @@ export function useSearchParamsState(
       history.replaceState(null, "", url);
     }
     valueRef.current = urlStateValue ?? defaultValue;
-  }, [defaultValue, name, onChange]);
+  }, [defaultValue, name]);
 
   useEffect(() => {
     if (valueRef.current) {
       onChange?.(valueRef.current, undefined);
     }
-  }, []);
+  }, [onChange]);
 
   const rerender = useCallback(() => {
     flip((flop) => !flop);
@@ -63,7 +63,7 @@ export function useSearchParamsState(
 
       handleValueChange(value);
     },
-    [handleValueChange],
+    [defaultValue, handleValueChange, name],
   );
 
   useEffect(() => {

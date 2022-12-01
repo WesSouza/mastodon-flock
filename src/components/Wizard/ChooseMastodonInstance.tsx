@@ -135,7 +135,7 @@ export function ChooseMastodonInstance({
       return;
     }
     goNext(uri);
-  }, [instanceUri]);
+  }, [goNext, instanceUri]);
 
   return (
     <WizardWindow
@@ -240,9 +240,10 @@ function InstanceItem({
     () => instanceURI === instance.hostname,
     [instance.hostname, instanceURI],
   );
+
   const handleChange = useCallback(() => {
     onSelect(instance);
-  }, [onSelect]);
+  }, [instance, onSelect]);
 
   const setRef = useCallback(
     (element: HTMLLIElement) => {

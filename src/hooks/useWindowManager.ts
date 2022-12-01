@@ -17,7 +17,7 @@ export function useWindowManager({ windowId }: { windowId?: string } = {}) {
     }
 
     context.closeWindow(windowId ?? (selfWindowId.current as string));
-  }, [windowId]);
+  }, [context, windowId]);
 
   const openWindow = useCallback(
     <T extends React.ElementType<any>>(
@@ -27,16 +27,19 @@ export function useWindowManager({ windowId }: { windowId?: string } = {}) {
     ) => {
       return context.openWindow(component, props, options ?? {});
     },
-    [],
+    [context],
   );
 
-  const closeWindowWithId = useCallback((windowId: string | undefined) => {
-    if (!windowId) {
-      return;
-    }
+  const closeWindowWithId = useCallback(
+    (windowId: string | undefined) => {
+      if (!windowId) {
+        return;
+      }
 
-    context.closeWindow(windowId);
-  }, []);
+      context.closeWindow(windowId);
+    },
+    [context],
+  );
 
   const registerSelf = useCallback(() => {
     if (windowId) {
@@ -48,7 +51,7 @@ export function useWindowManager({ windowId }: { windowId?: string } = {}) {
     }
 
     return selfWindowId.current;
-  }, []);
+  }, [context, windowId]);
 
   return {
     active,
