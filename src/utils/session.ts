@@ -67,6 +67,7 @@ export class Session {
     this.#astroContext.cookies.set(cookieName, enc.encrypt(this.#data), {
       httpOnly: false,
       maxAge: 60 * 60,
+      path: "/",
       secure: !config.isLocal,
     });
   }
