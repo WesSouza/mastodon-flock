@@ -85,7 +85,10 @@ const Details = styled(Frame)`
 export function ErrorWindow({
   error,
   windowId,
-}: { error: string | undefined; windowId: string }) {
+}: {
+  error: string | undefined;
+  windowId: string;
+}) {
   const { active, handleClose } = useWindowManager({ windowId });
 
   const [detailsVisible, setDetailsVisible] = useState(false);

@@ -5,7 +5,11 @@ export function Welcome({
   cancel,
   goNext,
   windowId,
-}: { cancel: () => void; goNext: () => void; windowId: string }) {
+}: {
+  cancel: () => void;
+  goNext: () => void;
+  windowId: string;
+}) {
   return (
     <WizardWindow
       cancelAction={{ label: "Cancel", onClick: cancel }}

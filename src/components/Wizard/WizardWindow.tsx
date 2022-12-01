@@ -54,7 +54,7 @@ const WindowContentStyled = styled(WindowContent)`
 `;
 
 const WizardImageWell = styled(Frame)`
-  grid-area: Image
+  grid-area: Image;
 `;
 
 const WizardImage = styled.img`

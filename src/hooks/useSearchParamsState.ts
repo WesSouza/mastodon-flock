@@ -2,7 +2,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 export function useSearchParamsState(
   name: string,
-  { defaultValue, onChange }: {
+  {
+    defaultValue,
+    onChange,
+  }: {
     defaultValue?: string;
     onChange?: (
       newValue: string | undefined,

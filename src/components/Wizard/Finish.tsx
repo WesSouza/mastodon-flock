@@ -5,7 +5,11 @@ export function Finish({
   cancel,
   goNext,
   windowId,
-}: { cancel: () => void; goNext: () => void; windowId: string }) {
+}: {
+  cancel: () => void;
+  goNext: () => void;
+  windowId: string;
+}) {
   return (
     <WizardWindow
       previousAction={{ label: "< Back", disabled: true }}

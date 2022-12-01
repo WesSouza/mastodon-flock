@@ -51,7 +51,7 @@ const PeopleListHeader = styled.div<{ method: string | undefined }>`
   top: 0;
   display: grid;
   grid-template-columns: 40px ${({ method }) =>
-    method === "typical" ? "2fr" : ""} 2fr 1fr;
+      method === "typical" ? "2fr" : ""} 2fr 1fr;
   z-index: 2;
 `;
 
@@ -138,7 +138,7 @@ export function Results() {
 const PersonListItem = styled.li<{ method: string | undefined }>`
   display: grid;
   grid-template-columns: 40px ${({ method }) =>
-    method === "typical" ? "2fr" : ""} 2fr 1fr;
+      method === "typical" ? "2fr" : ""} 2fr 1fr;
   &:not(:last-child) {
     border-bottom: 2px solid ${({ theme }) => theme.flatLight};
   }

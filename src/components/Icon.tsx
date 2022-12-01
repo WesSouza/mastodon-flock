@@ -20,7 +20,10 @@ const IconImage = styled.img``;
 export function Icon({
   icon: iconKey,
   size: sizeName = "large",
-}: { icon: keyof typeof icons; size?: "small" | "medium" | "large" }) {
+}: {
+  icon: keyof typeof icons;
+  size?: "small" | "medium" | "large";
+}) {
   const icon = icons[iconKey];
   const size = sizeName === "small" ? 16 : sizeName === "medium" ? 32 : 64;
   return (

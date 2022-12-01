@@ -58,9 +58,9 @@ export function ChooseMethod({
         <Radio
           checked={method === "typical"}
           onChange={setTypical}
-          value='typical'
-          label='Typical'
-          name='method'
+          value="typical"
+          label="Typical"
+          name="method"
         />
         <OptionDescription>
           Connects to your Mastodon instance. You are able to see who you
@@ -71,9 +71,9 @@ export function ChooseMethod({
         <Radio
           checked={method === "advanced"}
           onChange={setAdvanced}
-          value='advanced'
-          label='Advanced'
-          name='method'
+          value="advanced"
+          label="Advanced"
+          name="method"
         />
         <OptionDescription>
           Searches the Fediverse directly. You must manually follow each account

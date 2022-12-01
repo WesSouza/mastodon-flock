@@ -11,8 +11,9 @@
   "scripts": {
     "astro": "astro",
     "build": "astro build",
-    "check": "astro check && tsc --noEmit && rome ci src",
+    "check": "astro check && tsc --noEmit && pnpm run lint",
     "dev": "astro dev",
+    "lint": "eslint src && prettier --check src",
     "preview": "astro preview",
     "start": "astro dev"
   },
@@ -41,7 +42,25 @@
     "@types/cookie": "^0.5.1",
     "@types/node": "^18.11.9",
     "@types/styled-components": "^5.1.26",
-    "rome": "^10.0.1",
+    "@typescript-eslint/eslint-plugin": "^5.45.0",
+    "@typescript-eslint/parser": "^5.45.0",
+    "eslint": "^8.28.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-react": "^7.31.11",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "import-sort-style-wes": "^3.0.2",
+    "prettier": "^2.8.0",
+    "prettier-plugin-import-sort": "^0.0.7",
     "typescript": "^4.9.3"
+  },
+  "importSort": {
+    ".js, .jsx": {
+      "parser": "babylon",
+      "style": "wes"
+    },
+    ".ts, .tsx": {
+      "parser": "typescript",
+      "style": "wes"
+    }
   }
 }
