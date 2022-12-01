@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react";
 import { config } from "../config";
 import type { AccountWithTwitter, TwitterSearchUser } from "../types";
+import { http } from "../utils/client-fetch";
 
 export type MastodonFlockResults = {
   accounts: AccountWithTwitter[];
@@ -49,40 +50,53 @@ export function useResults() {
     [],
   );
 
-  const followUnfollow = useCallback(
-    async (accountId: string, operation: "follow" | "unfollow") => {
-      try {
+  const setLoadingAccountId = useCallback(
+    (accountId: string, loading: boolean) => {
+      if (loading) {
         setLoadingAccountIds((loadingAccountIds) => [
           ...loadingAccountIds,
           accountId,
         ]);
-        const response = await fetch(config.urls.mastodonAccountFollow, {
-          method: operation === "follow" ? "post" : "delete",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ accountId }),
-        });
-        const data = (await response.json()) as { result: boolean };
-
-        if (data.result && results && method) {
-          saveResults(method, {
-            ...results,
-            accounts: results?.accounts.map((account) =>
-              account.id === accountId
-                ? { ...account, following: operation === "follow" }
-                : account,
-            ),
-          });
-        }
-      } catch (e) {
-        console.error(e);
-        alert("Unable to follow account.");
-      } finally {
+      } else {
         setLoadingAccountIds((loadingAccountIds) =>
           loadingAccountIds.filter(
             (loadingAccountId) => loadingAccountId !== accountId,
           ),
         );
       }
+    },
+    [],
+  );
+
+  const followUnfollow = useCallback(
+    async (accountId: string, operation: "follow" | "unfollow") => {
+      setLoadingAccountId(accountId, true);
+
+      const data = await http<{ result: string }>({
+        url: config.urls.mastodonAccountFollow,
+        method: operation === "follow" ? "post" : "delete",
+        jsonBody: { accountId },
+      });
+
+      if ("error" in data) {
+        console.error(data.error, data.reason);
+        setLoadingAccountId(accountId, false);
+        return false;
+      }
+
+      if (data.result && results && method) {
+        saveResults(method, {
+          ...results,
+          accounts: results?.accounts.map((account) =>
+            account.id === accountId
+              ? { ...account, following: operation === "follow" }
+              : account,
+          ),
+        });
+      }
+
+      setLoadingAccountId(accountId, false);
+      return true;
     },
     [method, results],
   );

@@ -119,12 +119,11 @@ export const get: APIRoute = async function get(context) {
       potentialInstanceProfilesMap.values(),
     );
 
-    return {
+    return new Response(JSON.stringify(result), {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(result),
-    };
+    });
   } catch (e) {
     console.error(e);
     return responseJsonError(500, "unknownError");

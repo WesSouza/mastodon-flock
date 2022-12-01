@@ -13,14 +13,7 @@ export const get: APIRoute = async function get(context) {
   const accessToken = session.get("twitterAccessToken");
   const accessSecret = session.get("twitterAccessSecret");
   if (!accessToken || !accessSecret) {
-    return {
-      status: 403,
-      statusText: "Forbidden",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ error: "notLoggedIn" }),
-    };
+    return responseJsonError(403, "notLoggedIn");
   }
 
   const client = new TwitterApi({
@@ -49,18 +42,20 @@ export const get: APIRoute = async function get(context) {
       ),
     );
 
-    return {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
+    return new Response(
+      JSON.stringify({
         item: {
           username,
           potentialEmails,
           potentialInstances,
         },
       }),
-    };
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
   } catch (e) {
     console.error(e);
     return responseJsonError(500, "unknownError");

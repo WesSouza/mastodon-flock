@@ -3,6 +3,7 @@ import { Frame, ScrollView, TextInput } from "react95";
 import styled from "styled-components";
 
 import { config } from "../../config";
+import { http } from "../../utils/client-fetch";
 import { Paragraph } from "../React95/Paragraph";
 import { WizardWindow } from "./WizardWindow";
 
@@ -91,11 +92,16 @@ export function ChooseMastodonInstance({
   const [scrollIntoView, setScrollIntoView] = useState(true);
 
   useEffect(() => {
-    fetch(config.urls.TEMP_fediverseDirectory)
-      .then((response) => response.json())
-      .then((data: FedifinderKnownInstances) => {
-        setInstances(getInstances(data));
-      });
+    http<FedifinderKnownInstances>({
+      url: config.urls.TEMP_fediverseDirectory,
+    }).then((result) => {
+      if ("error" in result) {
+        console.error(result.error, result.reason);
+        return;
+      }
+
+      setInstances(getInstances(result));
+    });
   }, []);
 
   const handleServerChange = useCallback(
@@ -152,7 +158,7 @@ export function ChooseMastodonInstance({
           shadow={false}
           id="mastodon-instance-url"
           type="url"
-          placeholder="mastodon.social"
+          placeholder="example.com"
           value={instanceUri}
           onChange={handleServerChange}
         />

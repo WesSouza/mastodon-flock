@@ -17,7 +17,7 @@ export type AccountWithTwitter = Account & {
   twitterUsername: string;
 };
 
-export type APIResult<T> = T | { error: string };
+export type APIResult<T> = T | { error: string; reason?: unknown };
 
 export type PotentialEmail = {
   twitterUsername: string;
