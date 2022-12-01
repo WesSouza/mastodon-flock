@@ -1,10 +1,12 @@
 import { useCallback, useState } from "react";
-import { Button, Frame, Window, WindowContent, WindowHeader } from "react95";
+import { Button, Frame } from "react95";
 import styled from "styled-components";
-import { useWindowManager } from "../hooks/useWindowManager";
 
-import { Icon } from "./Icon";
-import { Paragraph } from "./React95/Paragraph";
+import { useWindowManager } from "../../hooks/useWindowManager";
+import { Icon } from "../Icon";
+import { Paragraph } from "../React95/Paragraph";
+import { Window } from "../WindowManager/Window";
+import type { WindowMeta } from "../WindowManager/WindowManager";
 
 const twitterLoginError = [
   "There was a problem logging into Twitter.",
@@ -50,19 +52,6 @@ const errorMessagesByError: Record<string, string[]> = {
   unknownMastodonInstance: impossibleError,
 };
 
-const WindowStyled = styled(Window)`
-  width: min(100%, 500px);
-`;
-
-const WindowHeaderStyled = styled(WindowHeader)`
-  display: flex;
-  align-items: center;
-`;
-
-const WindowTitle = styled.span`
-  margin-inline-end: auto;
-`;
-
 const ErrorMessageContents = styled.div`
   display: grid;
   flex-direction: column;
@@ -82,14 +71,16 @@ const Details = styled(Frame)`
   font-family: monospace;
 `;
 
-export function ErrorWindow({
+export function ErrorDialog({
   error,
-  windowId,
+  windowMeta,
 }: {
   error: string | undefined;
-  windowId: string;
+  windowMeta: WindowMeta;
 }) {
-  const { active, handleClose } = useWindowManager({ windowId });
+  const { handleClose } = useWindowManager({
+    windowId: windowMeta.id,
+  });
 
   const [detailsVisible, setDetailsVisible] = useState(false);
 
@@ -100,44 +91,43 @@ export function ErrorWindow({
   const messageLines = errorMessagesByError[error as string] ?? defaultError;
 
   return (
-    <WindowStyled>
-      <WindowHeaderStyled active={active}>
-        <WindowTitle>Error</WindowTitle>
-        <Button onClick={handleClose}>&times;</Button>
-      </WindowHeaderStyled>
-      <WindowContent>
-        <ErrorMessageContents>
-          <div style={{ gridArea: "Icon" }}>
-            <Icon icon="dialogError" />
-          </div>
-          <div style={{ gridArea: "Message" }}>
-            {messageLines.map((message, index) => (
-              <Paragraph key={index}>{message}</Paragraph>
-            ))}
-          </div>
-          <Button
-            style={{ gridArea: "Button1" }}
-            primary={true}
-            onClick={handleClose}
-          >
-            Close
-          </Button>
-          <Button
-            style={{ gridArea: "Button2" }}
-            disabled={detailsVisible}
-            onClick={showDetails}
-          >
-            Details &gt;&gt;
-          </Button>
-        </ErrorMessageContents>
-        {detailsVisible ? (
-          <Details variant="field">
-            Error Code: {error}
-            <br />
-            Time: {new Date().toUTCString()}
-          </Details>
-        ) : undefined}
-      </WindowContent>
-    </WindowStyled>
+    <Window
+      minWidth="500px"
+      onClose={handleClose}
+      title="Error"
+      windowMeta={windowMeta}
+    >
+      <ErrorMessageContents>
+        <div style={{ gridArea: "Icon" }}>
+          <Icon icon="dialogError" />
+        </div>
+        <div style={{ gridArea: "Message" }}>
+          {messageLines.map((message, index) => (
+            <Paragraph key={index}>{message}</Paragraph>
+          ))}
+        </div>
+        <Button
+          style={{ gridArea: "Button1" }}
+          primary={windowMeta.active}
+          onClick={handleClose}
+        >
+          Close
+        </Button>
+        <Button
+          style={{ gridArea: "Button2" }}
+          disabled={detailsVisible}
+          onClick={showDetails}
+        >
+          Details &gt;&gt;
+        </Button>
+      </ErrorMessageContents>
+      {detailsVisible ? (
+        <Details variant="field">
+          Error Code: {error}
+          <br />
+          Time: {new Date().toUTCString()}
+        </Details>
+      ) : undefined}
+    </Window>
   );
 }

@@ -18,6 +18,10 @@ const Center = styled.div`
   align-self: center;
 `;
 
+const CancelButton = styled(Button)`
+  width: 120px;
+`;
+
 export function Installer({
   method,
   onError,
@@ -46,9 +50,9 @@ export function Installer({
       </Paragraph>
       <ProgressBar value={progress} shadow={false} />
       <Center>
-        <Button primary={true} onClick={cancel}>
+        <CancelButton primary={true} onClick={cancel}>
           Cancel
-        </Button>
+        </CancelButton>
       </Center>
     </FrameStyled>
   );
