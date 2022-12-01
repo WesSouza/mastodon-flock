@@ -1,6 +1,6 @@
 import { useCallback, useRef } from "react";
 
-import { ErrorWindow } from "../components/Error";
+import { ErrorDialog } from "../components/dialogs/ErrorDialog";
 import { useSearchParamsState } from "./useSearchParamsState";
 import { useWindowManager } from "./useWindowManager";
 
@@ -14,20 +14,27 @@ export function useErrorInSearchParams() {
 
   const handleErrorChange = useCallback(
     (newValue: string | undefined) => {
-      if (newValue) {
-        errorWindowIdRef.current = openWindow(
-          ErrorWindow,
-          { error: newValue },
-          {
-            onClose: () => {
-              errorCloseCallbackRef.current?.(undefined);
+      // handleErrorChange is triggered from inside an useEffect at first if
+      // there is a value in the URL, which is an anti pattern for the call
+      // below which is not supposed to happen while React is rendering. Because
+      // of that, I elevate the openWindow call to another tick.
+      setTimeout(() => {
+        if (newValue) {
+          errorWindowIdRef.current = openWindow(
+            ErrorDialog,
+            { error: newValue },
+            {
+              modal: true,
+              onClose: () => {
+                errorCloseCallbackRef.current?.(undefined);
+              },
             },
-          },
-        );
-      } else if (errorWindowIdRef.current) {
-        closeWindowWithId(errorWindowIdRef.current);
-        errorWindowIdRef.current = undefined;
-      }
+          );
+        } else if (errorWindowIdRef.current) {
+          closeWindowWithId(errorWindowIdRef.current);
+          errorWindowIdRef.current = undefined;
+        }
+      });
     },
     [openWindow, closeWindowWithId],
   );

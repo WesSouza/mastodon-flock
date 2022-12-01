@@ -26,9 +26,11 @@ export function useSearchParamsState(
     valueRef.current = urlStateValue ?? defaultValue;
   }, [defaultValue, name]);
 
+  const previousValueRef = useRef<string>();
   useEffect(() => {
-    if (valueRef.current) {
-      onChange?.(valueRef.current, undefined);
+    if (onChange && valueRef.current !== previousValueRef.current) {
+      previousValueRef.current = valueRef.current;
+      onChange(valueRef.current, undefined);
     }
   }, [onChange]);
 
