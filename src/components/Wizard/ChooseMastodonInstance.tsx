@@ -3,8 +3,11 @@ import { Frame, ScrollView, TextInput } from "react95";
 import styled from "styled-components";
 
 import { config } from "../../config";
+import { useWindowManager } from "../../hooks/useWindowManager";
 import { http } from "../../utils/client-fetch";
+import { AlertDialog } from "../dialogs/AlertDialog";
 import { Paragraph } from "../React95/Paragraph";
+import type { WindowMeta } from "../WindowManager/WindowManager";
 import { WizardWindow } from "./WizardWindow";
 
 type FedifinderKnownInstances = {
@@ -78,18 +81,20 @@ export function ChooseMastodonInstance({
   goBack,
   goNext,
   initialMastodonHostname = "",
-  windowId,
+  windowMeta,
 }: {
   cancel: () => void;
   goBack: () => void;
   goNext: (mastodonUri: string | undefined) => void;
   initialMastodonHostname: string | undefined;
-  windowId: string;
+  windowMeta: WindowMeta;
 }) {
   const [instances, setInstances] = useState<Instance[]>([]);
   const [instanceUri, setInstanceUri] = useState(initialMastodonHostname);
   const [filter, setFilter] = useState("");
   const [scrollIntoView, setScrollIntoView] = useState(true);
+
+  const { openWindow } = useWindowManager();
 
   useEffect(() => {
     http<FedifinderKnownInstances>({
@@ -131,11 +136,21 @@ export function ChooseMastodonInstance({
       .replace(/^[a-z]+:\/\//i, "")
       .replace(/\/.*/, "");
     if (!uri.match(/^[a-z0-9]+[a-z0-9\-\.]*\.[a-z0-9]{2,}$/)) {
-      alert("Invalid instance URL");
+      openWindow(
+        AlertDialog,
+        {
+          messageLines: [
+            "The entered instance URL is not a valid e-mail or URL.",
+            "Please verify the information and try again.",
+          ],
+          title: "Invalid Instance URL",
+        },
+        { modal: true },
+      );
       return;
     }
     goNext(uri);
-  }, [goNext, instanceUri]);
+  }, [goNext, instanceUri, openWindow]);
 
   return (
     <WizardWindow
@@ -146,7 +161,7 @@ export function ChooseMastodonInstance({
       onClose={cancel}
       previousAction={{ label: "< Back", onClick: goBack }}
       title="Mastodon Instance"
-      windowId={windowId}
+      windowMeta={windowMeta}
     >
       <Paragraph>
         Enter your Mastodon instance URL below or pick from the list, then click

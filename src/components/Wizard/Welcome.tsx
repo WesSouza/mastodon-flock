@@ -1,14 +1,15 @@
 import { Paragraph } from "../React95/Paragraph";
+import type { WindowMeta } from "../WindowManager/WindowManager";
 import { WizardWindow } from "./WizardWindow";
 
 export function Welcome({
   cancel,
   goNext,
-  windowId,
+  windowMeta,
 }: {
   cancel: () => void;
   goNext: () => void;
-  windowId: string;
+  windowMeta: WindowMeta;
 }) {
   return (
     <WizardWindow
@@ -18,7 +19,7 @@ export function Welcome({
       nextAction={{ label: "Next >", onClick: goNext }}
       onClose={cancel}
       title="Welcome"
-      windowId={windowId}
+      windowMeta={windowMeta}
     >
       <Paragraph>Welcome to the Mastodon Flock installation wizard.</Paragraph>
       <Paragraph>

@@ -1,14 +1,8 @@
-import {
-  Button,
-  Frame,
-  Separator,
-  Window,
-  WindowContent,
-  WindowHeader,
-} from "react95";
+import { Button, Frame, Separator } from "react95";
 import styled from "styled-components";
 
-import { useWindowManager } from "../../hooks/useWindowManager";
+import { Window } from "../WindowManager/Window";
+import type { WindowMeta } from "../WindowManager/WindowManager";
 
 export type WizardWindowAction = {
   disabled?: boolean;
@@ -25,28 +19,13 @@ export type WizardWindowProps = {
   onClose: () => void;
   previousAction?: WizardWindowAction;
   title: string;
-  windowId: string;
+  windowMeta: WindowMeta;
 };
 
-const WindowStyled = styled(Window)`
-  width: min(100%, 700px);
-`;
-
-const WindowHeaderStyled = styled(WindowHeader)`
-  display: flex;
-  align-items: center;
-`;
-
-const WindowTitle = styled.span`
-  margin-inline-end: auto;
-`;
-
-const WindowContentStyled = styled(WindowContent)`
+const WizardWrapper = styled.div`
   display: grid;
-  flex-direction: column;
   gap: 20px;
   column-gap: 32px;
-  padding: 20px;
   grid-template:
     "Image Content" 293px
     "Separator Separator" 4px
@@ -97,17 +76,11 @@ export function WizardWindow({
   onClose,
   previousAction,
   title,
-  windowId,
+  windowMeta,
 }: WizardWindowProps) {
-  const { active } = useWindowManager({ windowId });
-
   return (
-    <WindowStyled>
-      <WindowHeaderStyled active={active}>
-        <WindowTitle>{title}</WindowTitle>
-        <Button onClick={onClose}>&times;</Button>
-      </WindowHeaderStyled>
-      <WindowContentStyled>
+    <Window onClose={onClose} title={title} windowMeta={windowMeta}>
+      <WizardWrapper>
         <WizardImageWell variant="well">
           <WizardImage src={imageSrc} alt={imageAlt} />
         </WizardImageWell>
@@ -127,7 +100,7 @@ export function WizardWindow({
           {nextAction ? (
             <WizardFooterButton
               disabled={nextAction.disabled ?? false}
-              primary={true}
+              primary={windowMeta.active}
               onClick={nextAction.onClick}
             >
               {nextAction.label}
@@ -147,7 +120,7 @@ export function WizardWindow({
             <WizardFooterPhantomButton />
           )}
         </WizardFooter>
-      </WindowContentStyled>
-    </WindowStyled>
+      </WizardWrapper>
+    </Window>
   );
 }

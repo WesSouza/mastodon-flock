@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 
 import { config } from "../../config";
 import { useErrorInSearchParams } from "../../hooks/useErrorInSearchParams";
@@ -23,8 +23,11 @@ export function Wizard() {
   const [step, setStep] = useSearchParamsState("step");
   const [method, setMethod] = useSearchParamsState("method");
   const [mastodonHostname] = useSearchParamsState("uri");
-  const { registerSelf } = useWindowManager();
-  const windowId = registerSelf();
+  const { registerSelf, windowMeta } = useWindowManager();
+
+  useEffect(() => {
+    registerSelf();
+  }, [registerSelf]);
 
   const { setError } = useErrorInSearchParams();
 
@@ -126,7 +129,7 @@ export function Wizard() {
         <Welcome
           cancel={closeWizard}
           goNext={connectTwitter}
-          windowId={windowId}
+          windowMeta={windowMeta}
         />
       );
       break;
@@ -138,7 +141,7 @@ export function Wizard() {
           cancel={closeWizard}
           goBack={goWelcome}
           goNext={chooseMethod}
-          windowId={windowId}
+          windowMeta={windowMeta}
         />
       );
       break;
@@ -150,7 +153,7 @@ export function Wizard() {
           cancel={closeWizard}
           goBack={goChooseMethod}
           goNext={loadData}
-          windowId={windowId}
+          windowMeta={windowMeta}
         />
       );
       break;
@@ -167,7 +170,11 @@ export function Wizard() {
     }
     case "finish": {
       stepNode = (
-        <Finish cancel={closeWizard} goNext={goResults} windowId={windowId} />
+        <Finish
+          cancel={closeWizard}
+          goNext={goResults}
+          windowMeta={windowMeta}
+        />
       );
       break;
     }

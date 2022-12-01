@@ -1,14 +1,15 @@
 import { Paragraph } from "../React95/Paragraph";
+import type { WindowMeta } from "../WindowManager/WindowManager";
 import { WizardWindow } from "./WizardWindow";
 
 export function Finish({
   cancel,
   goNext,
-  windowId,
+  windowMeta,
 }: {
   cancel: () => void;
   goNext: () => void;
-  windowId: string;
+  windowMeta: WindowMeta;
 }) {
   return (
     <WizardWindow
@@ -18,7 +19,7 @@ export function Finish({
       nextAction={{ label: "Finish", onClick: goNext }}
       onClose={cancel}
       title="Setup Complete"
-      windowId={windowId}
+      windowMeta={windowMeta}
     >
       <Paragraph>Mastodon Flock Setup is complete.</Paragraph>
       <Paragraph>Click Finish to launch Mastodon Flock.</Paragraph>

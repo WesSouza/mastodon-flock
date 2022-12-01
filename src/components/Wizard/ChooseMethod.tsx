@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react";
 import { Radio } from "react95";
 import styled from "styled-components";
+import type { WindowMeta } from "../WindowManager/WindowManager";
 
 import { WizardWindow } from "./WizardWindow";
 
@@ -20,13 +21,13 @@ export function ChooseMethod({
   goBack,
   goNext,
   initialMethod,
-  windowId,
+  windowMeta,
 }: {
   cancel: () => void;
   goBack: () => void;
   goNext: (method: string) => void;
   initialMethod: string;
-  windowId: string;
+  windowMeta: WindowMeta;
 }) {
   const [method, setMethod] = useState(initialMethod);
 
@@ -51,7 +52,7 @@ export function ChooseMethod({
       onClose={cancel}
       previousAction={{ label: "< Back", onClick: goBack }}
       title="Installation Method"
-      windowId={windowId}
+      windowMeta={windowMeta}
     >
       Click the type of Setup you prefer, then click Next.
       <Option>
