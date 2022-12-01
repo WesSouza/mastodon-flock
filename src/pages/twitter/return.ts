@@ -13,25 +13,25 @@ export const get: APIRoute = async function get(context) {
   const sessionTokenSecret = session.get("twitterOauthTokenSecret");
 
   if (!sessionToken || !sessionTokenSecret) {
-    session.reset();
     return redirect(`${config.urls.home}?error=missingTwitterSessionData`, 302);
   }
 
   const denied = url.searchParams.get("denied");
   if (denied) {
-    session.reset();
+    session.set("twitterOauthToken", null);
+    session.set("twitterOauthTokenSecret", null);
     return redirect(config.urls.home, 302);
   }
 
   const oauthToken = url.searchParams.get("oauth_token");
   const oauthVerifier = url.searchParams.get("oauth_verifier");
   if (!oauthToken || !oauthVerifier) {
-    session.reset();
     return redirect(`${config.urls.home}?error=missingTwitterState`, 302);
   }
 
   if (oauthToken !== sessionToken) {
-    session.reset();
+    session.set("twitterOauthToken", null);
+    session.set("twitterOauthTokenSecret", null);
     return redirect(`${config.urls.home}?error=invalidTwitterState`, 302);
   }
 

@@ -30,7 +30,6 @@ export const get: APIRoute = async function get(context) {
   const uri = session.get("mastodonUri");
 
   if (!uri) {
-    session.reset();
     return redirect("missingMastodonSessionData");
   }
 
@@ -53,7 +52,6 @@ export const get: APIRoute = async function get(context) {
     !federatedInstance.app.clientId ||
     !federatedInstance.app.clientSecret
   ) {
-    session.reset();
     return redirect("unknownMastodonInstance");
   }
 

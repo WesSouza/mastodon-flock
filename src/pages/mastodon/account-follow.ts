@@ -13,7 +13,9 @@ const makeHandler = (operation: "follow" | "unfollow"): APIRoute =>
     const mastodonAccessToken = session.get("mastodonAccessToken");
 
     if (!uri || !instanceUrl || !mastodonAccessToken) {
-      session.reset();
+      session.set("mastodonUri", null);
+      session.set("mastodonInstanceUrl", null);
+      session.set("mastodonAccessToken", null);
       return responseJsonError(403, "missingMastodonSessionData");
     }
 
