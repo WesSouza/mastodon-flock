@@ -1,4 +1,5 @@
 import type { APIContext } from "astro";
+
 import { config } from "../config";
 import { createEncryptor } from "./simple-encryptor";
 

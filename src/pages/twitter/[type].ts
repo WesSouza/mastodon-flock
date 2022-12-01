@@ -7,11 +7,11 @@ import type {
   PotentialInstanceProfile,
   TwitterSearchResults,
 } from "../../types";
-import { responseJsonError } from "../../utils/http-response";
 import {
   findPotentialInstanceProfilesFromTwitter,
   findPotentialUserEmails,
 } from "../../utils/fediverse";
+import { responseJsonError } from "../../utils/http-response";
 import { Session } from "../../utils/session";
 
 const endpointTypes = new Set(["following", "followers"]);
@@ -26,7 +26,7 @@ export const get: APIRoute = async function get(context) {
   const accessToken = session.get("twitterAccessToken");
   const accessSecret = session.get("twitterAccessSecret");
   if (!accessToken || !accessSecret) {
-    return responseJsonError(403, "notLoggedIn");
+    return responseJsonError(403, "missingTwitterSessionData");
   }
 
   const client = new TwitterApi({

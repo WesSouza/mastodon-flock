@@ -53,7 +53,9 @@ export function Wizard() {
         console.error(error);
         setError(error);
       }
-      if (method === "typical") {
+      if (error === "missingTwitterSessionData") {
+        navigateTo(undefined);
+      } else if (method === "typical") {
         navigateTo("chooseMastodonInstance");
       } else {
         navigateTo("chooseMethod");
