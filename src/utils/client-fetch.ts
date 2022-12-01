@@ -44,26 +44,26 @@ export async function http<T>({
     return { error: "requestError", reason: error };
   }
 
-  switch (true) {
-    case response.status >= 500:
-      return { error: "serverError" };
-    case response.status === 400:
-      return { error: "badRequest" };
-    case response.status === 401:
-      return { error: "unauthorized" };
-    case response.status === 403:
-      return { error: "forbidden" };
-    case response.status === 404:
-      return { error: "notFound" };
-    case response.status >= 400:
-      return { error: "clientError" };
-    case response.status >= 300:
-      return { error: "redirectionResponse" };
-    case response.status < 200:
-      return { error: "informationalResponse" };
-  }
-
   if (!response.headers.get("content-type")?.startsWith("application/json")) {
+    switch (true) {
+      case response.status >= 500:
+        return { error: "serverError" };
+      case response.status === 400:
+        return { error: "badRequest" };
+      case response.status === 401:
+        return { error: "unauthorized" };
+      case response.status === 403:
+        return { error: "forbidden" };
+      case response.status === 404:
+        return { error: "notFound" };
+      case response.status >= 400:
+        return { error: "clientError" };
+      case response.status >= 300:
+        return { error: "redirectionResponse" };
+      case response.status < 200:
+        return { error: "informationalResponse" };
+    }
+
     return { error: "unsupportedContentType" };
   }
 
