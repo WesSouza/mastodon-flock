@@ -1,17 +1,23 @@
 import type { APIResult } from "../types";
 
 export async function http<T>({
-  url: urlString,
-  method = "get",
-  searchParams,
+  accept = "application/json",
   jsonBody,
+  method = "get",
+  redirect = "follow",
+  searchParams,
   signal = null,
+  timeout,
+  url: urlString,
 }: {
-  url: string;
-  method?: "get" | "post" | "delete";
-  searchParams?: Record<string, string>;
+  accept?: string;
   jsonBody?: Record<string, any>;
+  method?: "get" | "post" | "delete";
+  redirect?: RequestInit["redirect"];
+  searchParams?: Record<string, string>;
   signal?: AbortSignal | null;
+  timeout?: number;
+  url: string;
 }): Promise<APIResult<T>> {
   if (searchParams) {
     const url = new URL(urlString);
@@ -22,12 +28,20 @@ export async function http<T>({
 
   let body = null;
   const headers = new Headers({
-    accept: "application/json",
+    accept,
   });
 
   if (jsonBody) {
     headers.set("Content-Type", "application/json");
     body = JSON.stringify(jsonBody);
+  }
+
+  if (timeout && signal) {
+    console.warn("Cannot combine a timeout and a signal");
+  }
+
+  if (timeout && !signal) {
+    signal = AbortSignal.timeout(timeout);
   }
 
   let response;
@@ -37,16 +51,22 @@ export async function http<T>({
       credentials: "same-origin",
       headers,
       method,
+      redirect,
       signal,
     });
   } catch (error) {
-    if (error instanceof Error && error.name === "AbortError") {
-      return { error: "aborted", reason: error };
+    if (error instanceof Error) {
+      if (error.name === "AbortError") {
+        return { error: "aborted" };
+      }
+      if (error.name === "TimeoutError") {
+        return { error: "timedOut" };
+      }
     }
-    return { error: "requestError", reason: error };
+    return { error: "requestError", reason: String(error) };
   }
 
-  if (!response.headers.get("content-type")?.startsWith("application/json")) {
+  if (!response.headers.get("content-type")?.startsWith(accept)) {
     switch (true) {
       case response.status >= 500:
         return { error: "serverError" };

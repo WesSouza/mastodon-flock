@@ -1,7 +1,8 @@
 import { useCallback, useState } from "react";
+
 import { config } from "../config";
 import type { AccountWithTwitter, TwitterSearchUser } from "../types";
-import { http } from "../utils/client-fetch";
+import { http } from "../utils/http-request";
 
 export type MastodonFlockResults = {
   accounts: AccountWithTwitter[];

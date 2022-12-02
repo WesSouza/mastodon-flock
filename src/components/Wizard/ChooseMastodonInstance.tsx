@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { config } from "../../config";
 import { useWindowManager } from "../../hooks/useWindowManager";
 import type { MastodonInstance } from "../../types";
-import { http } from "../../utils/client-fetch";
+import { http } from "../../utils/http-request";
 import { AlertDialog } from "../dialogs/AlertDialog";
 import { Paragraph } from "../React95/Paragraph";
 import type { WindowMeta } from "../WindowManager/WindowManager";

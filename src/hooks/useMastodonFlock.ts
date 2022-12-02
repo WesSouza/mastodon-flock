@@ -6,7 +6,7 @@ import type {
   MastodonLookupAccountResult,
   TwitterSearchResults,
 } from "../types";
-import { http } from "../utils/client-fetch";
+import { http } from "../utils/http-request";
 
 import type { MastodonFlockResults } from "./useResults";
 
