@@ -44,7 +44,13 @@ export const get: APIRoute = async function get(context) {
     return redirectWithError("databaseConnectionError");
   }
 
-  let federatedInstance = await FederatedInstance.findOne({ uri: uri });
+  let query: mongoose.FilterQuery<IFederatedInstance>;
+  if (uri.startsWith("www.")) {
+    query = { $or: [{ uri: uri }, { uri: uri.replace(/^www\./, "") }] };
+  } else {
+    query = { $or: [{ uri: uri }, { uri: `www.${uri}` }] };
+  }
+  let federatedInstance = await FederatedInstance.findOne(query);
 
   const encryptor = createEncryptor(import.meta.env.MONGODB_DATA_SECRET);
 
