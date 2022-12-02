@@ -4,50 +4,12 @@ import styled from "styled-components";
 
 import { config } from "../../config";
 import { useWindowManager } from "../../hooks/useWindowManager";
+import type { MastodonInstance } from "../../types";
 import { http } from "../../utils/client-fetch";
 import { AlertDialog } from "../dialogs/AlertDialog";
 import { Paragraph } from "../React95/Paragraph";
 import type { WindowMeta } from "../WindowManager/WindowManager";
 import { WizardWindow } from "./WizardWindow";
-
-type FedifinderKnownInstances = {
-  data: Record<
-    string,
-    {
-      local_domain?: string;
-      software_name?: string;
-      users_total?: number;
-    }
-  >;
-};
-
-type Instance = {
-  hostname: string;
-  instanceHostname: string;
-  softwareName: string;
-  statsUserCount: number;
-};
-
-function getInstances(data: FedifinderKnownInstances) {
-  const instanceEntries = Object.entries(data.data);
-  const instances = instanceEntries
-    .map(([hostname, data]) => ({
-      hostname,
-      instanceHostname: data.local_domain ?? "",
-      softwareName: data.software_name ?? "",
-      statsUserCount: data.users_total ?? 0,
-    }))
-    .filter(
-      (instance) =>
-        !instance.instanceHostname ||
-        instance.softwareName !== "mastodon" ||
-        instance.hostname === instance.instanceHostname,
-    )
-    .sort((left, right) => right.statsUserCount - left.statsUserCount)
-    .slice(0, 200);
-
-  return instances;
-}
 
 const ScrollViewStyled = styled(ScrollView)`
   background: #fff;
@@ -89,7 +51,7 @@ export function ChooseMastodonInstance({
   initialMastodonHostname: string | undefined;
   windowMeta: WindowMeta;
 }) {
-  const [instances, setInstances] = useState<Instance[]>([]);
+  const [instances, setInstances] = useState<MastodonInstance[]>([]);
   const [instanceUri, setInstanceUri] = useState(initialMastodonHostname);
   const [filter, setFilter] = useState("");
   const [scrollIntoView, setScrollIntoView] = useState(true);
@@ -97,15 +59,15 @@ export function ChooseMastodonInstance({
   const { openWindow } = useWindowManager();
 
   useEffect(() => {
-    http<FedifinderKnownInstances>({
-      url: config.urls.TEMP_fediverseDirectory,
+    http<{ items: MastodonInstance[] }>({
+      url: config.urls.mastodonKnownInstances,
     }).then((result) => {
       if ("error" in result) {
         console.error(result.error, result.reason);
         return;
       }
 
-      setInstances(getInstances(result));
+      setInstances(result.items);
     });
   }, []);
 
@@ -118,14 +80,14 @@ export function ChooseMastodonInstance({
     [],
   );
 
-  const handleServerSelect = useCallback((server: Instance) => {
+  const handleServerSelect = useCallback((server: MastodonInstance) => {
     setScrollIntoView(false);
-    setInstanceUri(server.hostname);
+    setInstanceUri(server.uri);
   }, []);
 
   const serverMatches = useCallback(
-    (server: Instance) => {
-      return filter === "" || server.hostname.includes(filter);
+    (server: MastodonInstance) => {
+      return filter === "" || server.uri.includes(filter);
     },
     [filter],
   );
@@ -186,7 +148,7 @@ export function ChooseMastodonInstance({
         <InstanceList>
           {instances.filter(serverMatches).map((instance) => (
             <InstanceItem
-              key={instance.hostname}
+              key={instance.uri}
               instanceURI={instanceUri}
               instance={instance}
               onSelect={handleServerSelect}
@@ -247,13 +209,13 @@ function InstanceItem({
   scrollIntoView = false,
 }: {
   instanceURI: string | undefined;
-  onSelect: (instance: Instance) => void;
-  instance: Instance;
+  onSelect: (instance: MastodonInstance) => void;
+  instance: MastodonInstance;
   scrollIntoView: boolean;
 }) {
   const checked = useMemo(
-    () => instanceURI === instance.hostname,
-    [instance.hostname, instanceURI],
+    () => instanceURI === instance.uri,
+    [instance.uri, instanceURI],
   );
 
   const handleChange = useCallback(() => {
@@ -273,16 +235,18 @@ function InstanceItem({
     <InstanceItemLI checked={checked} ref={setRef}>
       <InstanceRadio
         checked={checked}
-        id={`instance-${instance.hostname}`}
-        name={instance.hostname}
+        id={`instance-${instance.uri}`}
+        name={instance.uri}
         onChange={handleChange}
         type="radio"
-        value={instance.hostname}
+        value={instance.uri}
       />
-      <InstanceItemLabel htmlFor={`instance-${instance.hostname}`}>
-        <InstanceItemCell>{instance.hostname}</InstanceItemCell>
+      <InstanceItemLabel htmlFor={`instance-${instance.uri}`}>
+        <InstanceItemCell>{instance.uri}</InstanceItemCell>
         <InstanceItemCell textAlign={"right"}>
-          {numberFormatter.format(instance.statsUserCount)}
+          {instance.usage?.usersTotal
+            ? numberFormatter.format(instance.usage.usersTotal)
+            : "—"}
         </InstanceItemCell>
       </InstanceItemLabel>
     </InstanceItemLI>

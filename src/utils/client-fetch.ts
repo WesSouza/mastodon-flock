@@ -21,7 +21,9 @@ export async function http<T>({
   }
 
   let body = null;
-  const headers = new Headers();
+  const headers = new Headers({
+    accept: "application/json",
+  });
 
   if (jsonBody) {
     headers.set("Content-Type", "application/json");

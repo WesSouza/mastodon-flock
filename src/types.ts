@@ -19,6 +19,21 @@ export type AccountWithTwitter = Account & {
 
 export type APIResult<T> = T | { error: string; reason?: unknown };
 
+export type MastodonInstance = {
+  name: string;
+  uri: string;
+  instanceUrl: string;
+  software: {
+    name: string;
+    version: string;
+  };
+  usage: {
+    usersActiveMonth: number | undefined;
+    usersTotal: number | undefined;
+  };
+  updated: Date;
+};
+
 export type PotentialEmail = {
   twitterUsername: string;
   email: string;
