@@ -15,6 +15,7 @@
     "dev": "astro dev",
     "lint": "eslint src && prettier --check src",
     "preview": "astro preview",
+    "refresh-instances-cache": "ts-node-esm ./scripts/refresh-instances-cache.ts",
     "start": "astro dev"
   },
   "engines": {
