@@ -12,6 +12,7 @@
     "astro": "astro",
     "build": "astro build",
     "check": "astro check && tsc --noEmit && pnpm run lint",
+    "crawl-instances": "ts-node-esm ./scripts/crawl-instances.ts",
     "dev": "astro dev",
     "lint": "eslint src && prettier --check src",
     "preview": "astro preview",
