@@ -93,11 +93,11 @@ async function crawlUri(uri: string) {
     return data;
   } catch (e) {
     console.error(e);
-    return { error: "mastodonAppCreationError" };
+    return { error: "mastodonCrawlError" };
   }
 }
 
-export const post: APIRoute = async function get(context) {
+export const post: APIRoute = async function post(context) {
   const uri = context.url.searchParams.get("uri");
 
   if (
