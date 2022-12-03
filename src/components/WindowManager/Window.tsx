@@ -24,34 +24,38 @@ const WindowHeaderStyled = styled(WindowHeader)`
 `;
 
 const WindowTitle = styled.span`
+  padding-inline-start: 5px;
   margin-inline-end: auto;
 `;
 
-const WindowContentStyled = styled(WindowContent)``;
+const WindowButton = styled(Button)`
+  &:last-child {
+    margin-inline-start: 4px;
+  }
 
-export const WizardFooterSpacer = styled.span`
-  display: inline-block;
-  width: 20px;
+  & > svg {
+    width: 18px;
+    height: 15px;
+  }
 `;
 
-export const WizardFooterPhantomButton = styled.span`
-  display: inline-block;
-  width: 120px;
-`;
-
-export const WizardFooterButton = styled(Button)`
-  width: 120px;
+const WindowContentStyled = styled(WindowContent)<{
+  noPadding: boolean | undefined;
+}>`
+  ${({ noPadding }) => (noPadding ? `padding: 2px;` : "")}
 `;
 
 export function Window({
   children,
   minWidth,
+  noPadding,
   onClose,
   title,
   windowMeta,
 }: {
   children: React.ReactNode;
   minWidth?: string;
+  noPadding?: boolean;
   onClose: () => void;
   title: string;
   windowMeta: WindowMeta;
@@ -88,9 +92,15 @@ export function Window({
     <WindowStyled minWidth={minWidth}>
       <WindowHeaderStyled active={animatedActive ?? windowMeta.active}>
         <WindowTitle>{title}</WindowTitle>
-        <Button onClick={onClose}>&times;</Button>
+        <WindowButton onClick={onClose}>
+          <svg aria-label="Close Window">
+            <use href="#window-close"></use>
+          </svg>
+        </WindowButton>
       </WindowHeaderStyled>
-      <WindowContentStyled>{children}</WindowContentStyled>
+      <WindowContentStyled noPadding={noPadding}>
+        {children}
+      </WindowContentStyled>
     </WindowStyled>
   );
 }

@@ -1,4 +1,5 @@
 import { createContext, useCallback, useMemo, useRef, useState } from "react";
+import { SvgSprite } from "../SvgSprite";
 import { WindowRenderer } from "./WindowRenderer";
 
 const externalWindowPrefix = "external-";
@@ -159,6 +160,33 @@ export function WindowManager({ children }: { children: React.ReactNode }) {
           window={window}
         />
       ))}
+      <SvgSprite>
+        <svg xmlns="http://www.w3.org/2000/svg">
+          <symbol id="window-restore" viewBox="0 0 18 15">
+            <path
+              fill="#000"
+              fillRule="evenodd"
+              d="M1 5v9h10V9h3V0H4v5H1Zm5-2v2h5v2h1V3H6ZM3 8v4h6V8H3Z"
+              clipRule="evenodd"
+            />
+          </symbol>
+          <symbol id="window-close" viewBox="0 0 18 15">
+            <path fill="#000" d="M5 2H3v1l10 9h2v-1L5 2Z" />
+            <path fill="#000" d="M15 2h-2L3 11v1h2l10-9V2Z" />
+          </symbol>
+          <symbol id="window-maximize" viewBox="0 0 18 15">
+            <path
+              fill="#000"
+              fillRule="evenodd"
+              d="M1 0v14h14V0H1Zm2 3h10v9H3V3Z"
+              clipRule="evenodd"
+            />
+          </symbol>
+          <symbol id="window-minimize" viewBox="0 0 18 15">
+            <path fill="#000" d="M12 11H3v2h9v-2Z" />
+          </symbol>
+        </svg>
+      </SvgSprite>
     </WindowManagerContext.Provider>
   );
 }

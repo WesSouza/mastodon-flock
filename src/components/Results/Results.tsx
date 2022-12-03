@@ -1,45 +1,20 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import {
-  Button,
-  Checkbox,
-  Frame,
-  ScrollView,
-  Window,
-  WindowContent,
-  WindowHeader,
-} from "react95";
+import { Button, Checkbox, Frame, ScrollView } from "react95";
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
 import styled from "styled-components";
 
+import { Window } from "../WindowManager/Window";
 import { useResults } from "../../hooks/useResults";
 import type { AccountWithTwitter, TwitterSearchUser } from "../../types";
+import { useWindowManager } from "../../hooks/useWindowManager";
 
 const numberFormatter = new Intl.NumberFormat();
-
-const WindowStyled = styled(Window)`
-  width: min(calc(100% - 72px), 1000px);
-  margin-inline: auto;
-`;
-
-const WindowHeaderStyled = styled(WindowHeader)`
-  display: flex;
-  align-items: center;
-`;
-
-const WindowTitle = styled.h1`
-  margin-inline-end: auto;
-`;
-
-const WindowContentStyled = styled(WindowContent)`
-  display: flex;
-  flex-direction: column;
-`;
 
 const ScrollViewStyled = styled(ScrollView)`
   position: relative;
   background: #fff;
   width: 100%;
-  height: calc(100vh - 500px);
+  height: 100%;
   flex: 0;
   & > div {
     padding: 0;
@@ -66,6 +41,12 @@ const PeopleList = styled.ul`
 `;
 
 export function Results() {
+  const { registerSelf, windowMeta } = useWindowManager();
+
+  useEffect(() => {
+    registerSelf();
+  }, [registerSelf]);
+
   const { followUnfollow, loadingAccountIds, loadResults, method, results } =
     useResults();
 
@@ -82,12 +63,6 @@ export function Results() {
     );
   }, [results?.twitterUsers]);
 
-  const [allSelected, setAllSelected] = useState(false);
-
-  const handleSelectAllChange = useCallback(() => {
-    setAllSelected((allSelected) => !allSelected);
-  }, []);
-
   const handleClose = useCallback(() => {
     location.href = "/desktop";
   }, []);
@@ -97,41 +72,36 @@ export function Results() {
   }
 
   return (
-    <WindowStyled>
-      <WindowHeaderStyled>
-        <WindowTitle>Mastodon Flock</WindowTitle>
-        <Button onClick={handleClose}>&times;</Button>
-      </WindowHeaderStyled>
-      <WindowContentStyled>
-        <ScrollViewStyled shadow={false}>
-          <PeopleListHeader method={method}>
-            <PeopleListHeaderCell>
-              <Checkbox
-                checked={allSelected}
-                onChange={handleSelectAllChange}
-              />
-            </PeopleListHeaderCell>
-            <PeopleListHeaderCell>Account</PeopleListHeaderCell>
-            {method === "typical" ? (
-              <PeopleListHeaderCell>Details</PeopleListHeaderCell>
-            ) : undefined}
-            <PeopleListHeaderCell>Actions</PeopleListHeaderCell>
-          </PeopleListHeader>
-          <PeopleList>
-            {results.accounts.map((account) => (
-              <Person
-                key={account.id}
-                account={account}
-                followUnfollow={followUnfollow}
-                method={method}
-                loading={loadingAccountIds.includes(account.id)}
-                twitterUsers={twitterUserMap}
-              />
-            ))}
-          </PeopleList>
-        </ScrollViewStyled>
-      </WindowContentStyled>
-    </WindowStyled>
+    <Window
+      minWidth="1000px"
+      noPadding={true}
+      onClose={handleClose}
+      title="Mastodon Flock"
+      windowMeta={windowMeta}
+    >
+      <ScrollViewStyled shadow={false}>
+        <PeopleListHeader method={method}>
+          <PeopleListHeaderCell />
+          <PeopleListHeaderCell>Account</PeopleListHeaderCell>
+          {method === "typical" ? (
+            <PeopleListHeaderCell>Details</PeopleListHeaderCell>
+          ) : undefined}
+          <PeopleListHeaderCell>Actions</PeopleListHeaderCell>
+        </PeopleListHeader>
+        <PeopleList>
+          {results.accounts.map((account) => (
+            <Person
+              key={account.id}
+              account={account}
+              followUnfollow={followUnfollow}
+              method={method}
+              loading={loadingAccountIds.includes(account.id)}
+              twitterUsers={twitterUserMap}
+            />
+          ))}
+        </PeopleList>
+      </ScrollViewStyled>
+    </Window>
   );
 }
 
