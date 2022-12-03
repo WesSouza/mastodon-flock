@@ -20,7 +20,7 @@ const makeHandler = (operation: "follow" | "unfollow"): APIRoute =>
     }
 
     const { request } = context;
-    if (request.headers.get("Content-Type") !== "application/json") {
+    if (request.headers.get("content-type") !== "application/json") {
       return responseJsonError(400, "badRequest");
     }
     const body = (await request.json()) as { accountId?: string };
@@ -49,7 +49,7 @@ const makeHandler = (operation: "follow" | "unfollow"): APIRoute =>
       }
 
       return new Response(JSON.stringify({ result: "success" }), {
-        headers: { "Content-type": "application/json" },
+        headers: { "content-type": "application/json" },
       });
     } catch (e) {
       console.error(e);

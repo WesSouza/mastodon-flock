@@ -77,7 +77,10 @@ export const get: APIRoute = async function get(context) {
     }
 
     return new Response(JSON.stringify(result), {
-      headers: { "Content-type": "application/json" },
+      headers: {
+        "cache-control": "no-cache",
+        "content-type": "application/json",
+      },
     });
   } catch (e) {
     console.error(e);

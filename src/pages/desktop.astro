@@ -1,5 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
+
+Astro.response.headers.set("cache-control", "s-maxage=86400, max-age=600");
 ---
 
 <Layout

@@ -32,7 +32,7 @@ export async function http<T>({
   });
 
   if (jsonBody) {
-    headers.set("Content-Type", "application/json");
+    headers.set("content-type", "application/json");
     body = JSON.stringify(jsonBody);
   }
 

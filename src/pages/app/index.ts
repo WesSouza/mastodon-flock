@@ -37,7 +37,7 @@ export const get: APIRoute = async function get({ redirect, request }) {
     }),
     {
       headers: {
-        "Content-Type": "application/activity+json; charset=utf-8",
+        "content-type": "application/activity+json; charset=utf-8",
       },
     },
   );

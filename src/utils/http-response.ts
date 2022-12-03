@@ -13,7 +13,7 @@ export function responseJsonError(
     status,
     statusText: errorStatusTexts[status] ?? errorStatusTexts[500],
     headers: {
-      "Content-Type": "application/json",
+      "content-type": "application/json",
     },
   });
 }

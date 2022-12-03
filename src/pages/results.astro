@@ -1,6 +1,8 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import { People } from "../react-islands/People";
+
+Astro.response.headers.set("cache-control", "s-maxage=86400, max-age=600");
 ---
 
 <Layout title="Mastodon Flock">

@@ -3,6 +3,8 @@ import { config } from "../config";
 import Layout from "../layouts/Layout.astro";
 import { MastodonFlock } from "../react-islands/MastodonFlock";
 
+Astro.response.headers.set("cache-control", "s-maxage=86400, max-age=600");
+
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site).toString();
 ---
 

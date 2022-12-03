@@ -79,7 +79,10 @@ export const get: APIRoute = async function get(context) {
         }),
       }),
       {
-        headers: { "Content-type": "application/json" },
+        headers: {
+          "cache-control": "s-maxage=60, stale-while-revalidate=3600",
+          "content-type": "application/json",
+        },
       },
     );
   } catch (e) {

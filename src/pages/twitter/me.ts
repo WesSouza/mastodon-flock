@@ -52,7 +52,8 @@ export const get: APIRoute = async function get(context) {
       }),
       {
         headers: {
-          "Content-Type": "application/json",
+          "cache-control": "no-cache",
+          "content-type": "application/json",
         },
       },
     );

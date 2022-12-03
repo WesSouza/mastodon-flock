@@ -29,7 +29,7 @@ export const get: APIRoute = async function get({ request }) {
     }),
     {
       headers: {
-        "Content-Type": "application/jrd+json; charset=utf-8",
+        "content-type": "application/jrd+json; charset=utf-8",
       },
     },
   );

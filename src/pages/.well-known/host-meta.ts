@@ -10,7 +10,7 @@ export const get: APIRoute = async function get() {
 </XRD>`,
     {
       headers: {
-        "Content-Type": "application/xrd+xml; charset=utf-8",
+        "content-type": "application/xrd+xml; charset=utf-8",
       },
     },
   );
