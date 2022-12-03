@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Button, Frame, ProgressBar } from "react95";
 import styled from "styled-components";
 
@@ -37,9 +37,21 @@ export function Installer({
       onResults,
     });
 
+  const debounceTimer = useRef<number>();
   useEffect(() => {
-    findBirdsAndMammoths({ method });
-  }, [findBirdsAndMammoths, method]);
+    let started = false;
+    window.clearTimeout(debounceTimer.current);
+    debounceTimer.current = window.setTimeout(() => {
+      started = true;
+      findBirdsAndMammoths({ method });
+    }, 100);
+
+    return () => {
+      if (started) {
+        cancel();
+      }
+    };
+  }, [cancel, findBirdsAndMammoths, method]);
 
   return (
     <FrameStyled>
