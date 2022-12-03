@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useRerender } from "./useRerender";
 
 export function useSearchParamsState(
   name: string,
@@ -14,7 +15,7 @@ export function useSearchParamsState(
   } = {},
 ) {
   const valueRef = useRef<string>();
-  const [, flip] = useState(false);
+  const rerender = useRerender();
 
   useMemo(() => {
     const url = new URL(location.href);
@@ -33,10 +34,6 @@ export function useSearchParamsState(
       onChange(valueRef.current, undefined);
     }
   }, [onChange]);
-
-  const rerender = useCallback(() => {
-    flip((flop) => !flop);
-  }, []);
 
   const handleValueChange = useCallback(
     (newValue: string | undefined) => {

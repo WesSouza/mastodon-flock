@@ -1,4 +1,5 @@
-import { createContext, useCallback, useMemo, useRef, useState } from "react";
+import { createContext, useCallback, useMemo, useRef } from "react";
+import { useRerender } from "../../hooks/useRerender";
 import { SvgSprite } from "../SvgSprite";
 import { WindowRenderer } from "./WindowRenderer";
 
@@ -46,11 +47,7 @@ export const WindowManagerContext = createContext({
 export function WindowManager({ children }: { children: React.ReactNode }) {
   const windowsRef = useRef<WindowRecord[]>([]);
   const windowOrderRef = useRef<string[]>([]);
-  const [_, flip] = useState(false);
-
-  const rerender = useCallback(() => {
-    flip((flop) => !flop);
-  }, []);
+  const rerender = useRerender();
 
   const openWindow: WindowOpenFn = useCallback(
     (component, props, options) => {
