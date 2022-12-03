@@ -10,6 +10,7 @@ import {
 } from "react95";
 import styled from "styled-components";
 
+import { useCsvExporter } from "../../hooks/useCsvExporter";
 import { useResults } from "../../hooks/useResults";
 import { useSearchParamsState } from "../../hooks/useSearchParamsState";
 import { useSet } from "../../hooks/useSet";
@@ -157,6 +158,21 @@ export function Results() {
     [setSortValue],
   );
 
+  const downloadCsv = useCsvExporter();
+  const handleExportCsv = useCallback(() => {
+    if (
+      selectedAccountIds.size === sortedAccounts.length ||
+      !selectedAccountIds.size
+    ) {
+      downloadCsv(sortedAccounts);
+      return;
+    }
+
+    downloadCsv(
+      sortedAccounts.filter((account) => selectedAccountIds.has(account.id)),
+    );
+  }, [downloadCsv, selectedAccountIds, sortedAccounts]);
+
   const followUnfollowSelected = useCallback(
     async (operation: "follow" | "unfollow") => {
       for (const account of sortedAccounts) {
@@ -224,7 +240,9 @@ export function Results() {
           />
         </ToolbarFilter>
         <Separator orientation="vertical" size="auto" />
-        <Button variant="thin">Export CSV</Button>
+        <Button variant="thin" disabled={!canFollow} onClick={handleExportCsv}>
+          Export CSV
+        </Button>
       </Toolbar>
       <ScrollViewStyled shadow={false}>
         <PeopleListHeader method={method}>
