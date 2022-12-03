@@ -26,6 +26,9 @@ switch (environment) {
 }
 
 const knownInstancesUrl = new URL("/mastodon/known-instances", serverOrigin);
+knownInstancesUrl.searchParams.set("_vercel_no_cache", "1");
+knownInstancesUrl.searchParams.set("allInstances", "1");
+
 const knownInstancesResponse = await fetch(knownInstancesUrl.href, {
   headers: { accept: "application/json" },
 });
