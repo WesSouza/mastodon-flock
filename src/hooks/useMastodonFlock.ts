@@ -5,6 +5,7 @@ import type {
   MastodonFollowAccountResults,
   MastodonLookupAccountResult,
   TwitterSearchResults,
+  TwitterSearchUser,
 } from "../types";
 import { http } from "../utils/http-request";
 
@@ -19,6 +20,18 @@ function dedupeAccounts(accounts: AccountWithTwitter[]) {
     ids.add(account.id);
     return true;
   });
+}
+
+function removeIrrelevantTwitterUsers(
+  twitterUsers: TwitterSearchUser[],
+  accounts: AccountWithTwitter[],
+) {
+  const accountTwitterUsernames = new Set(
+    accounts.map((account) => account.twitterUsername),
+  );
+  return twitterUsers.filter((twitterUser) =>
+    accountTwitterUsernames.has(twitterUser.username),
+  );
 }
 
 export function useMastodonFlock({
@@ -116,7 +129,7 @@ export function useMastodonFlock({
           }
         });
 
-        setStatus("Searching Mastodon Account...");
+        setStatus("Searching Mastodon Accounts...");
 
         let count = 0;
         const total = accountLookups.length;
@@ -147,7 +160,13 @@ export function useMastodonFlock({
           });
         }
 
-        onResults({ accounts: dedupeAccounts(foundAccounts), twitterUsers });
+        onResults({
+          accounts: dedupeAccounts(foundAccounts),
+          twitterUsers: removeIrrelevantTwitterUsers(
+            twitterUsers,
+            foundAccounts,
+          ),
+        });
       } else {
         potentialEmails.forEach(({ email, twitterUsername }) => {
           accountLookups.push({
@@ -193,8 +212,6 @@ export function useMastodonFlock({
           });
         }
 
-        setStatus("Fingering contacts...");
-        setStatus("actipub.exe");
         setProgress(100);
 
         if (foundAccounts.length < 1) {
