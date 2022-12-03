@@ -1,8 +1,10 @@
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useRef } from "react";
 
 import { config } from "../config";
 import type { AccountWithTwitter, TwitterSearchUser } from "../types";
 import { http } from "../utils/http-request";
+import { useRerender } from "./useRerender";
+import { useSet } from "./useSet";
 
 export type MastodonFlockResults = {
   accounts: AccountWithTwitter[];
@@ -12,11 +14,11 @@ export type MastodonFlockResults = {
 const currentVersion = 1;
 
 export function useResults() {
-  const [method, setMethod] = useState<string | undefined>(undefined);
-  const [results, setResults] = useState<MastodonFlockResults | undefined>(
-    undefined,
-  );
-  const [loadingAccountIds, setLoadingAccountIds] = useState<string[]>([]);
+  const rerender = useRerender();
+
+  const method = useRef<string>();
+  const results = useRef<MastodonFlockResults>();
+  const loadingAccountIds = useSet<string>();
 
   const loadResults = useCallback(() => {
     const version = sessionStorage.getItem("version");
@@ -27,51 +29,39 @@ export function useResults() {
       return;
     }
 
-    const method = sessionStorage.getItem("method");
-    if (!method) {
+    const sessionMethod = sessionStorage.getItem("method");
+    if (!sessionMethod) {
       return;
     }
 
-    const resultsString = sessionStorage.getItem("results");
-    if (!resultsString) {
+    const sessionResults = sessionStorage.getItem("results");
+    if (!sessionResults) {
       return;
     }
 
-    setMethod(method);
-    setResults(JSON.parse(resultsString));
+    method.current = sessionMethod;
+    results.current = JSON.parse(sessionResults);
+    rerender();
+  }, [rerender]);
+
+  const saveResults = useCallback(() => {
+    sessionStorage.setItem("version", String(currentVersion));
+    sessionStorage.setItem("method", method.current ?? "");
+    sessionStorage.setItem("results", JSON.stringify(results.current));
   }, []);
 
-  const saveResults = useCallback(
-    (method: string, results: MastodonFlockResults) => {
-      sessionStorage.setItem("version", String(currentVersion));
-      sessionStorage.setItem("method", method);
-      sessionStorage.setItem("results", JSON.stringify(results));
-      setResults(results);
+  const setResults = useCallback(
+    (newMethod: string, newResults: MastodonFlockResults) => {
+      method.current = newMethod;
+      results.current = newResults;
+      saveResults();
     },
-    [],
-  );
-
-  const setLoadingAccountId = useCallback(
-    (accountId: string, loading: boolean) => {
-      if (loading) {
-        setLoadingAccountIds((loadingAccountIds) => [
-          ...loadingAccountIds,
-          accountId,
-        ]);
-      } else {
-        setLoadingAccountIds((loadingAccountIds) =>
-          loadingAccountIds.filter(
-            (loadingAccountId) => loadingAccountId !== accountId,
-          ),
-        );
-      }
-    },
-    [],
+    [saveResults],
   );
 
   const followUnfollow = useCallback(
     async (accountId: string, operation: "follow" | "unfollow") => {
-      setLoadingAccountId(accountId, true);
+      loadingAccountIds.add(accountId);
 
       const data = await http<{ result: string }>({
         url: config.urls.mastodonAccountFollow,
@@ -81,33 +71,40 @@ export function useResults() {
 
       if ("error" in data) {
         console.error(data.error, data.reason);
-        setLoadingAccountId(accountId, false);
+        loadingAccountIds.delete(accountId);
         return false;
       }
 
-      if (data.result && results && method) {
-        saveResults(method, {
-          ...results,
-          accounts: results?.accounts.map((account) =>
-            account.id === accountId
-              ? { ...account, following: operation === "follow" }
-              : account,
-          ),
-        });
+      if (data.result && results.current && method) {
+        results.current.accounts = results.current.accounts.map((account) =>
+          account.id === accountId
+            ? { ...account, following: operation === "follow" }
+            : account,
+        );
+        saveResults();
+        rerender();
       }
 
-      setLoadingAccountId(accountId, false);
+      loadingAccountIds.delete(accountId);
       return true;
     },
-    [method, results, saveResults, setLoadingAccountId],
+    [loadingAccountIds, saveResults, rerender],
   );
 
-  return {
-    followUnfollow,
-    loadingAccountIds,
-    loadResults,
-    method,
-    results,
-    saveResults,
-  };
+  return useMemo(
+    () => ({
+      followUnfollow,
+      loadingAccountIds,
+      loadResults,
+      get method() {
+        return method.current;
+      },
+      get results() {
+        return results.current;
+      },
+      saveResults,
+      setResults,
+    }),
+    [followUnfollow, loadResults, loadingAccountIds, saveResults, setResults],
+  );
 }

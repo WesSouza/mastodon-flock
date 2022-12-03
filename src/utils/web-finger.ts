@@ -3,7 +3,7 @@ export type WebFingerResource = {
   links: { rel: string; type: string; href: string }[];
 };
 
-export function splitAccountParts(account: string) {
+export function splitAccountParts(account: string | undefined) {
   if (typeof account !== "string") {
     return { type: undefined, hostname: undefined, account: undefined };
   }

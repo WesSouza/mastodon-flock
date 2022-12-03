@@ -1,14 +1,72 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { Button, Checkbox, Frame, ScrollView } from "react95";
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
+import { useCallback, useEffect, useMemo } from "react";
+import {
+  Button,
+  Checkbox,
+  Frame,
+  ScrollView,
+  Select,
+  Separator,
+} from "react95";
 import styled from "styled-components";
 
-import { Window } from "../WindowManager/Window";
 import { useResults } from "../../hooks/useResults";
-import type { AccountWithTwitter, TwitterSearchUser } from "../../types";
+import { useSearchParamsState } from "../../hooks/useSearchParamsState";
+import { useSet } from "../../hooks/useSet";
 import { useWindowManager } from "../../hooks/useWindowManager";
+import type { AccountWithTwitter, TwitterSearchUser } from "../../types";
+import { getAccountInstanceUri } from "../../utils/fediverse";
+import { Window } from "../WindowManager/Window";
 
 const numberFormatter = new Intl.NumberFormat();
+
+const sortOptions = [
+  {
+    label: "Name",
+    value: "name",
+    sort: (accountLeft: AccountWithTwitter, accountRight: AccountWithTwitter) =>
+      accountLeft.name.localeCompare(accountRight.name),
+  },
+  {
+    label: "Followers",
+    value: "followers",
+    sort: (accountLeft: AccountWithTwitter, accountRight: AccountWithTwitter) =>
+      (accountRight.followersCount ?? 0) - (accountLeft.followersCount ?? 0),
+  },
+  {
+    label: "Following",
+    value: "following",
+    sort: (accountLeft: AccountWithTwitter, accountRight: AccountWithTwitter) =>
+      (accountRight.followingCount ?? 0) - (accountLeft.followingCount ?? 0),
+  },
+  {
+    label: "Instance",
+    value: "instance",
+    sort: (accountLeft: AccountWithTwitter, accountRight: AccountWithTwitter) =>
+      getAccountInstanceUri(accountLeft.account)?.localeCompare(
+        getAccountInstanceUri(accountRight.account) ?? "",
+      ) ?? 0,
+  },
+  {
+    label: "Last active",
+    value: "lastActive",
+    sort: (accountLeft: AccountWithTwitter, accountRight: AccountWithTwitter) =>
+      (accountRight.lastStatusAt ? Date.parse(accountRight.lastStatusAt) : 0) -
+      (accountLeft.lastStatusAt ? Date.parse(accountLeft.lastStatusAt) : 0),
+  },
+];
+
+const Toolbar = styled.div`
+  position: relative;
+  display: flex;
+  margin-block-end: 4px;
+  justify-content: stretch;
+  z-index: 3;
+`;
+
+const ToolbarFilter = styled.div`
+  margin-inline-start: auto;
+`;
 
 const ScrollViewStyled = styled(ScrollView)`
   position: relative;
@@ -63,9 +121,68 @@ export function Results() {
     );
   }, [results?.twitterUsers]);
 
+  const selectedAccountIds = useSet<string>();
+
   const handleClose = useCallback(() => {
     location.href = "/desktop";
   }, []);
+
+  const handleToggleAccountId = useCallback(
+    (accountId: string, value: boolean) => {
+      selectedAccountIds[value ? "add" : "delete"](accountId);
+    },
+    [selectedAccountIds],
+  );
+
+  const handleSelectAll = useCallback(() => {
+    const operation =
+      results?.accounts.length !== selectedAccountIds.size ? "add" : "delete";
+    results?.accounts.forEach((account) => {
+      selectedAccountIds[operation](account.id);
+    });
+  }, [results?.accounts, selectedAccountIds]);
+
+  const [sortValue = "name", setSortValue] = useSearchParamsState("sortBy");
+  const sortedAccounts = useMemo(() => {
+    const sortOption =
+      sortOptions.find((sortOption) => sortOption.value === sortValue) ??
+      sortOptions[0];
+    return results?.accounts.sort(sortOption?.sort) ?? [];
+  }, [results?.accounts, sortValue]);
+
+  const handleSortChange = useCallback(
+    (option: { value: string }) => {
+      setSortValue(option.value);
+    },
+    [setSortValue],
+  );
+
+  const followUnfollowSelected = useCallback(
+    async (operation: "follow" | "unfollow") => {
+      for (const account of sortedAccounts) {
+        if (
+          !selectedAccountIds.has(account.id) ||
+          (operation === "follow" && account.following) ||
+          (operation === "unfollow" && !account.following)
+        ) {
+          continue;
+        }
+        await followUnfollow(account.id, operation);
+      }
+    },
+    [followUnfollow, selectedAccountIds, sortedAccounts],
+  );
+
+  const handleFollowSelected = useCallback(() => {
+    followUnfollowSelected("follow");
+  }, [followUnfollowSelected]);
+
+  const handleUnfollowSelected = useCallback(() => {
+    followUnfollowSelected("unfollow");
+  }, [followUnfollowSelected]);
+
+  const canFollow = method === "typical";
+  const isLoading = loadingAccountIds.size > 0;
 
   if (!results) {
     return null;
@@ -79,6 +196,36 @@ export function Results() {
       title="Mastodon Flock"
       windowMeta={windowMeta}
     >
+      <Toolbar>
+        <Button variant="thin" disabled={!canFollow} onClick={handleSelectAll}>
+          Select All
+        </Button>
+        <Button
+          variant="thin"
+          disabled={!canFollow || !selectedAccountIds.size || isLoading}
+          onClick={handleFollowSelected}
+        >
+          Follow
+        </Button>
+        <Button
+          variant="thin"
+          disabled={!canFollow || !selectedAccountIds.size || isLoading}
+          onClick={handleUnfollowSelected}
+        >
+          Unfollow
+        </Button>
+        <ToolbarFilter>
+          <label htmlFor="sortOptions">Sort by:</label>{" "}
+          <Select
+            id="sortOptions"
+            options={sortOptions}
+            value={sortValue}
+            onChange={handleSortChange}
+          />
+        </ToolbarFilter>
+        <Separator orientation="vertical" size="auto" />
+        <Button variant="thin">Export CSV</Button>
+      </Toolbar>
       <ScrollViewStyled shadow={false}>
         <PeopleListHeader method={method}>
           <PeopleListHeaderCell />
@@ -89,13 +236,15 @@ export function Results() {
           <PeopleListHeaderCell>Actions</PeopleListHeaderCell>
         </PeopleListHeader>
         <PeopleList>
-          {results.accounts.map((account) => (
+          {sortedAccounts.map((account) => (
             <Person
               key={account.id}
               account={account}
               followUnfollow={followUnfollow}
               method={method}
-              loading={loadingAccountIds.includes(account.id)}
+              loading={loadingAccountIds.has(account.id)}
+              onToggle={handleToggleAccountId}
+              selected={selectedAccountIds.has(account.id)}
               twitterUsers={twitterUserMap}
             />
           ))}
@@ -191,19 +340,21 @@ function Person({
   loading,
   followUnfollow,
   method,
+  onToggle,
+  selected,
   twitterUsers,
 }: {
   account: AccountWithTwitter;
   loading: boolean;
   followUnfollow: (accountId: string, operation: "follow" | "unfollow") => void;
   method: string | undefined;
+  onToggle: (accountId: string, value: boolean) => void;
+  selected: boolean;
   twitterUsers: Map<string, TwitterSearchUser>;
 }) {
-  const [selected, setSelected] = useState(false);
-
   const handleSelectedChange = useCallback(() => {
-    setSelected((selected) => !selected);
-  }, []);
+    onToggle(account.id, !selected);
+  }, [account.id, onToggle, selected]);
 
   const handleFollowClick = useCallback(() => {
     followUnfollow(account.id, "follow");

@@ -1,3 +1,5 @@
+import { splitAccountParts } from "./web-finger";
+
 const forbiddenHostnames = new Set([
   "gmail.com",
   "hotmail.com",
@@ -66,4 +68,8 @@ export function findPotentialUserEmails(string: string | undefined) {
     username: match[2] as string,
     hostname: match[3]?.toLowerCase() as string,
   })).filter((email) => !forbiddenHostnames.has(email.hostname));
+}
+
+export function getAccountInstanceUri(string: string | undefined) {
+  return splitAccountParts(string).hostname;
 }

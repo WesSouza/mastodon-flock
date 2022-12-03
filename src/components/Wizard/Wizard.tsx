@@ -38,14 +38,14 @@ export function Wizard() {
     [setStep],
   );
 
-  const { saveResults } = useResults();
+  const { setResults } = useResults();
 
   const handleFlockResults = useCallback(
     (results: MastodonFlockResults) => {
-      saveResults(method ?? "", results);
+      setResults(method ?? "", results);
       navigateTo("finish");
     },
-    [method, navigateTo, saveResults],
+    [method, navigateTo, setResults],
   );
 
   const handleFlockError = useCallback(
