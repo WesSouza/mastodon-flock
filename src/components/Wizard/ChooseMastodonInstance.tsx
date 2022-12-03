@@ -93,6 +93,19 @@ export function ChooseMastodonInstance({
   );
 
   const handleGoNext = useCallback(() => {
+    if (!instanceUri) {
+      openWindow(
+        AlertDialog,
+        {
+          messageLines: [
+            "Please enter your mastodon instance URL or select one from the list.",
+          ],
+          title: "No Instance Chosen",
+        },
+        { modal: true },
+      );
+      return;
+    }
     const uri = instanceUri
       .replace(/^.*@/, "")
       .replace(/^[a-z]+:\/\//i, "")
@@ -102,7 +115,7 @@ export function ChooseMastodonInstance({
         AlertDialog,
         {
           messageLines: [
-            "The entered instance URL is not a valid e-mail or URL.",
+            "The provided instance is not a valid domain, URL or email address.",
             "Please verify the information and try again.",
           ],
           title: "Invalid Instance URL",
