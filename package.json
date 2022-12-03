@@ -57,11 +57,7 @@
     "typescript": "^4.9.3"
   },
   "importSort": {
-    ".js, .jsx": {
-      "parser": "babylon",
-      "style": "wes"
-    },
-    ".ts, .tsx": {
+    ".js, .jsx, .ts, .tsx": {
       "parser": "typescript",
       "style": "wes"
     }
