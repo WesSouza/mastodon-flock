@@ -1,0 +1,26 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { Windows } from "../react-islands/Windows";
+
+Astro.response.headers.set("cache-control", "s-maxage=86400, max-age=600");
+---
+
+<Layout
+  title="About"
+  description="Learn more about what Mastodon Flock does and how it works."
+>
+  <main>
+    <Windows client:only="react" mainWindow="About" />
+  </main>
+</Layout>
+
+<style>
+  main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+    width: 100%;
+    height: 100%;
+  }
+</style>

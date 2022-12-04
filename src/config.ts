@@ -17,6 +17,7 @@ export const config = {
     ? "Mastodon Flock Preview"
     : "Mastodon Flock",
   urls: {
+    about: `${origin}/about`,
     home: origin,
     activityPubApp: !isLocal
       ? `${origin}/app`
