@@ -4,7 +4,7 @@ import styled from "styled-components";
 
 import { useMastodonFlock } from "../../hooks/useMastodonFlock";
 import type { MastodonFlockResults } from "../../hooks/useResults";
-import { Paragraph } from "../React95/Paragraph";
+import { Paragraph } from "../typography/Paragraph";
 
 const FrameStyled = styled(Frame)`
   width: min(calc(100% - 4em), 700px);

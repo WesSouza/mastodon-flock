@@ -17,6 +17,7 @@ import { useSet } from "../../hooks/useSet";
 import { useWindowManager } from "../../hooks/useWindowManager";
 import type { AccountWithTwitter, TwitterSearchUser } from "../../types";
 import { getAccountInstanceUri } from "../../utils/fediverse";
+import { Anchor } from "../typography/Anchor";
 import { Window } from "../WindowManager/Window";
 
 const numberFormatter = new Intl.NumberFormat();
@@ -346,11 +347,6 @@ const PersonSocialStat = styled.span`
   & > em {
     font-weight: 600;
   }
-`;
-
-const Anchor = styled.a`
-  color: ${({ theme }) => theme.anchor};
-  text-decoration: underline;
 `;
 
 function Person({

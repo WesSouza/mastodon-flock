@@ -1,4 +1,4 @@
-import { Paragraph } from "../React95/Paragraph";
+import { Paragraph } from "../typography/Paragraph";
 import type { WindowMeta } from "../WindowManager/WindowManager";
 import { WizardWindow } from "./WizardWindow";
 

@@ -4,7 +4,7 @@ import styled from "styled-components";
 
 import { useWindowManager } from "../../hooks/useWindowManager";
 import { Icon } from "../Icon";
-import { Paragraph } from "../React95/Paragraph";
+import { Paragraph } from "../typography/Paragraph";
 import { Window } from "../WindowManager/Window";
 import type { WindowMeta } from "../WindowManager/WindowManager";
 
@@ -118,7 +118,7 @@ export function ErrorDialog({
           disabled={detailsVisible}
           onClick={showDetails}
         >
-          Details &gt;&gt;
+          Details&gt;&gt;
         </Button>
       </ErrorMessageContents>
       {detailsVisible ? (

@@ -7,7 +7,7 @@ import { useWindowManager } from "../../hooks/useWindowManager";
 import type { MastodonInstance } from "../../types";
 import { http } from "../../utils/http-request";
 import { AlertDialog } from "../dialogs/AlertDialog";
-import { Paragraph } from "../React95/Paragraph";
+import { Paragraph } from "../typography/Paragraph";
 import type { WindowMeta } from "../WindowManager/WindowManager";
 import { WizardWindow } from "./WizardWindow";
 
