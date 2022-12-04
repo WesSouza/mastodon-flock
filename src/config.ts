@@ -30,6 +30,7 @@ export const config = {
     mastodonKnownInstances: `${origin}/mastodon/known-instances`,
     mastodonLogin: `${origin}/mastodon/login`,
     mastodonReturn: `${origin}/mastodon/return`,
+    privacy: `${origin}/privacy`,
     results: `${origin}/results`,
     twitterLogin: `${origin}/twitter/login`,
     twitterFollowing: `${origin}/twitter/following`,

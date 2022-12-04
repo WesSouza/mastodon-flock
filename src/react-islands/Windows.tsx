@@ -1,9 +1,11 @@
+import { PrivacyPolicy } from "../components/PrivacyPolicy";
 import { Results } from "../components/Results/Results";
 import { WindowManager } from "../components/WindowManager/WindowManager";
 import { Wizard } from "../components/Wizard/Wizard";
 import { React95 } from "../layouts/React95";
 
 const mainWindows = {
+  PrivacyPolicy: PrivacyPolicy,
   Results: Results,
   Wizard: Wizard,
 };
