@@ -1,7 +1,7 @@
 ---
 import { config } from "../config";
 import Layout from "../layouts/Layout.astro";
-import { MastodonFlock } from "../react-islands/MastodonFlock";
+import { Windows } from "../react-islands/Windows";
 
 Astro.response.headers.set("cache-control", "s-maxage=86400, max-age=600");
 
@@ -16,7 +16,7 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site).toString();
   <main>
     <h1><a href={config.urls.home}>Mastodon Flock</a></h1>
     <section>
-      <MastodonFlock client:only="react" />
+      <Windows client:only="react" mainWindow="Wizard" />
     </section>
   </main>
 </Layout>

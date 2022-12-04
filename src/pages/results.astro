@@ -1,13 +1,13 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { People } from "../react-islands/People";
+import { Windows } from "../react-islands/Windows";
 
 Astro.response.headers.set("cache-control", "s-maxage=86400, max-age=600");
 ---
 
 <Layout title="Mastodon Flock">
   <main>
-    <People client:only="react" />
+    <Windows client:only="react" mainWindow="Results" />
   </main>
 </Layout>
 
