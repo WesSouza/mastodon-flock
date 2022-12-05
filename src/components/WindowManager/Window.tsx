@@ -30,10 +30,12 @@ const WindowStyled = styled(React95Window)<{ minWidth: string | undefined }>`
 const WindowHeaderStyled = styled(WindowHeader)`
   display: flex;
   align-items: center;
+  padding: 2px;
+  padding-inline-end: 4px;
 `;
 
-const WindowIcon = styled(Icon)`
-  padding-inline-start: 5px;
+const WindowIcon = styled.span`
+  display: block;
 
   @media print {
     display: none;
@@ -43,6 +45,7 @@ const WindowIcon = styled(Icon)`
 const WindowTitle = styled.span`
   padding-inline-start: 5px;
   margin-inline-end: auto;
+  font-size: 1.05em;
 
   @media print {
     & {
@@ -124,7 +127,11 @@ export function Window({
   return (
     <WindowStyled minWidth={minWidth}>
       <WindowHeaderStyled active={animatedActive ?? windowMeta.active}>
-        {icon ? <WindowIcon icon={icon} /> : undefined}
+        {icon ? (
+          <WindowIcon>
+            <Icon icon={icon} />
+          </WindowIcon>
+        ) : undefined}
         <WindowTitle>{title}</WindowTitle>
         <WindowButton onClick={onClose}>
           <svg aria-label="Close Window">
