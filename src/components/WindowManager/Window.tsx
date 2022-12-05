@@ -7,6 +7,7 @@ import {
 } from "react95";
 import styled from "styled-components";
 
+import { Icon, IconProps } from "../Icon";
 import type { WindowMeta } from "./WindowManager";
 
 const blinkTimerInterval = 100;
@@ -55,6 +56,7 @@ const WindowContentStyled = styled(WindowContent)<{
 
 export function Window({
   children,
+  icon,
   minWidth,
   noPadding,
   onClose,
@@ -62,6 +64,7 @@ export function Window({
   windowMeta,
 }: {
   children: React.ReactNode;
+  icon?: IconProps["icon"];
   minWidth?: string;
   noPadding?: boolean;
   onClose: () => void;
@@ -99,6 +102,7 @@ export function Window({
   return (
     <WindowStyled minWidth={minWidth}>
       <WindowHeaderStyled active={animatedActive ?? windowMeta.active}>
+        {icon ? <WindowIcon icon={icon} /> : undefined}
         <WindowTitle>{title}</WindowTitle>
         <WindowButton onClick={onClose}>
           <svg aria-label="Close Window">

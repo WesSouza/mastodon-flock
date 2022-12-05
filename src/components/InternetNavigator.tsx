@@ -179,6 +179,7 @@ export function InternetNavigator({
 
   return (
     <Window
+      icon="toolbarWebDocument"
       minWidth="1000px"
       noPadding={true}
       onClose={handleClose}

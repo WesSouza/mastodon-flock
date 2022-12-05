@@ -198,6 +198,7 @@ export function Results() {
 
   return (
     <Window
+      icon="toolbarMastodon"
       minWidth="1000px"
       noPadding={true}
       onClose={handleClose}
