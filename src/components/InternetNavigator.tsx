@@ -30,6 +30,14 @@ const WindowContent = styled(ScrollView).attrs({ variant: "field" })<{
   & > div {
     padding: ${({ noPadding }) => (noPadding ? "2px" : "2em")};
   }
+
+  @media print {
+    overflow: visible;
+
+    & > div {
+      overflow: visible;
+    }
+  }
 `;
 
 const WebViewWrapper = styled(Frame).attrs({ variant: "field" })`
@@ -51,6 +59,12 @@ const StatusBar = styled(Frame).attrs({
   padding: 4px 6px;
   width: 100%;
   margin-block-start: 4px;
+
+  @media print {
+    & {
+      display: none;
+    }
+  }
 `;
 
 export function InternetNavigator({

@@ -14,6 +14,10 @@ const TaskbarComponent = styled(Frame)`
   border-right: none;
   border-bottom: none;
   box-shadow: inset 0 2px 0px 0px #fefefe;
+
+  @media print {
+    display: none;
+  }
 `;
 
 export function Taskbar() {

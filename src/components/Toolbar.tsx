@@ -15,9 +15,17 @@ export const Toolbar = styled.div`
     margin-block-start: 0;
   }
 
+  @media print {
+    display: none;
+  }
+`;
+
 export const ToolbarDivider = styled(Separator).attrs({
   orientation: "horizontal",
 })`
+  @media print {
+    display: none;
+  }
 `;
 
 export const ToolbarHandle = styled(Handle).attrs({ variant: "thin" })`

@@ -92,4 +92,11 @@ const domain = new URL(Astro.site ?? "").hostname;
     width: 100%;
     height: calc(100vh - var(--taskbar-height));
   }
+
+  @media print {
+    main {
+      justify-content: flex-start;
+      height: auto;
+    }
+  }
 </style>

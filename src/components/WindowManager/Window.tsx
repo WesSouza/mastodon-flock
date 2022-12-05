@@ -21,6 +21,10 @@ const WindowStyled = styled(React95Window)<{ minWidth: string | undefined }>`
   max-height: 100%;
   align-self: center;
   z-index: 1;
+
+  @media print {
+    max-height: none;
+  }
 `;
 
 const WindowHeaderStyled = styled(WindowHeader)`
@@ -28,9 +32,23 @@ const WindowHeaderStyled = styled(WindowHeader)`
   align-items: center;
 `;
 
+const WindowIcon = styled(Icon)`
+  padding-inline-start: 5px;
+
+  @media print {
+    display: none;
+  }
+`;
+
 const WindowTitle = styled.span`
   padding-inline-start: 5px;
   margin-inline-end: auto;
+
+  @media print {
+    & {
+      color: black;
+    }
+  }
 `;
 
 const WindowButton = styled(Button)`
@@ -52,6 +70,10 @@ const WindowContentStyled = styled(WindowContent)<{
   overflow: hidden;
   height: 100%;
   ${({ noPadding }) => (noPadding ? `padding: 2px;` : "")}
+
+  @media print {
+    overflow: visible;
+  }
 `;
 
 export function Window({
