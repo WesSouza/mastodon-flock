@@ -3,6 +3,7 @@ import { Button, Frame } from "react95";
 import styled from "styled-components";
 
 import { Icon, IconProps } from "../components/Icon";
+import { useWinAmp } from "../hooks/useWinAmp";
 import { React95 } from "../layouts/React95";
 
 const TaskbarArea = styled(Frame)`
@@ -102,6 +103,8 @@ export function Taskbar() {
     };
   }, []);
 
+  const play = useWinAmp("/sounds/DING.mp3");
+
   return (
     <React95>
       <footer>
@@ -115,6 +118,9 @@ export function Taskbar() {
             </TaskbarButton>
           ) : undefined}
           <TaskbarStatus>
+            <TaskbarIcon forwardedAs="button" onMouseDown={play}>
+              <Icon icon="toolbarSpeaker" />
+            </TaskbarIcon>
             {date}
           </TaskbarStatus>
         </TaskbarArea>
