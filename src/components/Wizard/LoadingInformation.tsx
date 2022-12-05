@@ -56,9 +56,9 @@ export function Installer({
   return (
     <FrameStyled>
       <Paragraph>
-        {status}
+        {status ?? " "}
         <br />
-        {subStatus}
+        {subStatus ?? " "}
       </Paragraph>
       <ProgressBar value={progress} shadow={false} />
       <Center>
