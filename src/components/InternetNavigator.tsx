@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
-import { Button, Frame, ScrollView, Separator } from "react95";
+import { Button, Frame, ScrollView } from "react95";
 import styled from "styled-components";
 import { config } from "../config";
 import { useSearchParamsState } from "../hooks/useSearchParamsState";
 
 import { useWindowManager } from "../hooks/useWindowManager";
-import { Icon } from "./Icon";
 import {
   Toolbar,
   ToolbarButtonIcon,
+  ToolbarDivider,
   ToolbarHandle,
   ToolbarInput,
   ToolbarLabel,
@@ -204,99 +204,77 @@ export function InternetNavigator({
           Help
         </Button>
       </Toolbar>
-      <Separator orientation="horizontal" />
+      <ToolbarDivider />
       <Toolbar>
         <ToolbarHandle />
         <ToolbarButtonIcon
-          variant="thin"
+          icon="toolbarBack"
           onClick={handleBack}
           onMouseEnter={handleBackMouseEnter}
           onMouseLeave={handleToolbarMouseLeave}
-        >
-          <Icon icon="toolbarBack" />
-        </ToolbarButtonIcon>
+        />
         <ToolbarButtonIcon
-          variant="thin"
+          icon="toolbarForward"
           onClick={handleForward}
           onMouseEnter={handleForwardMouseEnter}
           onMouseLeave={handleToolbarMouseLeave}
-        >
-          <Icon icon="toolbarForward" />
-        </ToolbarButtonIcon>
+        />
         <ToolbarButtonIcon
-          variant="thin"
+          icon="toolbarStop"
           onClick={handleStop}
           onMouseEnter={handleStopMouseEnter}
           onMouseLeave={handleToolbarMouseLeave}
-        >
-          <Icon icon="toolbarStop" />
-        </ToolbarButtonIcon>
+        />
         <ToolbarButtonIcon
-          variant="thin"
+          icon="toolbarRefresh"
           onClick={handleRefresh}
           onMouseEnter={handleRefreshMouseEnter}
           onMouseLeave={handleToolbarMouseLeave}
-        >
-          <Icon icon="toolbarRefresh" />
-        </ToolbarButtonIcon>
+        />
         <ToolbarButtonIcon
-          variant="thin"
+          icon="toolbarHome"
           onClick={handleHome}
           onMouseEnter={handleHomeMouseEnter}
           onMouseLeave={handleToolbarMouseLeave}
-        >
-          <Icon icon="toolbarHome" />
-        </ToolbarButtonIcon>
+        />
         <ToolbarButtonIcon
-          variant="thin"
+          icon="toolbarSearchWeb"
           onClick={handleSearchWeb}
           onMouseEnter={handleSearchWebMouseEnter}
           onMouseLeave={handleToolbarMouseLeave}
-        >
-          <Icon icon="toolbarSearchWeb" />
-        </ToolbarButtonIcon>
+        />
         <ToolbarButtonIcon
-          variant="thin"
+          icon="toolbarFavorites"
           onClick={handleFavorites}
           onMouseEnter={handleFavoritesMouseEnter}
           onMouseLeave={handleToolbarMouseLeave}
-        >
-          <Icon icon="toolbarFavorites" />
-        </ToolbarButtonIcon>
+        />
         <ToolbarButtonIcon
-          variant="thin"
+          icon="toolbarPrint"
           onClick={handlePrint}
           onMouseEnter={handlePrintMouseEnter}
           onMouseLeave={handleToolbarMouseLeave}
-        >
-          <Icon icon="toolbarPrint" />
-        </ToolbarButtonIcon>
+        />
         <ToolbarButtonIcon
-          variant="thin"
+          icon="toolbarIncreaseFont"
           onClick={handleIncreaseFont}
           onMouseEnter={handleIncreaseFontMouseEnter}
           onMouseLeave={handleToolbarMouseLeave}
-        >
-          <Icon icon="toolbarIncreaseFont" />
-        </ToolbarButtonIcon>
+        />
         <ToolbarButtonIcon
-          variant="thin"
+          icon="toolbarDecreaseFont"
           onClick={handleDecreaseFont}
           onMouseEnter={handleDecreaseFontMouseEnter}
           onMouseLeave={handleToolbarMouseLeave}
-        >
-          <Icon icon="toolbarDecreaseFont" />
-        </ToolbarButtonIcon>
+        />
         <ToolbarButtonIcon
-          variant="thin"
+          icon="toolbarSendEmail"
           onClick={handleSendEmail}
           onMouseEnter={handleSendEmailMouseEnter}
           onMouseLeave={handleToolbarMouseLeave}
-        >
-          <Icon icon="toolbarSendEmail" />
-        </ToolbarButtonIcon>
+        />
       </Toolbar>
-      <Separator orientation="horizontal" />
+      <ToolbarDivider />
       <Toolbar>
         <ToolbarHandle />
         <ToolbarLabel htmlFor="InternetNavigatorAddress">Address:</ToolbarLabel>

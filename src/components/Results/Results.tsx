@@ -9,6 +9,13 @@ import { useSet } from "../../hooks/useSet";
 import { useWindowManager } from "../../hooks/useWindowManager";
 import type { AccountWithTwitter } from "../../types";
 import { getAccountInstanceUri } from "../../utils/fediverse";
+import {
+  Toolbar,
+  ToolbarButtonIcon,
+  ToolbarDivider,
+  ToolbarHandle,
+  ToolbarLabel,
+} from "../Toolbar";
 import { Window } from "../WindowManager/Window";
 import { ResultPerson } from "./ResultPerson";
 
@@ -47,18 +54,6 @@ const sortOptions = [
       (accountLeft.lastStatusAt ? Date.parse(accountLeft.lastStatusAt) : 0),
   },
 ];
-
-const Toolbar = styled.div`
-  position: relative;
-  display: flex;
-  margin-block-end: 4px;
-  justify-content: stretch;
-  z-index: 3;
-`;
-
-const ToolbarFilter = styled.div`
-  margin-inline-start: auto;
-`;
 
 const ScrollViewStyled = styled(ScrollView)`
   position: relative;
@@ -206,24 +201,46 @@ export function Results() {
       windowMeta={windowMeta}
     >
       <Toolbar>
-        <Button variant="thin" disabled={!canFollow} onClick={handleSelectAll}>
-          Select All
+        <ToolbarHandle />
+        <Button variant="thin" size="sm">
+          File
         </Button>
-        <Button
-          variant="thin"
+        <Button variant="thin" size="sm">
+          Edit
+        </Button>
+        <Button variant="thin" size="sm">
+          View
+        </Button>
+        <Button variant="thin" size="sm">
+          Help
+        </Button>
+      </Toolbar>
+      <ToolbarDivider />
+      <Toolbar>
+        <ToolbarHandle />
+        <ToolbarButtonIcon
+          icon="toolbarSelectAll"
+          disabled={!canFollow}
+          onClick={handleSelectAll}
+          label="Select all"
+        />
+
+        <ToolbarButtonIcon
+          icon="toolbarFollow"
           disabled={!canFollow || !selectedAccountIds.size || isLoading}
           onClick={handleFollowSelected}
-        >
-          Follow
-        </Button>
-        <Button
-          variant="thin"
+          label="Follow"
+        />
+
+        <ToolbarButtonIcon
+          icon="toolbarUnfollow"
           disabled={!canFollow || !selectedAccountIds.size || isLoading}
           onClick={handleUnfollowSelected}
-        >
-          Unfollow
-        </Button>
-        <ToolbarFilter>
+          label="Unfollow"
+        />
+
+        <ToolbarHandle />
+        <ToolbarLabel>
           <label htmlFor="sortOptions">Sort by:</label>{" "}
           <Select
             id="sortOptions"
@@ -231,11 +248,13 @@ export function Results() {
             value={sortValue}
             onChange={handleSortChange}
           />
-        </ToolbarFilter>
+        </ToolbarLabel>
         <Separator orientation="vertical" size="auto" />
-        <Button variant="thin" disabled={!canFollow} onClick={handleExportCsv}>
-          Export CSV
-        </Button>
+        <ToolbarButtonIcon
+          icon="toolbarExportMastodon"
+          disabled={!canFollow}
+          onClick={handleExportCsv}
+        />
       </Toolbar>
       <ScrollViewStyled shadow={false}>
         <PeopleListHeader method={method}>

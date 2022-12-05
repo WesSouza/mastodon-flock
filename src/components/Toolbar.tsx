@@ -1,5 +1,6 @@
-import { Button, Handle, TextInput } from "react95";
+import { Button, ButtonProps, Handle, Separator, TextInput } from "react95";
 import styled from "styled-components";
+import { Icon, IconProps } from "./Icon";
 
 export const Toolbar = styled.div`
   position: relative;
@@ -13,6 +14,10 @@ export const Toolbar = styled.div`
   &:first-child {
     margin-block-start: 0;
   }
+
+export const ToolbarDivider = styled(Separator).attrs({
+  orientation: "horizontal",
+})`
 `;
 
 export const ToolbarHandle = styled(Handle).attrs({ variant: "thin" })`
@@ -20,11 +25,10 @@ export const ToolbarHandle = styled(Handle).attrs({ variant: "thin" })`
   height: auto;
   margin-inline-end: 4px;
   content: "";
-`;
 
-export const ToolbarButtonIcon = styled(Button).attrs({ variant: "thin" })`
-  height: 44px;
-  padding-inline: 6px;
+  &:not(:first-child) {
+    margin-inline-start: auto;
+  }
 `;
 
 export const ToolbarLabel = styled.label`
@@ -34,3 +38,31 @@ export const ToolbarLabel = styled.label`
 export const ToolbarInput = styled(TextInput)`
   flex-grow: 1;
 `;
+
+export const ToolbarButtonIconWrapper = styled(Button).attrs({
+  variant: "thin",
+})`
+  height: 44px;
+  padding-inline: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+export const ToolbarButtonLabel = styled.span``;
+
+export function ToolbarButtonIcon({
+  icon,
+  label,
+  ...buttonProps
+}: {
+  icon: IconProps["icon"];
+  label?: string;
+} & Omit<ButtonProps, "children">) {
+  return (
+    <ToolbarButtonIconWrapper {...buttonProps}>
+      <Icon icon={icon} disabled={buttonProps.disabled ?? false} />
+      {label ? <ToolbarButtonLabel>{label}</ToolbarButtonLabel> : undefined}
+    </ToolbarButtonIconWrapper>
+  );
+}

@@ -159,6 +159,21 @@ export function WindowManager({ children }: { children: React.ReactNode }) {
       ))}
       <SvgSprite>
         <svg xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <filter
+              id="toolbar-disabled-icon"
+              x="0"
+              y="0"
+              width="100%"
+              height="100%"
+            >
+              <feColorMatrix
+                in="SourceGraphic"
+                type="matrix"
+                values="0 0 0 0 0.23 0 0 0 0 0.23 0 0 0 0 0.23 -10 -10 -10 10 0"
+              />
+            </filter>
+          </defs>
           <symbol id="window-restore" viewBox="0 0 18 15">
             <path
               fill="#000"
