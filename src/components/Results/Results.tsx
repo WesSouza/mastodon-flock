@@ -72,10 +72,11 @@ const ToolbarFilter = styled.div`
 
 const ScrollViewStyled = styled(ScrollView)`
   position: relative;
+  overflow: hidden;
   background: #fff;
   width: 100%;
   height: 100%;
-  flex: 0;
+
   & > div {
     padding: 0;
   }

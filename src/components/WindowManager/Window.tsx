@@ -14,6 +14,8 @@ const blinkTimerRepeat = 3;
 
 const WindowStyled = styled(React95Window)<{ minWidth: string | undefined }>`
   position: relative;
+  display: flex;
+  flex-direction: column;
   width: min(100%, ${({ minWidth }) => minWidth ?? "700px"});
   max-height: 100%;
   align-self: center;
@@ -44,6 +46,10 @@ const WindowButton = styled(Button)`
 const WindowContentStyled = styled(WindowContent)<{
   noPadding: boolean | undefined;
 }>`
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  height: 100%;
   ${({ noPadding }) => (noPadding ? `padding: 2px;` : "")}
 `;
 
