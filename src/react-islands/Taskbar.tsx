@@ -85,18 +85,17 @@ export function Taskbar() {
   const [date, setDate] = useState<string>();
 
   useEffect(() => {
+    let timer: number;
+
     function clock() {
       const date = new Date();
       setDate(dateFormatter.format(date));
 
-      return date.getSeconds();
+      const seconds = date.getSeconds() * 1000 + date.getMilliseconds();
+      timer = window.setTimeout(clock, 60000 - seconds);
     }
 
-    const seconds = clock();
-    let timer = window.setTimeout(() => {
-      clock();
-      timer = window.setInterval(clock, 60000);
-    }, (60 - seconds) * 1000);
+    clock();
 
     return () => {
       window.clearTimeout(timer);
