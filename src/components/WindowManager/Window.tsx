@@ -15,6 +15,8 @@ const blinkTimerRepeat = 3;
 const WindowStyled = styled(React95Window)<{ minWidth: string | undefined }>`
   position: relative;
   width: min(100%, ${({ minWidth }) => minWidth ?? "700px"});
+  max-height: 100%;
+  align-self: center;
   z-index: 1;
 `;
 

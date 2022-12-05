@@ -9,18 +9,5 @@ Astro.response.headers.set("cache-control", "s-maxage=86400, max-age=600");
   title="Privacy Policy"
   description="Mastodon Flock privacy policy describing how it handles your data."
 >
-  <main>
-    <Windows client:only="react" mainWindow="PrivacyPolicy" />
-  </main>
+  <Windows client:only="react" mainWindow="PrivacyPolicy" />
 </Layout>
-
-<style>
-  main {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-grow: 1;
-    width: 100%;
-    height: 100%;
-  }
-</style>

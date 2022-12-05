@@ -13,12 +13,10 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site).toString();
   description="Migrate your tweeps to the Fediverse"
   canonicalUrl={canonicalUrl}
 >
-  <main>
-    <h1><a href={config.urls.home}>Mastodon Flock</a></h1>
-    <section>
-      <Windows client:only="react" mainWindow="Wizard" />
-    </section>
-  </main>
+  <h1><a href={config.urls.home}>Mastodon Flock</a></h1>
+  <section>
+    <Windows client:only="react" mainWindow="Wizard" />
+  </section>
 </Layout>
 
 <style>
@@ -32,14 +30,6 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site).toString();
     );
     background-color: #0000ff;
     background-attachment: fixed;
-  }
-
-  main {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 100%;
-    flex-grow: 1;
   }
 
   h1 {

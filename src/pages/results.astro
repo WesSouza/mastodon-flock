@@ -6,18 +6,5 @@ Astro.response.headers.set("cache-control", "s-maxage=86400, max-age=600");
 ---
 
 <Layout title="Mastodon Flock">
-  <main>
-    <Windows client:only="react" mainWindow="Results" />
-  </main>
+  <Windows client:only="react" mainWindow="Results" />
 </Layout>
-
-<style>
-  main {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-grow: 1;
-    width: 100%;
-    height: 100%;
-  }
-</style>
