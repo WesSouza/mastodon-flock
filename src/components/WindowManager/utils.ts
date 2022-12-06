@@ -2,12 +2,13 @@ import type { WindowMeta, WindowRecord } from "./WindowManager";
 
 export function getMetaFromWindowRecord(
   windowOrId: WindowRecord | string,
-  options: { active: boolean },
+  options: { active: boolean; modal: boolean },
 ): WindowMeta {
   if (typeof windowOrId === "string") {
     return {
       id: windowOrId,
       active: options.active,
+      modal: options.modal,
       titleBlink: 0,
     };
   }
@@ -15,6 +16,7 @@ export function getMetaFromWindowRecord(
   return {
     id: windowOrId.id,
     active: options.active,
+    modal: options.modal,
     titleBlink: windowOrId.animations.titleBlink,
   };
 }

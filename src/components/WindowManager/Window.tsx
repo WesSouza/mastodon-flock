@@ -1,3 +1,4 @@
+import FocusTrap from "focus-trap-react";
 import { useEffect, useRef, useState } from "react";
 import {
   Button,
@@ -155,7 +156,7 @@ export function Window({
     );
   }, [windowMeta.titleBlink]);
 
-  return (
+  const component = (
     <WindowStyled size={size}>
       <WindowHeaderStyled active={animatedActive ?? windowMeta.active}>
         {icon ? (
@@ -175,4 +176,10 @@ export function Window({
       </WindowContentStyled>
     </WindowStyled>
   );
+
+  if (windowMeta.active && windowMeta.modal) {
+    return <FocusTrap>{component}</FocusTrap>;
+  }
+
+  return component;
 }

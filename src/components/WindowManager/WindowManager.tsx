@@ -24,6 +24,7 @@ export type WindowOpenFn = <T extends React.ElementType<any>>(
 export type WindowMeta = {
   active: boolean;
   id: string;
+  modal: boolean;
   titleBlink: number;
 };
 

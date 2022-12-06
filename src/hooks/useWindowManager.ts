@@ -55,6 +55,7 @@ export function useWindowManager({ windowId }: { windowId?: string } = {}) {
     () =>
       getMetaFromWindowRecord(windowId ?? selfWindowId.current ?? "", {
         active,
+        modal: false,
       }),
     [active, windowId],
   );

@@ -18,7 +18,7 @@ const ModalOverlay = styled.div`
 
 export function WindowRenderer({
   active,
-  modal,
+  modal = false,
   onModalClickOutside,
   window,
 }: {
@@ -37,8 +37,8 @@ export function WindowRenderer({
   );
 
   const windowMeta: WindowMeta = useMemo(
-    () => getMetaFromWindowRecord(window, { active }),
-    [active, window],
+    () => getMetaFromWindowRecord(window, { active, modal }),
+    [active, modal, window],
   );
 
   if (modal) {
