@@ -234,12 +234,14 @@ export type IconProps = {
   disabled?: boolean;
   icon: keyof typeof icons;
   size?: "small" | "medium" | "large";
+  title?: string;
 };
 
 export function Icon({
   disabled,
   icon: iconKey,
   size: sizeName = "large",
+  title,
 }: IconProps) {
   const icon = icons[iconKey];
   const size = sizeName === "small" ? 16 : sizeName === "medium" ? 32 : 64;
@@ -251,6 +253,7 @@ export function Icon({
         disabled={disabled ?? false}
         imageSrc={icon.imageSrc}
         rect={icon.spriteCoordinates}
+        title={title}
       />
     );
   }
@@ -262,6 +265,7 @@ export function Icon({
       disabled={disabled ?? false}
       width={size}
       height={size}
+      title={title}
     />
   );
 }

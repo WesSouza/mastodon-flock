@@ -74,3 +74,16 @@ export function ToolbarButtonIcon({
     </ToolbarButtonIconWrapper>
   );
 }
+
+export const ToolbarIconWrapper = styled.div`
+  height: 32px;
+  padding: 6px;
+`;
+
+export function ToolbarIcon(props: IconProps) {
+  return (
+    <ToolbarIconWrapper>
+      <Icon {...props} />
+    </ToolbarIconWrapper>
+  );
+}
