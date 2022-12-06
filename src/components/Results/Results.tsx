@@ -1,5 +1,12 @@
 import { useCallback, useEffect, useMemo } from "react";
-import { Button, Frame, ScrollView, Select, Separator } from "react95";
+import {
+  Button,
+  Checkbox,
+  Frame,
+  ScrollView,
+  Select,
+  Separator,
+} from "react95";
 import styled from "styled-components";
 
 import { useCsvExporter } from "../../hooks/useCsvExporter";
@@ -14,12 +21,23 @@ import {
   ToolbarButtonIcon,
   ToolbarDivider,
   ToolbarHandle,
+  ToolbarIcon,
   ToolbarLabel,
 } from "../Toolbar";
 import { Window } from "../WindowManager/Window";
 import { ResultPerson } from "./ResultPerson";
 
 const sortOptions = [
+  {
+    label: "Status",
+    value: "followStatus",
+    sort: (accountLeft: AccountWithTwitter, accountRight: AccountWithTwitter) =>
+      accountLeft.following && !accountRight.following
+        ? 1
+        : !accountLeft.following && accountRight.following
+        ? -1
+        : accountLeft.name.localeCompare(accountRight.name),
+  },
   {
     label: "Name",
     value: "name",
@@ -47,8 +65,8 @@ const sortOptions = [
       ) ?? 0,
   },
   {
-    label: "Last active",
-    value: "lastActive",
+    label: "Activity",
+    value: "activity",
     sort: (accountLeft: AccountWithTwitter, accountRight: AccountWithTwitter) =>
       (accountRight.lastStatusAt ? Date.parse(accountRight.lastStatusAt) : 0) -
       (accountLeft.lastStatusAt ? Date.parse(accountLeft.lastStatusAt) : 0),
@@ -71,15 +89,61 @@ const PeopleListHeader = styled.div<{ method: string | undefined }>`
   position: sticky;
   top: 0;
   display: grid;
-  grid-template-columns: 40px 68px ${({ method }) =>
-      method === "typical" ? "2fr" : ""} 2fr 1fr;
   z-index: 2;
+
+  @media (max-width: 767px) {
+    grid-template: ${({ method }) =>
+      method === "typical"
+        ? `"Checkbox Account Account" auto / 40px 68px 1fr`
+        : `"Account Account" auto / 68px 1fr`};
+  }
+
+  @media (min-width: 768px) {
+    grid-template: ${({ method }) =>
+      method === "typical"
+        ? `"Checkbox Account Account Details Actions" auto / 40px 68px 2fr 2fr 1fr`
+        : `"Account Account Actions" auto / 68px 2fr 1fr`};
+  }
 `;
 
 const PeopleListHeaderCell = styled(Frame).attrs({
   variant: "button",
 })`
-  padding: 4px 8px;
+  padding: 6px 8px;
+`;
+
+const PeopleListHeaderCheckbox = styled(PeopleListHeaderCell)`
+  grid-area: Checkbox;
+  padding-block: 0;
+`;
+
+const PeopleListHeaderAccount = styled(PeopleListHeaderCell)`
+  grid-area: Account;
+`;
+
+const PeopleListHeaderDetails = styled(PeopleListHeaderCell)`
+  grid-area: Details;
+
+  @media (max-width: 767px) {
+    display: none;
+  }
+`;
+
+const PeopleListHeaderActions = styled(PeopleListHeaderCell)`
+  grid-area: Actions;
+
+  @media (max-width: 767px) {
+    display: none;
+  }
+`;
+
+const PeopleCheckbox = styled(Checkbox)`
+  display: block;
+  margin: 8px 0;
+
+  & > div {
+    margin: 0;
+  }
 `;
 
 const PeopleList = styled.ul`
@@ -145,7 +209,8 @@ export function Results() {
     });
   }, [results?.accounts, selectedAccountIds]);
 
-  const [sortValue = "name", setSortValue] = useSearchParamsState("sortBy");
+  const [sortValue = "followStatus", setSortValue] =
+    useSearchParamsState("sortBy");
   const sortedAccounts = useMemo(() => {
     const sortOption =
       sortOptions.find((sortOption) => sortOption.value === sortValue) ??
@@ -209,7 +274,6 @@ export function Results() {
     [results?.accounts.length, selectedAccountIds.size],
   );
 
-  const canFollow = method === "typical";
   const isLoading = loadingAccountIds.size > 0;
 
   if (!results) {
@@ -240,56 +304,64 @@ export function Results() {
           Help
         </Button>
       </Toolbar>
-      <ToolbarDivider />
-      <Toolbar>
-        <ToolbarHandle />
-        <ToolbarButtonIcon
-          icon="toolbarSelectAll"
-          disabled={!canFollow}
-          onClick={handleSelectAll}
-          label="Select all"
-        />
+      {method === "typical" ? (
+        <>
+          <ToolbarDivider />
+          <Toolbar>
+            <ToolbarHandle />
+            <ToolbarButtonIcon
+              icon="toolbarFollow"
+              disabled={!selectedAccountIds.size || isLoading}
+              onClick={handleFollowSelected}
+              title="Follow Selected Accounts"
+            />
 
-        <ToolbarButtonIcon
-          icon="toolbarFollow"
-          disabled={!canFollow || !selectedAccountIds.size || isLoading}
-          onClick={handleFollowSelected}
-          label="Follow"
-        />
+            <ToolbarButtonIcon
+              icon="toolbarUnfollow"
+              disabled={!selectedAccountIds.size || isLoading}
+              onClick={handleUnfollowSelected}
+              title="Unfollow Selected Accounts"
+            />
 
-        <ToolbarButtonIcon
-          icon="toolbarUnfollow"
-          disabled={!canFollow || !selectedAccountIds.size || isLoading}
-          onClick={handleUnfollowSelected}
-          label="Unfollow"
-        />
-
-        <ToolbarHandle />
-        <ToolbarLabel>
-          <label htmlFor="sortOptions">Sort by:</label>{" "}
-          <Select
-            id="sortOptions"
-            options={sortOptions}
-            value={sortValue}
-            onChange={handleSortChange}
-          />
-        </ToolbarLabel>
-        <Separator orientation="vertical" size="auto" />
-        <ToolbarButtonIcon
-          icon="toolbarExportMastodon"
-          disabled={!canFollow}
-          onClick={handleExportCsv}
-        />
-      </Toolbar>
+            <ToolbarHandle />
+            <ToolbarIcon icon="toolbarSort" title="Sort" />
+            <ToolbarLabel>
+              <Select
+                id="sortOptions"
+                options={sortOptions}
+                value={sortValue}
+                onChange={handleSortChange}
+              />
+            </ToolbarLabel>
+            <Separator orientation="vertical" size="auto" />
+            <ToolbarButtonIcon
+              icon="toolbarExportMastodon"
+              onClick={handleExportCsv}
+              title="Download Mastodon CSV File"
+            />
+          </Toolbar>
+        </>
+      ) : undefined}
       <ScrollViewStyled shadow={false}>
         <PeopleListHeader method={method}>
-          <PeopleListHeaderCell />
-          <PeopleListHeaderCell>Pic</PeopleListHeaderCell>
-          <PeopleListHeaderCell>Account</PeopleListHeaderCell>
           {method === "typical" ? (
-            <PeopleListHeaderCell>Details</PeopleListHeaderCell>
+            <PeopleListHeaderCheckbox>
+              <PeopleCheckbox
+                checked={selectedAccountIds.size === sortedAccounts.length}
+                indeterminate={Boolean(
+                  selectedAccountIds.size &&
+                    selectedAccountIds.size < sortedAccounts.length,
+                )}
+                onClick={handleSelectAll}
+              />
+            </PeopleListHeaderCheckbox>
           ) : undefined}
-          <PeopleListHeaderCell>Actions</PeopleListHeaderCell>
+
+          <PeopleListHeaderAccount>Account</PeopleListHeaderAccount>
+          {method === "typical" ? (
+            <PeopleListHeaderDetails>Details</PeopleListHeaderDetails>
+          ) : undefined}
+          <PeopleListHeaderActions>Actions</PeopleListHeaderActions>
         </PeopleListHeader>
         <PeopleList>
           {sortedAccounts.map((account) => (
