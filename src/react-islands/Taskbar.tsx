@@ -12,7 +12,8 @@ const TaskbarArea = styled(Frame)`
   width: 100%;
   height: auto;
   bottom: 0;
-  padding: 4px;
+  padding: 4px 2px 2px 2px;
+  gap: 4px;
   border-left: none;
   border-right: none;
   border-bottom: none;
@@ -27,12 +28,30 @@ const TaskbarArea = styled(Frame)`
 
 const TaskbarButton = styled(Button)`
   width: min(100%, 250px);
+  max-width: 250px;
   justify-content: flex-start;
+  overflow: hidden;
 `;
 
 const TaskbarIcon = styled.span`
+  display: block;
   margin-inline-end: 8px;
+`;
+
+const TaskbarStatusButton = styled.button`
+  display: block;
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 0;
+  margin: 0;
   cursor: pointer;
+  margin-inline-end: 8px;
+
+  &:focus-visible {
+    outline: 2px dotted #000;
+    outline-offset: 1px;
+  }
 `;
 
 const TaskbarTitle = styled.div`
@@ -48,6 +67,7 @@ const TaskbarStatus = styled(Frame).attrs({ variant: "well" })`
   align-items: center;
   padding: 4px 8px;
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 `;
 
 const taskbarItems: Record<
@@ -118,9 +138,9 @@ export function Taskbar() {
             </TaskbarButton>
           ) : undefined}
           <TaskbarStatus>
-            <TaskbarIcon forwardedAs="button" onMouseDown={play}>
+            <TaskbarStatusButton onClick={play}>
               <Icon icon="toolbarSpeaker" />
-            </TaskbarIcon>
+            </TaskbarStatusButton>
             {date}
           </TaskbarStatus>
         </TaskbarArea>
