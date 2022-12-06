@@ -61,7 +61,7 @@ export function useMastodonFlock({
         onError(twitterFollowing.error);
         return;
       }
-      setProgress(25);
+      setProgress(10);
 
       const { potentialEmails, potentialInstanceProfiles, twitterUsers } =
         twitterFollowing;
@@ -82,7 +82,7 @@ export function useMastodonFlock({
           onError(mastodonAccountFollowing.error);
           return;
         }
-        setProgress(50);
+        setProgress(20);
 
         const { following } = mastodonAccountFollowing;
 
@@ -145,7 +145,7 @@ export function useMastodonFlock({
             },
           );
 
-          setProgress(Math.round(50 + 50 * (count / total)));
+          setProgress(Math.round(20 + 80 * (count / total)));
           if ("error" in mastodonAccountLookup) {
             if (mastodonAccountLookup.error === "aborted") {
               onError("aborted");
