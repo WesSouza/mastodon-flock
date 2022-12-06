@@ -1,3 +1,4 @@
+import { Anchor } from "../typography/Anchor";
 import { Paragraph } from "../typography/Paragraph";
 import type { WindowMeta } from "../WindowManager/WindowManager";
 import { WizardWindow } from "./WizardWindow";
@@ -26,6 +27,12 @@ export function Welcome({
         This program will guide you through finding your Twitter contacts on the
         Fediverse, provided they have added their external contact information
         on their profile name, description, URL or pinned Tweet.
+      </Paragraph>
+      <Paragraph>
+        <Anchor href="/about">
+          Click here to learn how this software works
+        </Anchor>
+        , and our <Anchor href="/privacy">privacy policy</Anchor>.
       </Paragraph>
       <Paragraph>
         Click Next to authorize this program to read your Twitter information.

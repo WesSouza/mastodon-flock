@@ -13,14 +13,15 @@ export function PrivacyPolicy() {
       <Paragraph>
         Mastodon Flock was designed to read and store the least amount of user
         information possible. Authentication data is encrypted and stored
-        locally. Results are also only stored locally.
+        locally. Results are also stored locally. All information is removed if
+        you close the browser or navigate away from the website.
       </Paragraph>
       <Heading level={2}>User Data, Authentication and Results</Heading>
       <Paragraph>
         Logging in to Twitter or Mastodon provides us with temporary
         authentication tokens, which are encrypted and stored in a cookie. This
         cookie is only exposed to our servers, and allows them to read necessary
-        information on your behalf.
+        information or act on your behalf.
       </Paragraph>
       <Paragraph>
         We don&rsquo;t store or log any user information or authentication data
@@ -28,10 +29,10 @@ export function PrivacyPolicy() {
         data when you are not using the software.
       </Paragraph>
       <Paragraph>
-        Results are stored in your browser&rsquo;s local storage and only last
-        during the current session. If you close all windows of the website,
-        your browser will remove them automatically. Please note that some
-        browsers will restore the data if you use the &ldquo;Reopen Last Closed
+        Results are stored temporarily in your browser, they only last during
+        the current session. If you close all windows of the website, your
+        browser will remove them automatically. Please note that some browsers
+        will restore the data if you use the &ldquo;Reopen Last Closed
         Tab&rdquo; functionality.
       </Paragraph>
       <Heading level={2}>Usage Statistics</Heading>
@@ -68,17 +69,27 @@ export function PrivacyPolicy() {
         </Anchor>
         .
       </Paragraph>
-      <Heading level={2}>Source Code</Heading>
+      <Heading level={2}>Revoking Access and Removing User Data</Heading>
+      <Paragraph>We do not store user data.</Paragraph>
       <Paragraph>
-        The software is completely open source and available at{" "}
+        If you&rsquo;d like to remove our application from your Twitter account,
+        navigate to your Twitter &ldquo;Settings&rdquo;, &ldquo;Security and
+        account access&rdquo;, &ldquo;Apps and sessions&rdquo;, &ldquo;Connected
+        apps&rdquo;,{" "}
         <Anchor
-          href="https://github.com/WesSouza/mastodon-flock"
+          href={config.urls.twitterAppRevoke}
           target="_blank"
           rel="nofollow noopener noreferrer"
         >
-          github.com/WesSouza/mastodon-flock
-        </Anchor>
-        .
+          &ldquo;Mastodon Flock&rdquo;
+        </Anchor>{" "}
+        then click &ldquo;Revoke app permissions&rdquo;.
+      </Paragraph>
+      <Paragraph>
+        If you&rsquo;d like to remove our application from your Mastodon
+        account, navigate to your Mastodon &ldquo;Preferences&rdquo;,
+        &ldquo;Account&rdquo;, &ldquo;Authorized apps&rdquo;, &ldquo;Mastodon
+        Flock&rdquo; then click &ldquo;Revoke&rdquo;.
       </Paragraph>
       <Heading level={2}>Changes and Questions</Heading>
       <Paragraph>
@@ -93,7 +104,7 @@ export function PrivacyPolicy() {
         if you have any questions, comments, or concerns about this privacy
         policy, your data, or your rights with respect to your information.
       </Paragraph>
-      <Paragraph>Last updated: December 4th, 2022</Paragraph>
+      <Paragraph>Last updated: December 6th, 2022</Paragraph>
     </InternetNavigator>
   );
 }

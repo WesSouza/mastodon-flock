@@ -33,6 +33,9 @@ export const config = {
     mastodonReturn: `${origin}/mastodon/return`,
     privacy: `${origin}/privacy`,
     results: `${origin}/results`,
+    twitterAppRevoke: `https://twitter.com/settings/connected_apps/${
+      isLocal ? "26152973" : isPreview ? "26152969" : "26152908"
+    }`,
     twitterLogin: `${origin}/twitter/login`,
     twitterFollowing: `${origin}/twitter/following`,
     twitterReturn: `${origin}/twitter/return`,

@@ -11,83 +11,217 @@ export function About() {
     <InternetNavigator defaultUrl={config.urls.about} title="About">
       <Heading>About</Heading>
       <Paragraph>
-        Mastodon Flock is a web application that allows you to find people you
-        follow on Twitter that are also part of another social network from the
-        Fediverse, such as Mastodon.
+        Mastodon Flock is a web application that looks for Twitter users on
+        ActivityPub-enabled platforms (the &ldquo;Fediverse&rdquo;), such as
+        Mastodon.
       </Paragraph>
       <Paragraph>
-        It works by reading your Twitter follows information and checking if
-        they have indicated a Mastodon account. You are then able to follow them
-        or export a CSV that can be imported on your Mastodon instance.
+        It works by connecting to your Twitter account, reading your contacts
+        profile information, and checking if they have mentioned any external
+        accounts with a URL or email.
+      </Paragraph>
+      <Paragraph>
+        Matching accounts are then listed so you can connect with them. If you
+        use Mastodon, you are able to automatically follow, unfollow or export
+        the results in a CSV format.
       </Paragraph>
       <Paragraph>
         This is a personal project from{" "}
         <Anchor href="https://wes.dev/" target="_blank" rel="noopener">
           Wes Souza
         </Anchor>
-        . You can read more about the{" "}
+        , and an ode to the{" "}
+        <Anchor
+          href="https://react95.io/"
+          target="_blank"
+          rel="nofollow noopener noreferrer"
+        >
+          Windows 95
+        </Anchor>{" "}
+        era. You can read more about the{" "}
         <Anchor href="#technology-stack">technology stack below</Anchor>.
       </Paragraph>
       <Heading level={2} anchorName="how-to-use-it">
         How to use it?
       </Heading>
       <Paragraph>
-        On our <Anchor href={config.urls.home}>Setup Wizard</Anchor>, click Next
-        to be directed to Twitter, then click Authorize app.
+        On the <Anchor href={config.urls.home}>Setup Wizard</Anchor>, click
+        Next. You will be redirected to Twitter where you should authorize our
+        app to read your information.
       </Paragraph>
-      <Paragraph>Then, select a method from the list.</Paragraph>
+      <Paragraph>After that you have two choices:</Paragraph>
       <UnorderedList>
         <ListItem>
           &ldquo;Typical&rdquo; uses your Mastodon instance to find accounts.
-          Once finished, it will also allow you to review, follow or unfollow
-          the discovered accounts.
+          Once finished, it will allow you to review, follow or unfollow the
+          discovered accounts.
         </ListItem>
         <ListItem>
           &ldquo;Advanced&rdquo; can be used to search every account on their
-          own instance directly. This can be used if you are not on Mastodon,
-          but another ActivityPub-compatible network. Note: you won&rsquo;t be
-          able to automatically follow or unfollow accounts.
+          own instance. This can be used if you are not on Mastodon, but another
+          ActivityPub-compatible network. Note: this process is slower, and you
+          won&rsquo;t be able to follow or unfollow accounts using this
+          software.
         </ListItem>
       </UnorderedList>
       <Paragraph>
         After the Setup concludes, you are taken to the Mastodon Flock results
-        window, which display every found account, as well as other options to
+        window, which displays every found account, as well as other options to
         help you follow them.
       </Paragraph>
       <Heading level={2} anchorName="how-does-it-work">
         How Does it Work?
       </Heading>
       <Paragraph>
-        Mastodon Flock relies on your follows information to discover their
-        Fediverse account. The Setup process will look for potential Fediverse
-        accounts based oh their name, bio, location, website and pinned tweet.
+        Mastodon Flock relies on your Twitter follows information to discover
+        their Fediverse account. The Setup process will look for potential
+        emails or URLs on their name, bio, location, website and pinned tweet.
       </Paragraph>
       <Paragraph>
-        Those potential accounts are then searched, and every match is stored
-        locally and presented in the results window.
+        Afterwards, a search process navigates through each potential account,
+        and if it finds a match, stores it locally. Once the process finishes,
+        you are presented with the results, where you can perform actions.
+      </Paragraph>
+      <Paragraph>
+        Everything is stored in your browser. Once you navigate away, all
+        information is deleted.
+      </Paragraph>
+      <Paragraph>
+        A comprehensive <Anchor href="/privacy">Privacy Policy</Anchor> is
+        available detailing what information is used and how it is handled.
       </Paragraph>
       <Heading level={2} anchorName="technology-stack">
         Technology Stack
       </Heading>
       <Paragraph>
-        Mastodon Flock is a TypeScript project that utilizes React components
-        and Astro as its building framework. The user interface uses
-        styled-components and is powered by React95 components.
+        Mastodon Flock is a TypeScript project that utilizes{" "}
+        <Anchor
+          href="https://reactjs.org/"
+          target="_blank"
+          rel="nofollow noopener noreferrer"
+        >
+          React
+        </Anchor>{" "}
+        components and{" "}
+        <Anchor
+          href="https://astro.build/"
+          target="_blank"
+          rel="nofollow noopener noreferrer"
+        >
+          Astro
+        </Anchor>{" "}
+        as its building framework. The user interface is powered by{" "}
+        <Anchor
+          href="https://react95.io/"
+          target="_blank"
+          rel="nofollow noopener noreferrer"
+        >
+          React95
+        </Anchor>{" "}
+        components, and additional{" "}
+        <Anchor
+          href="https://styled-components.com/"
+          target="_blank"
+          rel="nofollow noopener noreferrer"
+        >
+          styled-components
+        </Anchor>{" "}
+        styles.
       </Paragraph>
       <Paragraph>
-        On the server, we deploy assets and serverless functions to Vercel, and
-        use MongoDB via Mongoose for storing the list of Mastodon instances and
-        the necessary application tokens registered with them to enable user
-        authentication (user tokens are never stored).
+        On the server, we deploy assets and serverless functions to{" "}
+        <Anchor
+          href="https://vercel.com/"
+          target="_blank"
+          rel="nofollow noopener noreferrer"
+        >
+          Vercel
+        </Anchor>
+        , and use{" "}
+        <Anchor
+          href="https://www.mongodb.com/"
+          target="_blank"
+          rel="nofollow noopener noreferrer"
+        >
+          MongoDB
+        </Anchor>{" "}
+        via{" "}
+        <Anchor
+          href="https://mongoosejs.com/"
+          target="_blank"
+          rel="nofollow noopener noreferrer"
+        >
+          Mongoose
+        </Anchor>{" "}
+        for storing the list of Mastodon instances and the necessary application
+        tokens registered with them to enable user authentication (user tokens
+        are never stored).
       </Paragraph>
       <Heading level={3} anchorName="source-code">
-        Why Astro? Why styled-components?
+        Thanks and Acknowledgements
       </Heading>
       <Paragraph>
-        I wanted to experiment with Astro and pnpm for a project while also
-        using React95. Unfortunately, React95 requires styled-components, which
-        isn&rsquo;t compatible with Astro&rsquo;s server-side rendering or
-        static site generation.
+        I&rsquo;d like to thank{" "}
+        <Anchor
+          href="https://github.com/arturbien"
+          target="_blank"
+          rel="nofollow noopener noreferrer"
+        >
+          Artur Bień
+        </Anchor>{" "}
+        for the huge CSS help (as well as React95), as well as{" "}
+        <Anchor
+          href="https://www.gui.co"
+          target="_blank"
+          rel="nofollow noopener noreferrer"
+        >
+          Gui Albuquerque
+        </Anchor>{" "}
+        and{" "}
+        <Anchor
+          href="http://v42.com.br"
+          target="_blank"
+          rel="nofollow noopener noreferrer"
+        >
+          Vitor
+        </Anchor>{" "}
+        for helping me test the project.
+      </Paragraph>
+      <Paragraph>
+        I also took inspiration from other great Twitter-to-Mastodon tools such
+        as{" "}
+        <Anchor
+          href="https://twitodon.com/"
+          target="_blank"
+          rel="nofollow noopener noreferrer"
+        >
+          Twitodon
+        </Anchor>
+        ,{" "}
+        <Anchor
+          href="https://fedifinder.glitch.me/"
+          target="_blank"
+          rel="nofollow noopener noreferrer"
+        >
+          Fedifinder
+        </Anchor>
+        ,{" "}
+        <Anchor
+          href="https://debirdify.pruvisto.org/"
+          target="_blank"
+          rel="nofollow noopener noreferrer"
+        >
+          Debirdify
+        </Anchor>{" "}
+        and{" "}
+        <Anchor
+          href="https://www.movetodon.org/"
+          target="_blank"
+          rel="nofollow noopener noreferrer"
+        >
+          Movetodon
+        </Anchor>
+        .
       </Paragraph>
       <Heading level={3} anchorName="source-code">
         Source Code

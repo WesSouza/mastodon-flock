@@ -54,7 +54,7 @@ const WizardImage = styled.img`
 `;
 
 const WizardContent = styled.div`
-  height: 293px;
+  min-height: 293px;
   grid-area: Content;
   display: flex;
   flex-direction: column;
