@@ -62,4 +62,10 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site).toString();
     flex-grow: 1;
     width: 100%;
   }
+
+  @media (max-height: 767px) {
+    section {
+      height: calc(100vh - 10rem);
+    }
+  }
 </style>

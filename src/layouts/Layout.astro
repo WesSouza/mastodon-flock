@@ -90,13 +90,13 @@ const domain = new URL(Astro.site ?? "").hostname;
     justify-content: center;
     align-items: flex-start;
     width: 100%;
+    padding-block-end: var(--taskbar-height);
     z-index: 1;
   }
 
   @media (max-height: 767px) {
     main {
       justify-content: flex-start;
-      padding-bottom: var(--taskbar-height);
     }
   }
 
