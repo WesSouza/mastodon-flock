@@ -194,9 +194,9 @@ export function InternetNavigator({
   return (
     <Window
       icon="toolbarWebDocument"
-      minWidth="1000px"
       noPadding={true}
       onClose={handleClose}
+      size="large"
       title={`${title} – Web 1.0 Internet Navigator`}
       windowMeta={windowMeta}
     >

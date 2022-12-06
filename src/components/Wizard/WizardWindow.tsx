@@ -23,17 +23,29 @@ export type WizardWindowProps = {
 };
 
 const WizardWrapper = styled.div`
-  display: grid;
   gap: 20px;
-  column-gap: 32px;
-  grid-template:
-    "Image Content" 293px
-    "Separator Separator" 4px
-    "Footer Footer" 36px / 150px 1fr;
+
+  @media (max-width: 767px) {
+    display: flex;
+    flex-direction: column;
+  }
+
+  @media (min-width: 768px) {
+    display: grid;
+    column-gap: 32px;
+    grid-template:
+      "Image Content" 293px
+      "Separator Separator" 4px
+      "Footer Footer" 36px / 150px 1fr;
+  }
 `;
 
 const WizardImageWell = styled(Frame)`
   grid-area: Image;
+
+  @media (max-width: 767px) {
+    display: none;
+  }
 `;
 
 const WizardImage = styled.img`
@@ -42,6 +54,7 @@ const WizardImage = styled.img`
 `;
 
 const WizardContent = styled.div`
+  height: 293px;
   grid-area: Content;
   display: flex;
   flex-direction: column;
@@ -59,12 +72,20 @@ export const WizardFooterSpacer = styled.span`
 `;
 
 export const WizardFooterPhantomButton = styled.span`
-  display: inline-block;
+  display: block;
   width: 120px;
+
+  @media (max-width: 767px) {
+    width: 109px;
+  }
 `;
 
 export const WizardFooterButton = styled(Button)`
   width: 120px;
+
+  @media (max-width: 767px) {
+    width: 109px;
+  }
 `;
 
 export function WizardWindow({
@@ -79,7 +100,12 @@ export function WizardWindow({
   windowMeta,
 }: WizardWindowProps) {
   return (
-    <Window onClose={onClose} title={title} windowMeta={windowMeta}>
+    <Window
+      onClose={onClose}
+      size="medium"
+      title={title}
+      windowMeta={windowMeta}
+    >
       <WizardWrapper>
         <WizardImageWell variant="well">
           <WizardImage src={imageSrc} alt={imageAlt} />

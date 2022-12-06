@@ -1,7 +1,7 @@
 import formatDistanceToNow from "date-fns/formatDistanceToNow";
 import { useCallback } from "react";
 import { Button, Checkbox } from "react95";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import type { AccountWithTwitter, TwitterSearchUser } from "../../types";
 import { Anchor } from "../typography/Anchor";
@@ -10,15 +10,35 @@ const numberFormatter = new Intl.NumberFormat();
 
 const PersonListItem = styled.li<{ method: string | undefined }>`
   display: grid;
-  grid-template-columns: 40px ${({ method }) =>
-      method === "typical" ? "2fr" : ""} 2fr 1fr;
+
+  ${({ method }) => {
+    const typical = method === "typical";
+    return css`
+      @media (max-width: 767px) {
+        grid-template:
+          "Checkbox Image Account" auto
+          ${typical ? `"Checkbox Image Stats" auto` : ""}
+          "Checkbox Image Actions" auto
+          / 40px 68px 1fr;
+      }
+
+      @media (min-width: 768px) {
+        grid-template:
+          "Checkbox Image Account ${typical ? "Stats " : ""}Actions" 1fr
+          / 40px 68px 2fr ${typical ? "2fr " : ""}1fr;
+      }
+    `;
+  }}
+
   &:not(:last-child) {
     border-bottom: 2px solid ${({ theme }) => theme.flatLight};
   }
 `;
 
 const PersonCell = styled.div`
-  display: grid;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   padding: 10px;
 
   &:not(:last-child) {
@@ -26,44 +46,78 @@ const PersonCell = styled.div`
   }
 `;
 
-const PersonCellButtons = styled(PersonCell)`
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  place-content: center;
+const PersonCellCheckbox = styled(PersonCell)`
+  grid-area: Checkbox;
+  align-items: center;
+  padding-inline: 0;
 `;
 
-const PersonSocialAccount = styled.div`
-  display: grid;
-  grid-template:
-    "Image Name" 1fr
-    "Image Details" 1fr
-    / 48px 1fr;
-  column-gap: 10px;
-  row-gap: 4px;
-  line-height: 1.2;
+const PersonCheckbox = styled(Checkbox)`
+  display: block;
+
+  & > div {
+    margin: 0;
+  }
+`;
+
+const PersonCellImage = styled(PersonCell)`
+  grid-area: Image;
+  align-self: flex-start;
+
+  @media (max-width: 767px) {
+    &:not(:last-child) {
+      border-right: 0;
+    }
+  }
 `;
 
 const PersonSocialAccountImage = styled.img`
-  grid-area: Image;
   width: 48px;
   height: 48px;
   object-fit: cover;
   border-radius: 5px;
 `;
 
+const PersonCellAccount = styled(PersonCell)`
+  grid-area: Account;
+  overflow: hidden;
+
+  @media (max-width: 767px) {
+    padding-inline-start: 0;
+    padding-block-end: 0;
+
+    &:not(:last-child) {
+      border-right: 0;
+    }
+  }
+`;
+
 const PersonSocialAccountName = styled.div`
-  grid-area: Name;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
   font-weight: 500;
 `;
 
-const PersonSocialAccountDetails = styled.div`
+const PersonSocialAccountUsernames = styled.div`
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
   font-size: 0.9em;
+`;
+
+const PersonCellStats = styled(PersonCell)`
+  grid-area: Stats;
+  overflow: hidden;
+
+  @media (max-width: 767px) {
+    padding-inline-start: 0;
+    padding-block-end: 0;
+
+    &:not(:last-child) {
+      border-right: 0;
+    }
+  }
 `;
 
 const PersonSocialStats = styled.div`
@@ -81,6 +135,19 @@ const PersonSocialStat = styled.span`
 
   & > em {
     font-weight: 600;
+  }
+`;
+
+const PersonCellButtons = styled(PersonCell)`
+  grid-area: Actions;
+  flex-direction: row;
+  gap: 10px;
+  justify-content: center;
+  align-self: center;
+
+  @media (max-width: 767px) {
+    justify-content: flex-start;
+    padding-inline-start: 0;
   }
 `;
 
@@ -124,49 +191,49 @@ export function ResultPerson({
 
   return (
     <PersonListItem method={method}>
-      <PersonCell>
-        <Checkbox
+      <PersonCellCheckbox>
+        <PersonCheckbox
           disabled={loading}
           checked={selected}
           onChange={handleSelectedChange}
           variant="flat"
         />
-      </PersonCell>
-      <PersonCell>
-        <PersonSocialAccount>
-          {account.avatarImageUrl || twitterUser.profileImageUrl ? (
-            <PersonSocialAccountImage
-              src={account.avatarImageUrl ?? twitterUser.profileImageUrl}
-              alt="Profile picture"
-            />
-          ) : (
-            <div />
-          )}
-          <PersonSocialAccountName>
-            {account.name || twitterUser.name}
-          </PersonSocialAccountName>
-          <PersonSocialAccountDetails>
-            <Anchor
-              href={`https://twitter.com/${twitterUser.username}`}
-              rel="noreferrer noopener nofollow"
-              target="_blank"
-            >
-              @{twitterUser.username}
-            </Anchor>{" "}
-            →{" "}
-            <Anchor
-              href={account.url}
-              rel="noreferrer noopener nofollow"
-              target="_blank"
-            >
-              {account.account.startsWith("https://") ? "" : "@"}
-              {account.account}
-            </Anchor>
-          </PersonSocialAccountDetails>
-        </PersonSocialAccount>
-      </PersonCell>
+      </PersonCellCheckbox>
+      <PersonCellImage>
+        {account.avatarImageUrl || twitterUser.profileImageUrl ? (
+          <PersonSocialAccountImage
+            src={account.avatarImageUrl ?? twitterUser.profileImageUrl}
+            alt="Profile picture"
+          />
+        ) : (
+          <div />
+        )}
+      </PersonCellImage>
+      <PersonCellAccount>
+        <PersonSocialAccountName>
+          {account.name || twitterUser.name}
+        </PersonSocialAccountName>
+        <PersonSocialAccountUsernames>
+          <Anchor
+            href={`https://twitter.com/${twitterUser.username}`}
+            rel="noreferrer noopener nofollow"
+            target="_blank"
+          >
+            @{twitterUser.username}
+          </Anchor>{" "}
+          →{" "}
+          <Anchor
+            href={account.url}
+            rel="noreferrer noopener nofollow"
+            target="_blank"
+          >
+            {account.account.startsWith("https://") ? "" : "@"}
+            {account.account}
+          </Anchor>
+        </PersonSocialAccountUsernames>
+      </PersonCellAccount>
       {method === "typical" ? (
-        <PersonCell>
+        <PersonCellStats>
           {account.followersCount ||
           account.followingCount ||
           account.statusesCount ? (
@@ -202,7 +269,7 @@ export function ResultPerson({
               </PersonSocialStat>
             </PersonSocialStats>
           ) : undefined}
-        </PersonCell>
+        </PersonCellStats>
       ) : undefined}
       <PersonCellButtons>
         {account.following === true ? (

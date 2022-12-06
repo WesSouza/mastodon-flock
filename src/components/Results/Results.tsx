@@ -71,7 +71,7 @@ const PeopleListHeader = styled.div<{ method: string | undefined }>`
   position: sticky;
   top: 0;
   display: grid;
-  grid-template-columns: 40px ${({ method }) =>
+  grid-template-columns: 40px 68px ${({ method }) =>
       method === "typical" ? "2fr" : ""} 2fr 1fr;
   z-index: 2;
 `;
@@ -84,6 +84,21 @@ const PeopleListHeaderCell = styled(Frame).attrs({
 
 const PeopleList = styled.ul`
   z-index: 1;
+`;
+
+const StatusBar = styled(Frame).attrs({
+  variant: "well",
+})`
+  height: calc(calc(1em * 1.5) + 10px);
+  padding: 4px 6px;
+  width: 100%;
+  margin-block-start: 4px;
+
+  @media print {
+    & {
+      display: none;
+    }
+  }
 `;
 
 export function Results() {
@@ -184,6 +199,16 @@ export function Results() {
     followUnfollowSelected("unfollow");
   }, [followUnfollowSelected]);
 
+  const status = useMemo(
+    () =>
+      `${results?.accounts.length} account${
+        results?.accounts.length === 1 ? "" : "s"
+      }${
+        selectedAccountIds.size ? `, ${selectedAccountIds.size} selected` : ""
+      }`,
+    [results?.accounts.length, selectedAccountIds.size],
+  );
+
   const canFollow = method === "typical";
   const isLoading = loadingAccountIds.size > 0;
 
@@ -194,9 +219,9 @@ export function Results() {
   return (
     <Window
       icon="toolbarMastodon"
-      minWidth="1000px"
       noPadding={true}
       onClose={handleClose}
+      size="large"
       title="Mastodon Flock"
       windowMeta={windowMeta}
     >
@@ -259,6 +284,7 @@ export function Results() {
       <ScrollViewStyled shadow={false}>
         <PeopleListHeader method={method}>
           <PeopleListHeaderCell />
+          <PeopleListHeaderCell>Pic</PeopleListHeaderCell>
           <PeopleListHeaderCell>Account</PeopleListHeaderCell>
           {method === "typical" ? (
             <PeopleListHeaderCell>Details</PeopleListHeaderCell>
@@ -280,6 +306,7 @@ export function Results() {
           ))}
         </PeopleList>
       </ScrollViewStyled>
+      <StatusBar>{status}</StatusBar>
     </Window>
   );
 }

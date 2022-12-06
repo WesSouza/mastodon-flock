@@ -18,6 +18,7 @@ const TaskbarArea = styled(Frame)`
   border-bottom: none;
   box-shadow: inset 0 2px 0px 0px #fefefe;
   display: flex;
+  z-index: 2;
 
   @media print {
     display: none;

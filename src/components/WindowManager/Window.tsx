@@ -13,14 +13,42 @@ import type { WindowMeta } from "./WindowManager";
 const blinkTimerInterval = 100;
 const blinkTimerRepeat = 3;
 
-const WindowStyled = styled(React95Window)<{ minWidth: string | undefined }>`
+const windowWidths = {
+  constrainedViewport: {
+    small: "min(100%, 360px)",
+    medium: "min(100%, 390px)",
+    large: "100%",
+  },
+  unconstrainedViewport: {
+    small: "min(100%, 500px)",
+    medium: "min(100%, 700px)",
+    large: "min(100%, 1000px)",
+  },
+};
+
+const WindowStyled = styled(React95Window)<{
+  size: "small" | "medium" | "large";
+}>`
   position: relative;
   display: flex;
   flex-direction: column;
-  width: min(100%, ${({ minWidth }) => minWidth ?? "700px"});
-  max-height: 100%;
   align-self: center;
   z-index: 1;
+
+  @media (max-width: 767px) {
+    width: ${({ size }) => windowWidths.constrainedViewport[size]};
+  }
+
+  @media (min-width: 768px) {
+    width: ${({ size }) => windowWidths.unconstrainedViewport[size]};
+  }
+
+  @media (max-height: 767px) {
+  }
+
+  @media (min-height: 768px) {
+    max-height: calc(100% - 100px);
+  }
 
   @media print {
     max-height: none;
@@ -46,6 +74,9 @@ const WindowTitle = styled.span`
   padding-inline-start: 5px;
   margin-inline-end: auto;
   font-size: 1.05em;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 
   @media print {
     & {
@@ -82,17 +113,17 @@ const WindowContentStyled = styled(WindowContent)<{
 export function Window({
   children,
   icon,
-  minWidth,
   noPadding,
   onClose,
+  size = "large",
   title,
   windowMeta,
 }: {
   children: React.ReactNode;
   icon?: IconProps["icon"];
-  minWidth?: string;
   noPadding?: boolean;
   onClose: () => void;
+  size?: "small" | "medium" | "large";
   title: string;
   windowMeta: WindowMeta;
 }) {
@@ -125,7 +156,7 @@ export function Window({
   }, [windowMeta.titleBlink]);
 
   return (
-    <WindowStyled minWidth={minWidth}>
+    <WindowStyled size={size}>
       <WindowHeaderStyled active={animatedActive ?? windowMeta.active}>
         {icon ? (
           <WindowIcon>

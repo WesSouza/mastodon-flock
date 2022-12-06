@@ -61,6 +61,13 @@ const ErrorMessageContents = styled.div`
     "Icon Message Button1" 36px
     "Icon Message Button2" 1fr
     / 64px 1fr 120px;
+
+  @media (max-width: 767px) {
+    grid-template:
+      "Icon Message Message Message" 1fr
+      "Button1 Button1 Button2 Button2" 36px
+      / 64px 1fr 1fr 1fr;
+  }
 `;
 
 const Details = styled(Frame)`
@@ -92,7 +99,7 @@ export function ErrorDialog({
 
   return (
     <Window
-      minWidth="500px"
+      size="small"
       onClose={handleClose}
       title="Error"
       windowMeta={windowMeta}

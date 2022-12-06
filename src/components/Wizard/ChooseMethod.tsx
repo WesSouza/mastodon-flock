@@ -9,11 +9,25 @@ const Option = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-block-start: 24px;
+
+  @media (max-width: 767px) {
+    margin-block-start: 16px;
+    flex-direction: column;
+  }
+
+  @media (min-width: 768px) {
+    margin-block-start: 24px;
+  }
 `;
 
 const OptionDescription = styled.div`
-  width: 70%;
+  @media (max-width: 767px) {
+    padding-inline-start: 30px;
+  }
+
+  @media (min-width: 768px) {
+    width: 70%;
+  }
 `;
 
 export function ChooseMethod({

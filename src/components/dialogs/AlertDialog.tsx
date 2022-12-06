@@ -43,7 +43,7 @@ export function AlertDialog({
 
   return (
     <Window
-      minWidth="500px"
+      size="small"
       onClose={handleClose}
       title={title}
       windowMeta={windowMeta}

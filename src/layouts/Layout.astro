@@ -84,13 +84,26 @@ const domain = new URL(Astro.site ?? "").hostname;
   }
 
   main {
+    position: relative;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    align-items: flex-start;
     justify-content: center;
+    align-items: flex-start;
     width: 100%;
-    height: calc(100vh - var(--taskbar-height));
+    z-index: 1;
+  }
+
+  @media (max-height: 767px) {
+    main {
+      justify-content: flex-start;
+      padding-bottom: var(--taskbar-height);
+    }
+  }
+
+  @media (min-height: 768px) {
+    main {
+      height: calc(100vh - var(--taskbar-height));
+    }
   }
 
   @media print {
