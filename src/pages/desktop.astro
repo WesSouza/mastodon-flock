@@ -7,4 +7,120 @@ Astro.response.headers.set("cache-control", "s-maxage=86400, max-age=600");
 <Layout
   title="Mastodon Flock"
   description="Migrate your tweeps to the Fediverse"
-/>
+>
+  <section>
+    <a class="Icon" href="/" data-icon="Setup">
+      <figure>
+        <img
+          src="/images/iconSetup.png"
+          alt="An old computer with a box and floppy disks in front of it"
+          width="64"
+          height="64"
+        />
+        <figcaption>Setup.exe</figcaption>
+      </figure>
+    </a>
+    <a class="Icon" href="/results" data-icon="MastodonFlock">
+      <figure>
+        <img
+          src="/images/iconMastodon.png"
+          alt="The logo for Mastodon in light blue"
+          width="64"
+          height="64"
+        />
+        <figcaption>Mastodon Flock</figcaption>
+      </figure>
+    </a>
+    <a class="Icon" href="/about" data-icon="About">
+      <figure>
+        <img
+          src="/images/iconHelp.png"
+          alt="A purple book with a large yellow question mark in its cover"
+          width="64"
+          height="64"
+        />
+        <figcaption>About</figcaption>
+      </figure>
+    </a>
+    <a class="Icon" href="/privacy" data-icon="Privacy">
+      <figure>
+        <img
+          src="/images/iconPrivacy.png"
+          alt="A sheet of paper with faces in them, and an eye floating above it"
+          width="64"
+          height="64"
+        />
+        <figcaption>Privacy Policy</figcaption>
+      </figure>
+    </a>
+  </section>
+  <div class="svgFilter">
+    <svg>
+      <defs>
+        <filter id="blue-tint">
+          <feColorMatrix
+            type="matrix"
+            values="0.3 0 0 0 -0.1 0 0.3 0 0 -0.1 0 0 1 0 -0.1 0 0 0 1 0 "
+          ></feColorMatrix>
+        </filter>
+      </defs>
+    </svg>
+  </div>
+</Layout>
+
+<script>
+  const version = sessionStorage.getItem("version");
+  if (!version || Number(version) < 1) {
+    document
+      .querySelectorAll('[data-icon="MastodonFlock"]')
+      .forEach((element) => {
+        if (element instanceof HTMLElement) {
+          element.style.display = "none";
+        }
+      });
+  }
+</script>
+
+<style>
+  section {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .Icon {
+    display: flex;
+    width: 100px;
+    height: 100px;
+    padding: 24px;
+    flex-direction: column;
+    gap: 6px;
+    justify-content: flex-start;
+    align-items: center;
+    text-align: center;
+    color: #fff;
+  }
+
+  .Icon:focus {
+    outline: none;
+  }
+
+  .Icon figure {
+    display: contents;
+  }
+
+  .Icon figcaption {
+    padding: 0 4px;
+    border: 2px dotted transparent;
+  }
+
+  .Icon:focus img {
+    filter: url("#blue-tint");
+  }
+
+  .Icon:focus figcaption {
+    background-color: #060084;
+    border-color: #f9ff7b;
+  }
+</style>
