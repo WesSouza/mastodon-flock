@@ -16,6 +16,7 @@ import { useSet } from "../../hooks/useSet";
 import { useWindowManager } from "../../hooks/useWindowManager";
 import type { AccountWithTwitter } from "../../types";
 import { getAccountInstanceUri } from "../../utils/fediverse";
+import { collect } from "../../utils/plausible";
 import {
   Toolbar,
   ToolbarButtonIcon,
@@ -202,6 +203,7 @@ export function Results() {
   );
 
   const handleSelectAll = useCallback(() => {
+    collect("Select All");
     const operation =
       results?.accounts.length !== selectedAccountIds.size ? "add" : "delete";
     results?.accounts.forEach((account) => {
@@ -221,6 +223,7 @@ export function Results() {
   const handleSortChange = useCallback(
     (option: { value: string }) => {
       setSortValue(option.value);
+      collect("Sort", { Type: option.value });
     },
     [setSortValue],
   );
@@ -231,10 +234,12 @@ export function Results() {
       selectedAccountIds.size === sortedAccounts.length ||
       !selectedAccountIds.size
     ) {
+      collect("Download CSV (all)");
       downloadCsv(sortedAccounts);
       return;
     }
 
+    collect("Download CSV", { Count: selectedAccountIds.size });
     downloadCsv(
       sortedAccounts.filter((account) => selectedAccountIds.has(account.id)),
     );
@@ -242,6 +247,16 @@ export function Results() {
 
   const followUnfollowSelected = useCallback(
     async (operation: "follow" | "unfollow") => {
+      collect(
+        selectedAccountIds.size === sortedAccounts.length
+          ? "Follow All"
+          : "Follow Selected",
+        {
+          Operation: operation,
+          Count: selectedAccountIds.size,
+        },
+      );
+
       for (const account of sortedAccounts) {
         if (
           !selectedAccountIds.has(account.id) ||
@@ -250,7 +265,7 @@ export function Results() {
         ) {
           continue;
         }
-        await followUnfollow(account.id, operation);
+        await followUnfollow(account.id, operation, { origin: "internal" });
       }
     },
     [followUnfollow, selectedAccountIds, sortedAccounts],

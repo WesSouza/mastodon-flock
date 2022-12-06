@@ -1,6 +1,7 @@
 // Adapted from https://codepen.io/SitePoint/pen/JRaLVR
 
 import { useCallback, useEffect, useMemo, useRef } from "react";
+import { collect } from "../utils/plausible";
 
 export function useWinAmp(url: string) {
   const buffer = useRef<AudioBuffer>();
@@ -39,5 +40,7 @@ export function useWinAmp(url: string) {
     source.current.buffer = buffer.current;
     source.current.connect(context.current.destination);
     source.current.start();
+
+    collect("DING");
   }, []);
 }

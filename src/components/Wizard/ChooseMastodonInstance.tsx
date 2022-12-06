@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Frame, ScrollView, TextInput } from "react95";
 import styled from "styled-components";
 
@@ -6,6 +12,7 @@ import { config } from "../../config";
 import { useWindowManager } from "../../hooks/useWindowManager";
 import type { MastodonInstance } from "../../types";
 import { http } from "../../utils/http-request";
+import { collect } from "../../utils/plausible";
 import { AlertDialog } from "../dialogs/AlertDialog";
 import { Paragraph } from "../typography/Paragraph";
 import type { WindowMeta } from "../WindowManager/WindowManager";
@@ -58,6 +65,8 @@ export function ChooseMastodonInstance({
 
   const { openWindow } = useWindowManager();
 
+  const selectionMode = useRef<string>("Preset");
+
   useEffect(() => {
     http<{ items: MastodonInstance[] }>({
       url: config.urls.mastodonKnownInstances,
@@ -76,6 +85,7 @@ export function ChooseMastodonInstance({
       setScrollIntoView(false);
       setFilter(event.target.value);
       setInstanceUri(event.target.value);
+      selectionMode.current = "Manual";
     },
     [],
   );
@@ -83,6 +93,11 @@ export function ChooseMastodonInstance({
   const handleServerSelect = useCallback((server: MastodonInstance) => {
     setScrollIntoView(false);
     setInstanceUri(server.uri);
+    if (selectionMode.current === "Manual") {
+      selectionMode.current = "Filtered";
+    } else {
+      selectionMode.current = "Selected";
+    }
   }, []);
 
   const serverMatches = useCallback(
@@ -125,6 +140,8 @@ export function ChooseMastodonInstance({
       return;
     }
     goNext(uri);
+
+    collect("Instance Selection", { Mode: selectionMode.current });
   }, [goNext, instanceUri, openWindow]);
 
   return (

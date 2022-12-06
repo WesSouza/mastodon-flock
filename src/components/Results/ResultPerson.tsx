@@ -4,6 +4,7 @@ import { Button, Checkbox } from "react95";
 import styled, { css } from "styled-components";
 
 import type { AccountWithTwitter, TwitterSearchUser } from "../../types";
+import { collect } from "../../utils/plausible";
 import { Anchor } from "../typography/Anchor";
 
 const numberFormatter = new Intl.NumberFormat();
@@ -157,6 +158,10 @@ const PersonCellButtons = styled(PersonCell)`
   }
 `;
 
+function handleOpenClick() {
+  collect("Open");
+}
+
 export function ResultPerson({
   account,
   loading,
@@ -188,6 +193,7 @@ export function ResultPerson({
 
   const handleCopyClick = useCallback(() => {
     navigator.clipboard.writeText(account.account);
+    collect("Copy");
   }, [account.account]);
 
   const twitterUser = twitterUsers.get(account.twitterUsername);
@@ -301,6 +307,7 @@ export function ResultPerson({
               href={account.url}
               rel="noreferrer noopener nofollow"
               target="_blank"
+              onClick={handleOpenClick}
             >
               Open
             </Button>

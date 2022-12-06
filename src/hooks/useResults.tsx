@@ -3,6 +3,7 @@ import { useCallback, useMemo, useRef } from "react";
 import { config } from "../config";
 import type { AccountWithTwitter, TwitterSearchUser } from "../types";
 import { http } from "../utils/http-request";
+import { collect } from "../utils/plausible";
 import { useRerender } from "./useRerender";
 import { useSet } from "./useSet";
 
@@ -60,7 +61,11 @@ export function useResults() {
   );
 
   const followUnfollow = useCallback(
-    async (accountId: string, operation: "follow" | "unfollow") => {
+    async (
+      accountId: string,
+      operation: "follow" | "unfollow",
+      options: { origin: "internal" | "user" } = { origin: "user" },
+    ) => {
       loadingAccountIds.add(accountId);
 
       const data = await http<{ result: string }>({
@@ -86,6 +91,11 @@ export function useResults() {
       }
 
       loadingAccountIds.delete(accountId);
+
+      if (options.origin !== "internal") {
+        collect("Follow One", { Operation: operation });
+      }
+
       return true;
     },
     [loadingAccountIds, saveResults, rerender],

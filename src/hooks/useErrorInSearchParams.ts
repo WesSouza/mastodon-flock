@@ -1,6 +1,7 @@
 import { useCallback, useRef } from "react";
 
 import { ErrorDialog } from "../components/dialogs/ErrorDialog";
+import { collect } from "../utils/plausible";
 import { useSearchParamsState } from "./useSearchParamsState";
 import { useWindowManager } from "./useWindowManager";
 
@@ -35,6 +36,9 @@ export function useErrorInSearchParams() {
           errorWindowIdRef.current = undefined;
         }
       });
+      if (newValue) {
+        collect("Wizard Error", { Error: newValue });
+      }
     },
     [openWindow, closeWindowWithId],
   );

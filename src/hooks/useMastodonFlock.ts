@@ -8,6 +8,7 @@ import type {
   TwitterSearchUser,
 } from "../types";
 import { http } from "../utils/http-request";
+import { collect } from "../utils/plausible";
 
 import type { MastodonFlockResults } from "./useResults";
 
@@ -46,6 +47,7 @@ export function useMastodonFlock({
   const [progress, setProgress] = useState(0);
 
   const abortController = useRef(new AbortController());
+  const finished = useRef(false);
 
   const findBirdsAndMammoths = useCallback(
     async (options: { method: string }) => {
@@ -160,8 +162,15 @@ export function useMastodonFlock({
           });
         }
 
+        finished.current = true;
+        const accounts = dedupeAccounts(foundAccounts);
+        collect("Finished", {
+          "Found Count": accounts.length,
+          "Potential Emails Count": potentialEmails.length,
+          "Potential URLs Count": potentialInstanceProfiles.length,
+        });
         onResults({
-          accounts: dedupeAccounts(foundAccounts),
+          accounts,
           twitterUsers: removeIrrelevantTwitterUsers(
             twitterUsers,
             foundAccounts,
@@ -219,14 +228,27 @@ export function useMastodonFlock({
           return;
         }
 
-        onResults({ accounts: dedupeAccounts(foundAccounts), twitterUsers });
+        finished.current = true;
+        const accounts = dedupeAccounts(foundAccounts);
+        collect("Finished", {
+          "Found Count": accounts.length,
+          "Potential Emails Count": potentialEmails.length,
+          "Potential URLs Count": potentialInstanceProfiles.length,
+        });
+        onResults({ accounts, twitterUsers });
       }
     },
     [onError, onResults],
   );
 
   const cancel = useCallback(() => {
+    if (finished.current) {
+      return;
+    }
+
+    collect("Cancelled");
     abortController.current.abort();
+    finished.current = true;
   }, []);
 
   return useMemo(
