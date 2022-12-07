@@ -1,6 +1,6 @@
 const isLocal = import.meta.env.SITE?.startsWith("http://localhost:");
 const isPreview = import.meta.env.SITE?.startsWith(
-  "http://mastodon-flock-preview.",
+  "https://mastodon-flock-preview.",
 );
 
 const siteUrl = new URL(import.meta.env.SITE);
