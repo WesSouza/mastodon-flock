@@ -1,9 +1,10 @@
 import { useEffect, useRef } from "react";
-import { Button, Frame, ProgressBar } from "react95";
+import { Frame, ProgressBar } from "react95";
 import styled from "styled-components";
 
 import { useMastodonFlock } from "../../hooks/useMastodonFlock";
 import type { MastodonFlockResults } from "../../hooks/useResults";
+import { FocusableButton } from "../FocusableButton";
 import { Paragraph } from "../typography/Paragraph";
 
 const FrameStyled = styled(Frame)`
@@ -18,7 +19,7 @@ const Center = styled.div`
   align-self: center;
 `;
 
-const CancelButton = styled(Button)`
+const CancelButton = styled(FocusableButton)`
   width: 120px;
 `;
 
@@ -62,7 +63,7 @@ export function Installer({
       </Paragraph>
       <ProgressBar value={progress} shadow={false} />
       <Center>
-        <CancelButton primary={true} onClick={cancel}>
+        <CancelButton primary={true} onPress={cancel}>
           Cancel
         </CancelButton>
       </Center>

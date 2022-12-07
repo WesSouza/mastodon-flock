@@ -16,7 +16,7 @@ export function Finish({
       previousAction={{ label: "< Back", disabled: true }}
       imageAlt="A drawing of an old computer besides a phone and a modem in front of a piece of paper and pencil."
       imageSrc="/images/setup.png"
-      nextAction={{ label: "Finish", onClick: goNext }}
+      nextAction={{ label: "Finish", onPress: goNext }}
       onClose={cancel}
       title="Setup Complete"
       windowMeta={windowMeta}

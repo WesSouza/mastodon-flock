@@ -146,12 +146,12 @@ export function ChooseMastodonInstance({
 
   return (
     <WizardWindow
-      cancelAction={{ label: "Cancel", onClick: cancel }}
+      cancelAction={{ label: "Cancel", onPress: cancel }}
       imageAlt="A pixel art drawing of an old school computer and CRT monitor, by its left a set of a yellow old school phone on top of a modem. In front of it, a folded piece of paper with a yellow pencil on top."
       imageSrc="/images/setup.png"
-      nextAction={{ label: "Next >", onClick: handleGoNext }}
+      nextAction={{ label: "Next >", onPress: handleGoNext }}
       onClose={cancel}
-      previousAction={{ label: "< Back", onClick: goBack }}
+      previousAction={{ label: "< Back", onPress: goBack }}
       title="Mastodon Instance"
       windowMeta={windowMeta}
     >

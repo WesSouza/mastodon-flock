@@ -1,4 +1,4 @@
-import { createContext, useCallback, useMemo, useRef } from "react";
+import { createContext, useCallback, useMemo, useRef, useState } from "react";
 import { useRerender } from "../../hooks/useRerender";
 import { SvgSprite } from "../SvgSprite";
 import { WindowRenderer } from "./WindowRenderer";
@@ -34,21 +34,26 @@ export type WindowOpenOptions = {
 };
 
 export const WindowManagerContext = createContext({
-  activeWindowId: false,
+  activeWindowId: undefined,
   closeWindow: () => {},
+  focusedButtonId: undefined,
   newRenderedWindow: () => "",
   openWindow: () => {},
+  setFocusedButtonId: () => {},
 } as unknown as {
   activeWindowId: string | undefined;
   closeWindow: (windowId: string) => void;
+  focusedButtonId: string | undefined;
   newRenderedWindow: () => string;
   openWindow: WindowOpenFn;
+  setFocusedButtonId: (id: string | undefined) => void;
 });
 
 export function WindowManager({ children }: { children: React.ReactNode }) {
   const windowsRef = useRef<WindowRecord[]>([]);
   const windowOrderRef = useRef<string[]>([]);
   const rerender = useRerender();
+  const [focusedButtonId, setFocusedButtonId] = useState<string>();
 
   const openWindow: WindowOpenFn = useCallback(
     (component, props, options) => {
@@ -116,10 +121,19 @@ export function WindowManager({ children }: { children: React.ReactNode }) {
     () => ({
       activeWindowId,
       closeWindow,
+      focusedButtonId,
+      setFocusedButtonId,
       newRenderedWindow,
       openWindow,
     }),
-    [activeWindowId, closeWindow, newRenderedWindow, openWindow],
+    [
+      activeWindowId,
+      closeWindow,
+      focusedButtonId,
+      setFocusedButtonId,
+      newRenderedWindow,
+      openWindow,
+    ],
   );
 
   const handleModalClickOutside = useCallback(

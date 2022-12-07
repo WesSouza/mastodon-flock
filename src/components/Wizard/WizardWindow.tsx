@@ -1,5 +1,6 @@
-import { Button, Frame, Separator } from "react95";
+import { Frame, Separator } from "react95";
 import styled from "styled-components";
+import { FocusableButton } from "../FocusableButton";
 
 import { Window } from "../WindowManager/Window";
 import type { WindowMeta } from "../WindowManager/WindowManager";
@@ -7,7 +8,7 @@ import type { WindowMeta } from "../WindowManager/WindowManager";
 export type WizardWindowAction = {
   disabled?: boolean;
   label: string;
-  onClick?: () => void;
+  onPress?: () => void;
 };
 
 export type WizardWindowProps = {
@@ -80,7 +81,7 @@ export const WizardFooterPhantomButton = styled.span`
   }
 `;
 
-export const WizardFooterButton = styled(Button)`
+export const WizardFooterButton = styled(FocusableButton)`
   width: 120px;
 
   @media (max-width: 767px) {
@@ -116,7 +117,7 @@ export function WizardWindow({
           {previousAction ? (
             <WizardFooterButton
               disabled={previousAction.disabled ?? false}
-              onClick={previousAction.onClick}
+              onPress={previousAction.onPress}
             >
               {previousAction.label}
             </WizardFooterButton>
@@ -127,7 +128,7 @@ export function WizardWindow({
             <WizardFooterButton
               disabled={nextAction.disabled ?? false}
               primary={windowMeta.active}
-              onClick={nextAction.onClick}
+              onPress={nextAction.onPress}
             >
               {nextAction.label}
             </WizardFooterButton>
@@ -138,7 +139,7 @@ export function WizardWindow({
           {cancelAction ? (
             <WizardFooterButton
               disabled={cancelAction.disabled ?? false}
-              onClick={cancelAction.onClick}
+              onPress={cancelAction.onPress}
             >
               {cancelAction.label}
             </WizardFooterButton>

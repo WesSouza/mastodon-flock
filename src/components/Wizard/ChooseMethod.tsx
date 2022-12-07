@@ -59,18 +59,19 @@ export function ChooseMethod({
 
   return (
     <WizardWindow
-      cancelAction={{ label: "Cancel", onClick: cancel }}
+      cancelAction={{ label: "Cancel", onPress: cancel }}
       imageAlt="A pixel art drawing of an old school computer and CRT monitor, by its left a set of a yellow old school phone on top of a modem. In front of it, a folded piece of paper with a yellow pencil on top."
       imageSrc="/images/setup.png"
-      nextAction={{ label: "Next >", onClick: next }}
+      nextAction={{ label: "Next >", onPress: next }}
       onClose={cancel}
-      previousAction={{ label: "< Back", onClick: goBack }}
+      previousAction={{ label: "< Back", onPress: goBack }}
       title="Installation Method"
       windowMeta={windowMeta}
     >
       Click the type of Setup you prefer, then click Next.
       <Option>
         <Radio
+          autoFocus
           checked={method === "typical"}
           onChange={setTypical}
           value="typical"

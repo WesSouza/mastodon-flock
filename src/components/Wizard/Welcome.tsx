@@ -14,10 +14,10 @@ export function Welcome({
 }) {
   return (
     <WizardWindow
-      cancelAction={{ label: "Cancel", onClick: cancel }}
+      cancelAction={{ label: "Cancel", onPress: cancel }}
       imageAlt="A drawing of an old computer besides a phone and a modem in front of a piece of paper and pencil."
       imageSrc="/images/setup.png"
-      nextAction={{ label: "Next >", onClick: goNext }}
+      nextAction={{ label: "Next >", onPress: goNext }}
       onClose={cancel}
       title="Welcome"
       windowMeta={windowMeta}
