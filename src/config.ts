@@ -24,6 +24,7 @@ export const config = {
       : "https://mastodon-flock-preview.vercel.app/app",
     activityPubAccountLookup: `${origin}/activity-pub/account-lookup`,
     desktop: `${origin}/desktop`,
+    logout: `${origin}/logout`,
     mastodonAccountFollow: `${origin}/mastodon/account-follow`,
     mastodonAccountFollowing: `${origin}/mastodon/account-following`,
     mastodonAccountLookup: `${origin}/mastodon/account-lookup`,

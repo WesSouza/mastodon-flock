@@ -21,29 +21,40 @@ export function useResults() {
   const results = useRef<MastodonFlockResults>();
   const loadingAccountIds = useSet<string>();
 
+  const deleteResults = useCallback(() => {
+    sessionStorage.removeItem("version");
+    sessionStorage.removeItem("method");
+    sessionStorage.removeItem("results");
+  }, []);
+
   const loadResults = useCallback(() => {
     const version = sessionStorage.getItem("version");
     if (version !== "1") {
-      sessionStorage.removeItem("version");
-      sessionStorage.removeItem("method");
-      sessionStorage.removeItem("results");
-      return;
+      deleteResults();
+      return false;
     }
 
     const sessionMethod = sessionStorage.getItem("method");
-    if (!sessionMethod) {
-      return;
-    }
-
     const sessionResults = sessionStorage.getItem("results");
-    if (!sessionResults) {
-      return;
+    if (
+      typeof sessionMethod !== "string" ||
+      typeof sessionResults !== "string"
+    ) {
+      deleteResults();
+      return false;
     }
 
-    method.current = sessionMethod;
-    results.current = JSON.parse(sessionResults);
-    rerender();
-  }, [rerender]);
+    try {
+      method.current = sessionMethod;
+      results.current = JSON.parse(sessionResults);
+      rerender();
+    } catch (e) {
+      deleteResults();
+      return false;
+    }
+
+    return true;
+  }, [deleteResults, rerender]);
 
   const saveResults = useCallback(() => {
     sessionStorage.setItem("version", String(currentVersion));
@@ -103,6 +114,7 @@ export function useResults() {
 
   return useMemo(
     () => ({
+      deleteResults,
       followUnfollow,
       loadingAccountIds,
       loadResults,
@@ -115,6 +127,13 @@ export function useResults() {
       saveResults,
       setResults,
     }),
-    [followUnfollow, loadResults, loadingAccountIds, saveResults, setResults],
+    [
+      deleteResults,
+      followUnfollow,
+      loadResults,
+      loadingAccountIds,
+      saveResults,
+      setResults,
+    ],
   );
 }

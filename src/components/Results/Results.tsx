@@ -8,6 +8,7 @@ import {
   Separator,
 } from "react95";
 import styled from "styled-components";
+import { config } from "../../config";
 
 import { useCsvExporter } from "../../hooks/useCsvExporter";
 import { useResults } from "../../hooks/useResults";
@@ -25,6 +26,7 @@ import {
   ToolbarIcon,
   ToolbarLabel,
 } from "../Toolbar";
+import { Paragraph } from "../typography/Paragraph";
 import { Window } from "../WindowManager/Window";
 import { ResultPerson } from "./ResultPerson";
 
@@ -151,6 +153,15 @@ const PeopleList = styled.ul`
   z-index: 1;
 `;
 
+const NoResults = styled.div`
+  min-height: 40vh;
+  padding: 32px;
+  display: grid;
+  place-content: center;
+  background-color: ${({ theme }) => theme.materialDark};
+  text-align: center;
+`;
+
 const StatusBar = styled(Frame).attrs({
   variant: "well",
 })`
@@ -173,12 +184,26 @@ export function Results() {
     registerSelf();
   }, [registerSelf]);
 
-  const { followUnfollow, loadingAccountIds, loadResults, method, results } =
-    useResults();
+  const {
+    deleteResults,
+    followUnfollow,
+    loadingAccountIds,
+    loadResults,
+    method,
+    results,
+  } = useResults();
 
   useEffect(() => {
-    loadResults();
+    const loaded = loadResults();
+    if (!loaded) {
+      location.href = config.urls.home;
+    }
   }, [loadResults]);
+
+  const reset = useCallback(() => {
+    deleteResults();
+    location.href = config.urls.logout;
+  }, [deleteResults]);
 
   const twitterUserMap = useMemo(() => {
     return new Map(
@@ -392,6 +417,17 @@ export function Results() {
             />
           ))}
         </PeopleList>
+        {sortedAccounts.length === 0 ? (
+          <NoResults>
+            <Paragraph>
+              Unfortunately, we could not find any Fediverse accounts from
+              people you follow.
+            </Paragraph>
+            <Paragraph>
+              <Button onClick={reset}>Try Again</Button>
+            </Paragraph>
+          </NoResults>
+        ) : undefined}
       </ScrollViewStyled>
       <StatusBar>{status}</StatusBar>
     </Window>
