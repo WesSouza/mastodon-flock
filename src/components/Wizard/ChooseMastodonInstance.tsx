@@ -1,3 +1,4 @@
+import { FixedSizeList, ListChildComponentProps } from "react-window";
 import React, {
   useCallback,
   useEffect,
@@ -17,12 +18,16 @@ import { AlertDialog } from "../dialogs/AlertDialog";
 import { Paragraph } from "../typography/Paragraph";
 import type { WindowMeta } from "../WindowManager/WindowManager";
 import { WizardWindow } from "./WizardWindow";
+import { useResizeObserver } from "../../hooks/useResizeObserver";
 
 const ScrollViewStyled = styled(ScrollView)`
   background: #fff;
   width: 100%;
   height: 150px;
+
   & > div {
+    display: flex;
+    flex-direction: column;
     padding: 0;
   }
 `;
@@ -43,6 +48,7 @@ const InstanceListHeaderCell = styled(Frame).attrs({
 
 const InstanceList = styled.ul`
   margin: 2px;
+  flex-grow: 1;
 `;
 
 export function ChooseMastodonInstance({
@@ -61,7 +67,6 @@ export function ChooseMastodonInstance({
   const [instances, setInstances] = useState<MastodonInstance[]>([]);
   const [instanceUri, setInstanceUri] = useState(initialMastodonHostname);
   const [filter, setFilter] = useState("");
-  const [scrollIntoView, setScrollIntoView] = useState(true);
 
   const { openWindow } = useWindowManager();
 
@@ -82,7 +87,6 @@ export function ChooseMastodonInstance({
 
   const handleServerChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      setScrollIntoView(false);
       setFilter(event.target.value);
       setInstanceUri(event.target.value);
       selectionMode.current = "Manual";
@@ -91,7 +95,6 @@ export function ChooseMastodonInstance({
   );
 
   const handleServerSelect = useCallback((server: MastodonInstance) => {
-    setScrollIntoView(false);
     setInstanceUri(server.uri);
     if (selectionMode.current === "Manual") {
       selectionMode.current = "Filtered";
@@ -144,6 +147,53 @@ export function ChooseMastodonInstance({
     collect("Instance Selection", { Mode: selectionMode.current });
   }, [goNext, instanceUri, openWindow]);
 
+  const filteredInstances = useMemo(
+    () => instances.filter(serverMatches),
+    [instances, serverMatches],
+  );
+
+  const listRef = useRef<FixedSizeList<HTMLUListElement>>();
+  const setListRef = useCallback(
+    (element: FixedSizeList<HTMLUListElement> | null) => {
+      listRef.current = element ?? undefined;
+    },
+    [],
+  );
+
+  const [instancesListRect, setInstancesListRef] =
+    useResizeObserver<HTMLUListElement>();
+
+  const ListItem = useCallback(
+    ({ index, style }: ListChildComponentProps<any>) => {
+      const instance = filteredInstances[index];
+      if (!instance) {
+        return null;
+      }
+
+      return (
+        <InstanceItem
+          key={instance.uri}
+          instanceURI={instanceUri}
+          instance={instance}
+          onSelect={handleServerSelect}
+          style={style}
+        />
+      );
+    },
+    [filteredInstances, handleServerSelect, instanceUri],
+  );
+
+  useEffect(() => {
+    if (initialMastodonHostname) {
+      const index = filteredInstances.findIndex(
+        (instance) => instance.uri === initialMastodonHostname,
+      );
+      if (index >= 0) {
+        listRef.current?.scrollToItem(index, "center");
+      }
+    }
+  }, [filteredInstances, initialMastodonHostname]);
+
   return (
     <WizardWindow
       cancelAction={{ label: "Cancel", onPress: cancel }}
@@ -162,6 +212,7 @@ export function ChooseMastodonInstance({
       <Paragraph>
         <label htmlFor="mastodon-instance-url">Your instance URL:</label>
         <TextInput
+          autoFocus={true}
           shadow={false}
           id="mastodon-instance-url"
           type="url"
@@ -170,21 +221,22 @@ export function ChooseMastodonInstance({
           onChange={handleServerChange}
         />
       </Paragraph>
+      {/* FIXME: Mix React95 ScrollViewStyled and FixedSizeList SOMEHOW */}
       <ScrollViewStyled shadow={false}>
         <InstanceListHeader>
           <InstanceListHeaderCell>Domain</InstanceListHeaderCell>
           <InstanceListHeaderCell>Users</InstanceListHeaderCell>
         </InstanceListHeader>
-        <InstanceList>
-          {instances.filter(serverMatches).map((instance) => (
-            <InstanceItem
-              key={instance.uri}
-              instanceURI={instanceUri}
-              instance={instance}
-              onSelect={handleServerSelect}
-              scrollIntoView={scrollIntoView}
-            />
-          ))}
+        <InstanceList ref={setInstancesListRef}>
+          <FixedSizeList
+            ref={setListRef}
+            itemSize={26}
+            height={instancesListRect.height}
+            itemCount={filteredInstances.length}
+            width={instancesListRect.width}
+          >
+            {ListItem}
+          </FixedSizeList>
         </InstanceList>
       </ScrollViewStyled>
     </WizardWindow>
@@ -236,12 +288,12 @@ function InstanceItem({
   instanceURI,
   instance,
   onSelect,
-  scrollIntoView = false,
+  style,
 }: {
   instanceURI: string | undefined;
   onSelect: (instance: MastodonInstance) => void;
   instance: MastodonInstance;
-  scrollIntoView: boolean;
+  style: React.CSSProperties;
 }) {
   const checked = useMemo(
     () => instanceURI === instance.uri,
@@ -252,21 +304,12 @@ function InstanceItem({
     onSelect(instance);
   }, [instance, onSelect]);
 
-  const setRef = useCallback(
-    (element: HTMLLIElement) => {
-      if (scrollIntoView && element && checked) {
-        element.scrollIntoView({ block: "center" });
-      }
-    },
-    [checked, scrollIntoView],
-  );
-
   return (
-    <InstanceItemLI checked={checked} ref={setRef}>
+    <InstanceItemLI checked={checked} style={style}>
       <InstanceRadio
         checked={checked}
         id={`instance-${instance.uri}`}
-        name={instance.uri}
+        name={"uri"}
         onChange={handleChange}
         type="radio"
         value={instance.uri}
