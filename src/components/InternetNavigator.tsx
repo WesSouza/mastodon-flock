@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { Button, Frame, ScrollView } from "react95";
+import { Frame, ScrollView } from "react95";
 import styled from "styled-components";
 import { config } from "../config";
 import { useSearchParamsState } from "../hooks/useSearchParamsState";
@@ -200,25 +200,6 @@ export function InternetNavigator({
       title={`${title} – Web 1.0 Internet Navigator`}
       windowMeta={windowMeta}
     >
-      <Toolbar>
-        <ToolbarHandle />
-        <Button variant="thin" size="sm">
-          File
-        </Button>
-        <Button variant="thin" size="sm">
-          Edit
-        </Button>
-        <Button variant="thin" size="sm">
-          View
-        </Button>
-        <Button variant="thin" size="sm">
-          Favorites
-        </Button>
-        <Button variant="thin" size="sm">
-          Help
-        </Button>
-      </Toolbar>
-      <ToolbarDivider />
       <Toolbar>
         <ToolbarHandle />
         <ToolbarButtonIcon

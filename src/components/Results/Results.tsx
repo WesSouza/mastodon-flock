@@ -21,7 +21,6 @@ import { collect } from "../../utils/plausible";
 import {
   Toolbar,
   ToolbarButtonIcon,
-  ToolbarDivider,
   ToolbarHandle,
   ToolbarIcon,
   ToolbarLabel,
@@ -329,24 +328,8 @@ export function Results() {
       title="Mastodon Flock"
       windowMeta={windowMeta}
     >
-      <Toolbar>
-        <ToolbarHandle />
-        <Button variant="thin" size="sm">
-          File
-        </Button>
-        <Button variant="thin" size="sm">
-          Edit
-        </Button>
-        <Button variant="thin" size="sm">
-          View
-        </Button>
-        <Button variant="thin" size="sm">
-          Help
-        </Button>
-      </Toolbar>
       {method === "typical" ? (
         <>
-          <ToolbarDivider />
           <Toolbar>
             <ToolbarHandle />
             <ToolbarButtonIcon
