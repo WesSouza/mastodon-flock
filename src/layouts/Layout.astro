@@ -19,7 +19,19 @@ const domain = new URL(Astro.site ?? "").hostname;
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="64x64"
+      href="/images/iconMastodon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="256x256"
+      href="/images/iconMastodon256.png"
+    />
+    <link rel="apple-touch-icon" href="/images/AppleTouchIcon.png" />
     <meta name="generator" content={Astro.generator} />
 
     <title>{title}</title>
@@ -31,12 +43,28 @@ const domain = new URL(Astro.site ?? "").hostname;
     <meta property="og:url" content={Astro.url} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
+    <meta
+      property="og:image"
+      content={new URL("/images/splash@4x.png", Astro.url)}
+    />
+    <meta
+      property="og:image:alt"
+      content="Wes Souza’s Mastodon Flock for Windows 95 Version 1.0"
+    />
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary" />
     <meta property="twitter:url" content={Astro.url} />
     <meta property="twitter:title" content={title} />
     <meta property="twitter:description" content={description} />
+    <meta
+      property="twitter:image"
+      content={new URL("/images/splash@4x.png", Astro.url)}
+    />
+    <meta
+      property="twitter:image:alt"
+      content="Wes Souza’s Mastodon Flock for Windows 95 Version 1.0"
+    />
 
     {
       domain !== "localhost" ? (
