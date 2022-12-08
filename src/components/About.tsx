@@ -39,7 +39,15 @@ export function About() {
           Windows 95
         </Anchor>{" "}
         era. You can read more about the{" "}
-        <Anchor href="#technology-stack">technology stack below</Anchor>.
+        <Anchor href="#technology-stack">technology stack below</Anchor>, and{" "}
+        <Anchor
+          href="https://www.buymeacoffee.com/WesSouza"
+          target="_blank"
+          rel="nofollow noopener noreferrer"
+        >
+          buy me a coffee
+        </Anchor>{" "}
+        if you wish.
       </Paragraph>
       <Heading level={2} anchorName="how-to-use-it">
         How to use it?
