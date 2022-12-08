@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Button, Frame } from "react95";
 import styled from "styled-components";
 
+import { AboutDialog } from "../components/dialogs/AboutDialog";
 import { Icon, IconProps } from "../components/Icon";
 import { useWinAmp } from "../hooks/useWinAmp";
+import { useWindowManager } from "../hooks/useWindowManager";
 import { React95 } from "../layouts/React95";
 
 const TaskbarArea = styled(Frame)`
@@ -123,6 +125,11 @@ export function Taskbar() {
     };
   }, []);
 
+  const { openWindow } = useWindowManager();
+  const openAbout = useCallback(() => {
+    openWindow(AboutDialog, {}, { modal: true });
+  }, [openWindow]);
+
   const play = useWinAmp("/sounds/DING.mp3");
 
   return (
@@ -138,6 +145,9 @@ export function Taskbar() {
             </TaskbarButton>
           ) : undefined}
           <TaskbarStatus>
+            <TaskbarStatusButton onClick={openAbout}>
+              <Icon icon="toolbarHelp" />
+            </TaskbarStatusButton>
             <TaskbarStatusButton onClick={play}>
               <Icon icon="toolbarSpeaker" />
             </TaskbarStatusButton>

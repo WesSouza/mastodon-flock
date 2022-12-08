@@ -18,6 +18,7 @@ export const config = {
     : "Mastodon Flock",
   urls: {
     about: `${origin}/about`,
+    acknowledgements: `${origin}/acknowledgements.txt`,
     home: origin,
     activityPubApp: !isLocal
       ? `${origin}/app`
