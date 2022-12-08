@@ -1,4 +1,4 @@
-import type { WindowMeta, WindowRecord } from "./WindowManager";
+import type { WindowMeta, WindowRecord } from "../../stores/WindowStore";
 
 export function getMetaFromWindowRecord(
   windowOrId: WindowRecord | string,

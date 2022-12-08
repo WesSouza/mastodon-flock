@@ -1,6 +1,6 @@
+import type { WindowMeta } from "../../stores/WindowStore";
 import { Anchor } from "../typography/Anchor";
 import { Paragraph } from "../typography/Paragraph";
-import type { WindowMeta } from "../WindowManager/WindowManager";
 import { WizardWindow } from "./WizardWindow";
 
 export function Welcome({

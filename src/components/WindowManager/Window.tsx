@@ -8,8 +8,8 @@ import {
 } from "react95";
 import styled from "styled-components";
 
+import type { WindowMeta } from "../../stores/WindowStore";
 import { Icon, IconProps } from "../Icon";
-import type { WindowMeta } from "./WindowManager";
 
 const blinkTimerInterval = 100;
 const blinkTimerRepeat = 3;

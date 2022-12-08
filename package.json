@@ -26,6 +26,7 @@
   "dependencies": {
     "@astrojs/react": "^1.2.2",
     "@astrojs/vercel": "^2.3.4",
+    "@nanostores/react": "^0.4.0",
     "@types/react": "^18.0.25",
     "@types/react-dom": "^18.0.9",
     "astro": "^1.6.11",
@@ -33,6 +34,7 @@
     "date-fns": "^2.29.3",
     "focus-trap-react": "^10.0.2",
     "mongoose": "^6.7.3",
+    "nanostores": "^0.7.1",
     "node-fetch": "^3.3.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

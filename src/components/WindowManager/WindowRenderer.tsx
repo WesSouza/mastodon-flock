@@ -1,7 +1,8 @@
 import { useCallback, useMemo } from "react";
 import styled from "styled-components";
+
+import type { WindowMeta, WindowRecord } from "../../stores/WindowStore";
 import { getMetaFromWindowRecord } from "./utils";
-import type { WindowMeta, WindowRecord } from "./WindowManager";
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -29,6 +30,8 @@ export function WindowRenderer({
 }) {
   const handleModalClick = useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
+      // FIXME: This is not being called when clicking outside of the modal for
+      // some nefarious reason
       if (event.target === event.currentTarget) {
         onModalClickOutside({ windowId: window.id });
       }

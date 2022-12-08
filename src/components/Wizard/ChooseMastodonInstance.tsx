@@ -1,4 +1,3 @@
-import { FixedSizeList, ListChildComponentProps } from "react-window";
 import React, {
   useCallback,
   useEffect,
@@ -6,19 +5,20 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { FixedSizeList, ListChildComponentProps } from "react-window";
 import { Frame, ScrollView, TextInput } from "react95";
 import styled from "styled-components";
 
 import { config } from "../../config";
+import { useResizeObserver } from "../../hooks/useResizeObserver";
 import { useWindowManager } from "../../hooks/useWindowManager";
+import type { WindowMeta } from "../../stores/WindowStore";
 import type { MastodonInstance } from "../../types";
 import { http } from "../../utils/http-request";
 import { collect } from "../../utils/plausible";
 import { AlertDialog } from "../dialogs/AlertDialog";
 import { Paragraph } from "../typography/Paragraph";
-import type { WindowMeta } from "../WindowManager/WindowManager";
 import { WizardWindow } from "./WizardWindow";
-import { useResizeObserver } from "../../hooks/useResizeObserver";
 
 const ScrollViewStyled = styled(ScrollView)`
   background: #fff;

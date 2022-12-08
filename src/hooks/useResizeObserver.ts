@@ -28,7 +28,6 @@ export function useResizeObserver<T extends HTMLElement = any>() {
 
       animationFrame.current = requestAnimationFrame(() => {
         if (ref.current) {
-          console.log(entry.contentRect);
           setRect(entry.contentRect);
         }
       });

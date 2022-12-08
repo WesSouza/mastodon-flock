@@ -1,5 +1,5 @@
+import type { WindowMeta } from "../../stores/WindowStore";
 import { Paragraph } from "../typography/Paragraph";
-import type { WindowMeta } from "../WindowManager/WindowManager";
 import { WizardWindow } from "./WizardWindow";
 
 export function Finish({

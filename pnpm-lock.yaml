@@ -3,6 +3,7 @@ lockfileVersion: 5.4
 specifiers:
   '@astrojs/react': ^1.2.2
   '@astrojs/vercel': ^2.3.4
+  '@nanostores/react': ^0.4.0
   '@types/cookie': ^0.5.1
   '@types/node': ^18.11.9
   '@types/react': ^18.0.25
@@ -21,6 +22,7 @@ specifiers:
   focus-trap-react: ^10.0.2
   import-sort-style-wes: ^3.0.2
   mongoose: ^6.7.3
+  nanostores: ^0.7.1
   node-fetch: ^3.3.0
   prettier: ^2.8.0
   prettier-plugin-import-sort: ^0.0.7
@@ -38,6 +40,7 @@ specifiers:
 dependencies:
   '@astrojs/react': 1.2.2_cn3ejhfta5lq2dae4xucvtkwvu
   '@astrojs/vercel': 2.3.4
+  '@nanostores/react': 0.4.0_l7qgfzs3f7fslbs5zoobn4ovy4
   '@types/react': 18.0.25
   '@types/react-dom': 18.0.9
   astro: 1.6.11_odkjkoia5xunhxkdrka32ib6vi
@@ -45,6 +48,7 @@ dependencies:
   date-fns: 2.29.3
   focus-trap-react: 10.0.2_v2m5e27vhdewzwhryxwfaorcca
   mongoose: 6.7.3
+  nanostores: 0.7.1
   node-fetch: 3.3.0
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
@@ -1403,6 +1407,20 @@ packages:
     transitivePeerDependencies:
       - encoding
       - supports-color
+    dev: false
+
+  /@nanostores/react/0.4.0_l7qgfzs3f7fslbs5zoobn4ovy4:
+    resolution: {integrity: sha512-u7Y3s1B4hwsBxpIxClx0F/Q7TF1AsCU/F7Tt3n+tWeCebQ0cs2spthmskJY689XIMTRJXfBZF83kJDaDZeavVA==}
+    engines: {node: ^14.0.0 || ^16.0.0 || >=18.0.0}
+    peerDependencies:
+      nanostores: ^0.7.0
+      react: '>=18.0.0'
+      react-dom: '>=18.0.0'
+    dependencies:
+      nanostores: 0.7.1
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      use-sync-external-store: 1.2.0_react@18.2.0
     dev: false
 
   /@nodelib/fs.scandir/2.1.5:
@@ -4728,6 +4746,11 @@ packages:
     hasBin: true
     dev: false
 
+  /nanostores/0.7.1:
+    resolution: {integrity: sha512-7HenoVpZOjRudHCmAVWKloBTk3+Ozw49KuRWq/pNlEIIVS3x9dID+I5z3Rhjxl1muhHwv4dFhpT+0FebT9jvaA==}
+    engines: {node: ^14.0.0 || ^16.0.0 || >=18.0.0}
+    dev: false
+
   /natural-compare-lite/1.4.0:
     resolution: {integrity: sha512-Tj+HTDSJJKaZnfiuw+iaF9skdPpTo2GtEly5JHnWV/hfv2Qj/9RKsGISQtLh2ox3l5EAGw487hnBee0sIJ6v2g==}
     dev: true
@@ -6050,6 +6073,14 @@ packages:
     dependencies:
       punycode: 2.1.1
     dev: true
+
+  /use-sync-external-store/1.2.0_react@18.2.0:
+    resolution: {integrity: sha512-eEgnFxGQ1Ife9bzYs6VLi8/4X6CObHMw9Qr9tPY43iKwsPw8xE8+EFsf/2cFZ5S3esXgpWgtSCtLNS41F+sKPA==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      react: 18.2.0
+    dev: false
 
   /util-deprecate/1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}

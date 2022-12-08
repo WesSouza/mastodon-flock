@@ -1,9 +1,9 @@
 import { Frame, Separator } from "react95";
 import styled from "styled-components";
-import { FocusableButton } from "../FocusableButton";
 
+import type { WindowMeta } from "../../stores/WindowStore";
+import { FocusableButton } from "../FocusableButton";
 import { Window } from "../WindowManager/Window";
-import type { WindowMeta } from "../WindowManager/WindowManager";
 
 export type WizardWindowAction = {
   disabled?: boolean;

@@ -1,14 +1,17 @@
-import { useCallback, useContext, useMemo, useRef } from "react";
-import { getMetaFromWindowRecord } from "../components/WindowManager/utils";
+import { useStore } from "@nanostores/react";
+import { useCallback, useMemo, useRef } from "react";
 
+import { getMetaFromWindowRecord } from "../components/WindowManager/utils";
+import type { WindowMeta, WindowOpenFn } from "../stores/WindowStore";
 import {
-  WindowManagerContext,
-  WindowMeta,
-  WindowOpenFn,
-} from "../components/WindowManager/WindowManager";
+  activeWindowId,
+  closeWindow,
+  newRenderedWindow,
+  openWindow as openWindowOnStore,
+} from "../stores/WindowStore";
 
 export function useWindowManager({ windowId }: { windowId?: string } = {}) {
-  const context = useContext(WindowManagerContext);
+  const $activeWindowId = useStore(activeWindowId);
   const selfWindowId = useRef<string>();
 
   const handleClose = useCallback(() => {
@@ -16,39 +19,33 @@ export function useWindowManager({ windowId }: { windowId?: string } = {}) {
       throw new Error("Unable to close unregistered window");
     }
 
-    context.closeWindow(windowId ?? (selfWindowId.current as string));
-  }, [context, windowId]);
+    closeWindow(windowId ?? (selfWindowId.current as string));
+  }, [windowId]);
 
-  const openWindow: WindowOpenFn = useCallback(
-    (component, props, options) => {
-      return context.openWindow(component, props, options);
-    },
-    [context],
-  );
+  const openWindow: WindowOpenFn = useCallback((component, props, options) => {
+    return openWindowOnStore(component, props, options);
+  }, []);
 
-  const closeWindowWithId = useCallback(
-    (windowId: string | undefined) => {
-      if (!windowId) {
-        return;
-      }
+  const closeWindowWithId = useCallback((windowId: string | undefined) => {
+    if (!windowId) {
+      return;
+    }
 
-      context.closeWindow(windowId);
-    },
-    [context],
-  );
+    closeWindow(windowId);
+  }, []);
 
   const registerSelf = useCallback(() => {
     if (!selfWindowId.current) {
-      selfWindowId.current = context.newRenderedWindow();
+      selfWindowId.current = newRenderedWindow();
     }
 
     return selfWindowId.current;
-  }, [context]);
+  }, []);
 
   const active = Boolean(
-    context.activeWindowId &&
-      (context.activeWindowId === selfWindowId.current ||
-        context.activeWindowId === windowId),
+    $activeWindowId &&
+      ($activeWindowId === selfWindowId.current ||
+        $activeWindowId === windowId),
   );
 
   const windowMeta: WindowMeta = useMemo(

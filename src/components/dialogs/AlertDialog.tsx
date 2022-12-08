@@ -2,10 +2,10 @@ import { Button } from "react95";
 import styled from "styled-components";
 
 import { useWindowManager } from "../../hooks/useWindowManager";
+import type { WindowMeta } from "../../stores/WindowStore";
 import { Icon } from "../Icon";
 import { Paragraph } from "../typography/Paragraph";
 import { Window } from "../WindowManager/Window";
-import type { WindowMeta } from "../WindowManager/WindowManager";
 
 const AlertMessageContents = styled.div`
   display: grid;

@@ -1,8 +1,8 @@
 import { useCallback, useState } from "react";
 import { Radio } from "react95";
 import styled from "styled-components";
-import type { WindowMeta } from "../WindowManager/WindowManager";
 
+import type { WindowMeta } from "../../stores/WindowStore";
 import { WizardWindow } from "./WizardWindow";
 
 const Option = styled.div`
