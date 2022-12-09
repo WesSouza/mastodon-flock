@@ -4,6 +4,7 @@ import fetch from "node-fetch";
 
 import { responseJsonError } from "../../utils/http-response";
 import { Session } from "../../utils/session";
+import { statIncrement } from "../../utils/stats";
 
 const makeHandler = (operation: "follow" | "unfollow"): APIRoute =>
   async function postOrDelete(context) {
@@ -46,6 +47,10 @@ const makeHandler = (operation: "follow" | "unfollow"): APIRoute =>
       if (followingResponse.status !== 200) {
         console.error(await followingResponse.text());
         return responseJsonError(500, "errorFollowingAccount");
+      }
+
+      if (operation === "follow") {
+        statIncrement("federatedAccountsFollowed");
       }
 
       return new Response(JSON.stringify({ result: "success" }), {

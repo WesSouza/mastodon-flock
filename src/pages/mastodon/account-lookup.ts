@@ -1,10 +1,11 @@
 import type { APIRoute } from "astro";
 import fetch from "node-fetch";
-import type { MastodonLookupAccountResult } from "../../types";
 
+import type { MastodonLookupAccountResult } from "../../types";
 import { responseJsonError } from "../../utils/http-response";
 import { APIAccount, mapApiAccount } from "../../utils/mastodon";
 import { Session } from "../../utils/session";
+import { statIncrement } from "../../utils/stats";
 
 export const get: APIRoute = async function get(context) {
   const { url } = context;
@@ -44,6 +45,8 @@ export const get: APIRoute = async function get(context) {
       const responseData: MastodonLookupAccountResult = {
         account: mapApiAccount(lookupData, { following: false, uri }),
       };
+
+      statIncrement("federatedAccountsFound");
 
       return new Response(JSON.stringify(responseData), {
         headers: {

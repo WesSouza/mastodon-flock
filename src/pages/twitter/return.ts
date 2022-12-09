@@ -1,7 +1,9 @@
 import type { APIRoute } from "astro";
 import { TwitterApi } from "twitter-api-v2";
+
 import { config } from "../../config";
 import { Session } from "../../utils/session";
+import { statIncrement } from "../../utils/stats";
 
 const nextWizardStep = "chooseMethod";
 
@@ -47,6 +49,8 @@ export const get: APIRoute = async function get(context) {
 
     session.set("twitterAccessToken", data.accessToken);
     session.set("twitterAccessSecret", data.accessSecret);
+
+    statIncrement("twitterLogins");
 
     return redirect(`${config.urls.home}?step=${nextWizardStep}`, 302);
   } catch (error) {

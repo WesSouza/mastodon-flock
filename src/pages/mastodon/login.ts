@@ -9,6 +9,7 @@ import {
 } from "../../models/FederatedInstance";
 import { Session } from "../../utils/session";
 import { createEncryptor } from "../../utils/simple-encryptor";
+import { statIncrement } from "../../utils/stats";
 
 const currentWizardStep = "chooseMastodonInstance";
 
@@ -189,6 +190,8 @@ export const get: APIRoute = async function get(context) {
           created: new Date(),
         });
       }
+
+      statIncrement("appOnFederatedInstances");
 
       await federatedInstance.save();
     } catch (e) {

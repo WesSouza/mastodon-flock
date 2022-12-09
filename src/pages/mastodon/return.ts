@@ -6,6 +6,7 @@ import { config } from "../../config";
 import { FederatedInstance } from "../../models/FederatedInstance";
 import { Session } from "../../utils/session";
 import { createEncryptor } from "../../utils/simple-encryptor";
+import { statIncrement } from "../../utils/stats";
 
 const currentWizardStep = "chooseMastodonInstance";
 const nextWizardStep = "loadingInformation";
@@ -101,6 +102,8 @@ export const get: APIRoute = async function get(context) {
     }
 
     session.set("mastodonAccessToken", oauthTokenData.access_token);
+
+    statIncrement("mastodonLogins");
 
     return redirect();
   } catch (e) {
