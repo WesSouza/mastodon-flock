@@ -1,13 +1,14 @@
 import EventEmitter from "events";
-import { readFileSync } from "fs";
-import type { MastodonInstance } from "../src/types.js";
+import type { APIResult, MastodonInstance } from "../src/types.js";
 import { http } from "../src/utils/http-request.js";
 
 const requestTimeout = 10000;
 const parallelRequests = 30;
-const bigServer = "mastodon.social";
+const trustedServers = new Set(["mastodon.social"]);
+const mustKnowServers = new Set(["mastodon.social"]);
 
-const [, , initialUri, skipUrisJsonPath] = process.argv;
+const [, , initialUri, environment = "local"] = process.argv;
+
 if (
   typeof initialUri !== "string" ||
   !initialUri.match(/^[a-z0-9]+[a-z0-9\-\.]*\.[a-z0-9]{2,}$/)
@@ -15,25 +16,54 @@ if (
   throw new Error(`Invalid initialUri ${initialUri}`);
 }
 
-if (skipUrisJsonPath && typeof skipUrisJsonPath !== "string") {
-  throw new Error(`Invalid skipUrisJsonPath ${skipUrisJsonPath}`);
-}
-
-let skipUris = new Set<string>();
-if (skipUrisJsonPath) {
-  try {
-    skipUris = new Set(
-      JSON.parse(readFileSync(skipUrisJsonPath, "utf-8")) as string[],
-    );
-    skipUris.delete(initialUri);
-  } catch (error) {
-    console.error(`Unable to load and parse ${skipUrisJsonPath}`);
-    console.error(error);
-    process.exit(1);
+let serverOrigin: string;
+switch (environment) {
+  case "local": {
+    serverOrigin = "http://localhost:3000";
+    break;
   }
+  case "preview": {
+    serverOrigin = "https://mastodon-flock-preview.vercel.app";
+    break;
+  }
+  case "production": {
+    serverOrigin = "https://mastodon-flock.vercel.app";
+    break;
+  }
+  default:
+    throw new Error(
+      "Invalid environment, use 'local', 'preview' or 'production'",
+    );
 }
 
-async function crawlUri(uri: string) {
+const knownInstancesUrl = new URL("/mastodon/known-instances", serverOrigin);
+knownInstancesUrl.searchParams.set("_vercel_no_cache", "1");
+knownInstancesUrl.searchParams.set("allInstances", "1");
+
+const knownInstancesResponse = await fetch(knownInstancesUrl.href, {
+  headers: { accept: "application/json" },
+});
+if (knownInstancesResponse.status !== 200) {
+  throw new Error(
+    `Invalid known-instances response: ${knownInstancesResponse.status} ${knownInstancesResponse.statusText}`,
+  );
+}
+
+const knownInstancesData = (await knownInstancesResponse.json()) as APIResult<{
+  items: Omit<MastodonInstance, "updated">[];
+}>;
+
+if ("error" in knownInstancesData) {
+  throw new Error(
+    `Invalid known-instances response: ${knownInstancesData.error}`,
+  );
+}
+
+const knownInstances = new Map(
+  knownInstancesData.items.map((instance) => [instance.uri, instance]),
+);
+
+async function fetchInstance(uri: string) {
   try {
     let url = `https://${uri}`;
 
@@ -149,27 +179,42 @@ async function crawlUri(uri: string) {
       return { error: "invalidPeersResponse" };
     }
 
-    const crawledData: {
-      instance: Omit<MastodonInstance, "updated">;
-      peers: string[];
-    } = {
-      instance: {
-        name: mastodonInstance.title,
-        uri: mastodonInstance.uri,
-        instanceUrl: instanceUrl.replace(/\/+$/, ""),
-        software: {
-          name: nodeInfo.software.name,
-          version: nodeInfo.software.version,
-        },
-        usage: {
-          usersActiveMonth: nodeInfo.usage?.users?.activeMonth,
-          usersTotal: nodeInfo.usage?.users?.total,
-        },
+    const instance: Omit<MastodonInstance, "updated"> = {
+      name: mastodonInstance.title,
+      uri: mastodonInstance.uri,
+      instanceUrl: instanceUrl.replace(/\/+$/, ""),
+      software: {
+        name: nodeInfo.software.name,
+        version: nodeInfo.software.version,
       },
-      peers: mastodonPeers,
+      usage: {
+        usersActiveMonth: nodeInfo.usage?.users?.activeMonth,
+        usersTotal: nodeInfo.usage?.users?.total,
+      },
     };
 
-    return crawledData;
+    return instance;
+  } catch (error) {
+    return { error: "mastodonCrawlError", reason: String(error) };
+  }
+}
+
+async function fetchPeers(instanceUrl: string) {
+  try {
+    const mastodonPeersUrl = new URL("/api/v1/instance/peers", instanceUrl);
+    const mastodonPeers = await http<string[]>({
+      url: mastodonPeersUrl.href,
+      redirect: "manual",
+    });
+    if ("error" in mastodonPeers) {
+      return { error: "invalidMastodonPeersResponse", reason: mastodonPeers };
+    }
+
+    if (!Array.isArray(mastodonPeers)) {
+      return { error: "invalidPeersResponse" };
+    }
+
+    return mastodonPeers;
   } catch (error) {
     return { error: "mastodonCrawlError", reason: String(error) };
   }
@@ -183,14 +228,43 @@ try {
     return async () => {
       urisToCrawl.delete(uri);
 
-      if (urisCrawled.has(uri) || skipUris.has(uri)) {
+      if (urisCrawled.has(uri)) {
         return;
       }
 
-      const crawledData = await crawlUri(uri);
-      if ("error" in crawledData) {
-        console.log(JSON.stringify({ type: "error", uri, ...crawledData }));
-        console.log(
+      let instance = knownInstances.get(uri);
+      if (!instance) {
+        const instanceData = await fetchInstance(uri);
+        if ("error" in instanceData) {
+          console.error(
+            JSON.stringify({ type: "error", uri, ...instanceData }),
+          );
+          console.error(
+            JSON.stringify({
+              type: "progress",
+              crawled: urisCrawled.size,
+              currentRemaining: urisToCrawl.size,
+            }),
+          );
+          return;
+        }
+
+        if (urisCrawled.has(instanceData.uri)) {
+          return;
+        }
+        urisCrawled.add(uri);
+        urisCrawled.add(instanceData.uri);
+
+        console.log(JSON.stringify({ type: "instance", ...instanceData }));
+
+        instance = instanceData;
+      }
+
+      const peers = await fetchPeers(instance.instanceUrl);
+
+      if ("error" in peers) {
+        console.error(JSON.stringify({ type: "error", uri, ...peers }));
+        console.error(
           JSON.stringify({
             type: "progress",
             crawled: urisCrawled.size,
@@ -200,36 +274,27 @@ try {
         return;
       }
 
+      // Only crawl peers from trusted servers or if the server knows commonly known servers
       if (
-        urisCrawled.has(crawledData.instance.uri) ||
-        skipUris.has(crawledData.instance.uri)
+        !trustedServers.has(uri) &&
+        !peers.find((peer) => mustKnowServers.has(peer))
       ) {
-        return;
-      }
-      urisCrawled.add(uri);
-      urisCrawled.add(crawledData.instance.uri);
-
-      console.log(
-        JSON.stringify({ type: "instance", ...crawledData.instance }),
-      );
-      if (uri !== bigServer && !crawledData.peers.includes(bigServer)) {
-        // Everybody knows mastodon.social, so this is potentially garbage
-        console.log(
+        console.error(
           JSON.stringify({
             type: "skipPeers",
             uri,
-            count: crawledData.peers.length,
+            count: peers.length,
           }),
         );
       } else {
-        crawledData.peers.forEach((peer) => {
-          if (!urisCrawled.has(peer) && !skipUris.has(peer)) {
+        peers.forEach((peer) => {
+          if (!urisCrawled.has(peer) && !knownInstances.has(peer)) {
             urisToCrawl.add(peer);
           }
         });
       }
 
-      console.log(
+      console.error(
         JSON.stringify({
           type: "progress",
           crawled: urisCrawled.size,
