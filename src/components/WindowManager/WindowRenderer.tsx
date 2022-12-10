@@ -15,6 +15,11 @@ const ModalOverlay = styled.div`
   justify-content: center;
   align-items: center;
   z-index: 1;
+
+  @media (max-height: 767px) {
+    position: absolute;
+    justify-content: flex-start;
+  }
 `;
 
 export function WindowRenderer({

@@ -90,7 +90,7 @@ export function AboutDialog({ windowMeta }: { windowMeta: WindowMeta }) {
           <Paragraph>
             Copyright &copy; 1986-2022{" "}
             <Anchor href="https://wes.dev/" target="_blank" rel="noopener">
-              Wes Souza
+              Wes&nbsp;Souza
             </Anchor>{" "}
             (
             <Anchor
