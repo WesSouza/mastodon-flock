@@ -1,3 +1,5 @@
+import { Fragment } from "react";
+
 import { About } from "../components/About";
 import { PrivacyPolicy } from "../components/PrivacyPolicy";
 import { Results } from "../components/Results/Results";
@@ -15,9 +17,9 @@ const mainWindows = {
 export function Windows({
   mainWindow,
 }: {
-  mainWindow: keyof typeof mainWindows;
+  mainWindow?: keyof typeof mainWindows;
 }) {
-  const MainWindow = mainWindows[mainWindow];
+  const MainWindow = mainWindow ? mainWindows[mainWindow] : Fragment;
   return (
     <React95>
       <WindowManager>

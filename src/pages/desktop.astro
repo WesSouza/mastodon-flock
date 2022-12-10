@@ -1,5 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import { Windows } from "../react-islands/Windows";
 
 Astro.response.headers.set("cache-control", "s-maxage=86400, max-age=600");
 ---
@@ -53,6 +54,7 @@ Astro.response.headers.set("cache-control", "s-maxage=86400, max-age=600");
         <figcaption>Privacy Policy</figcaption>
       </figure>
     </a>
+    <Windows client:only="react" />
   </section>
   <div class="svgFilter">
     <svg>
