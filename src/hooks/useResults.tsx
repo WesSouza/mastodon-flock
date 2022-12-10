@@ -17,12 +17,14 @@ const currentVersion = 1;
 export function useResults() {
   const rerender = useRerender();
 
+  const instanceUri = useRef<string>();
   const method = useRef<string>();
   const results = useRef<MastodonFlockResults>();
   const loadingAccountIds = useSet<string>();
 
   const deleteResults = useCallback(() => {
     sessionStorage.removeItem("version");
+    sessionStorage.removeItem("instanceUri");
     sessionStorage.removeItem("method");
     sessionStorage.removeItem("results");
   }, []);
@@ -34,9 +36,11 @@ export function useResults() {
       return false;
     }
 
+    const sessionInstanceUri = sessionStorage.getItem("instanceUri");
     const sessionMethod = sessionStorage.getItem("method");
     const sessionResults = sessionStorage.getItem("results");
     if (
+      typeof sessionInstanceUri !== "string" ||
       typeof sessionMethod !== "string" ||
       typeof sessionResults !== "string"
     ) {
@@ -45,6 +49,7 @@ export function useResults() {
     }
 
     try {
+      instanceUri.current = sessionInstanceUri;
       method.current = sessionMethod;
       results.current = JSON.parse(sessionResults);
       rerender();
@@ -58,12 +63,18 @@ export function useResults() {
 
   const saveResults = useCallback(() => {
     sessionStorage.setItem("version", String(currentVersion));
+    sessionStorage.setItem("instanceUri", instanceUri.current ?? "");
     sessionStorage.setItem("method", method.current ?? "");
     sessionStorage.setItem("results", JSON.stringify(results.current));
   }, []);
 
   const setResults = useCallback(
-    (newMethod: string, newResults: MastodonFlockResults) => {
+    (
+      newMethod: string,
+      newInstanceUri: string,
+      newResults: MastodonFlockResults,
+    ) => {
+      instanceUri.current = newInstanceUri;
       method.current = newMethod;
       results.current = newResults;
       saveResults();
@@ -116,6 +127,9 @@ export function useResults() {
     () => ({
       deleteResults,
       followUnfollow,
+      get instanceUri() {
+        return instanceUri.current;
+      },
       loadingAccountIds,
       loadResults,
       get method() {

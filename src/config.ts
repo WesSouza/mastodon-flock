@@ -5,17 +5,19 @@ const isPreview = import.meta.env.SITE?.startsWith(
 
 const siteUrl = new URL(import.meta.env.SITE);
 
+const name = isLocal
+  ? "Mastodon Flock Development"
+  : isPreview
+  ? "Mastodon Flock Preview"
+  : "Mastodon Flock";
+
 const origin = import.meta.env.SITE.replace(/\/$/, "");
 
 export const config = {
   isLocal,
   isPreview,
   host: siteUrl.hostname,
-  name: isLocal
-    ? "Mastodon Flock Development"
-    : isPreview
-    ? "Mastodon Flock Preview"
-    : "Mastodon Flock",
+  name,
   urls: {
     about: `${origin}/about`,
     acknowledgements: `${origin}/acknowledgements.txt`,
@@ -29,6 +31,9 @@ export const config = {
     mastodonAccountFollow: `${origin}/mastodon/account-follow`,
     mastodonAccountFollowing: `${origin}/mastodon/account-following`,
     mastodonAccountLookup: `${origin}/mastodon/account-lookup`,
+    mastodonAppRevoke: `https://{uri}/oauth/authorized_applications#:~:text=${encodeURIComponent(
+      name,
+    )},-Last%20used%20on`,
     mastodonInstance: `${origin}/mastodon/instance`,
     mastodonKnownInstances: `${origin}/mastodon/known-instances`,
     mastodonLogin: `${origin}/mastodon/login`,

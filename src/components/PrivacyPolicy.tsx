@@ -69,28 +69,6 @@ export function PrivacyPolicy() {
         </Anchor>
         .
       </Paragraph>
-      <Heading level={2}>Revoking Access and Removing User Data</Heading>
-      <Paragraph>We do not store user data.</Paragraph>
-      <Paragraph>
-        If you&rsquo;d like to remove our application from your Twitter account,
-        navigate to your Twitter &ldquo;Settings&rdquo;, &ldquo;Security and
-        account access&rdquo;, &ldquo;Apps and sessions&rdquo;, &ldquo;Connected
-        apps&rdquo;,{" "}
-        <Anchor
-          href={config.urls.twitterAppRevoke}
-          target="_blank"
-          rel="nofollow noopener noreferrer"
-        >
-          &ldquo;Mastodon Flock&rdquo;
-        </Anchor>{" "}
-        then click &ldquo;Revoke app permissions&rdquo;.
-      </Paragraph>
-      <Paragraph>
-        If you&rsquo;d like to remove our application from your Mastodon
-        account, navigate to your Mastodon &ldquo;Preferences&rdquo;,
-        &ldquo;Account&rdquo;, &ldquo;Authorized apps&rdquo;, &ldquo;Mastodon
-        Flock&rdquo; then click &ldquo;Revoke&rdquo;.
-      </Paragraph>
       <Heading level={2}>Changes and Questions</Heading>
       <Paragraph>
         We may update this policy as needed to comply with relevant regulations
@@ -104,7 +82,7 @@ export function PrivacyPolicy() {
         if you have any questions, comments, or concerns about this privacy
         policy, your data, or your rights with respect to your information.
       </Paragraph>
-      <Paragraph>Last updated: December 6th, 2022</Paragraph>
+      <Paragraph>Last updated: December 10th, 2022</Paragraph>
     </InternetNavigator>
   );
 }

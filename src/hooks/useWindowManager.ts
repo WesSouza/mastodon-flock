@@ -10,7 +10,9 @@ import {
   openWindow as openWindowOnStore,
 } from "../stores/WindowStore";
 
-export function useWindowManager({ windowId }: { windowId?: string } = {}) {
+export function useWindowManager({
+  windowId,
+}: { windowId?: string | undefined } = {}) {
   const $activeWindowId = useStore(activeWindowId);
   const selfWindowId = useRef<string>();
 

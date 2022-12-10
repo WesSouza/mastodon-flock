@@ -44,10 +44,10 @@ export function Wizard() {
 
   const handleFlockResults = useCallback(
     (results: MastodonFlockResults) => {
-      setResults(method ?? "", results);
+      setResults(method ?? "", mastodonHostname ?? "", results);
       navigateTo("finish");
     },
-    [method, navigateTo, setResults],
+    [mastodonHostname, method, navigateTo, setResults],
   );
 
   const handleFlockError = useCallback(

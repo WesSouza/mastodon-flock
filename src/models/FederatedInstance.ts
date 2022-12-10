@@ -7,6 +7,7 @@ export type IFederatedInstance = {
   uri: string;
   instanceUrl: string;
   app: {
+    id: string | undefined;
     clientId: string | undefined;
     clientSecret: string | undefined;
     vapidKey: string | undefined;
@@ -28,6 +29,11 @@ const FederatedInstanceSchema = new Schema<IFederatedInstance>({
   uri: { type: String, required: true },
   instanceUrl: { type: String, required: true },
   app: {
+    id: {
+      type: String,
+      maxlength: 50,
+      match: /^\d+$/,
+    },
     clientId: {
       type: String,
       maxlength: 500,

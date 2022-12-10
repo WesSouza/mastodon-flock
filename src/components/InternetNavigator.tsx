@@ -5,6 +5,7 @@ import { config } from "../config";
 import { useSearchParamsState } from "../hooks/useSearchParamsState";
 
 import { useWindowManager } from "../hooks/useWindowManager";
+import type { WindowMeta } from "../stores/WindowStore";
 import {
   Toolbar,
   ToolbarButtonIcon,
@@ -70,24 +71,38 @@ const StatusBar = styled(Frame).attrs({
 export function InternetNavigator({
   children,
   defaultUrl,
+  modal = false,
   title,
+  windowMeta: windowMetaModal,
 }: {
   children: React.ReactNode;
   defaultUrl: string;
+  modal?: boolean;
   title: string;
+  windowMeta?: WindowMeta;
 }) {
-  const { registerSelf, windowMeta } = useWindowManager();
+  const {
+    handleClose: handleCloseModal,
+    registerSelf,
+    windowMeta,
+  } = useWindowManager({ windowId: windowMetaModal?.id });
   const [fontSize, setFontSize] = useState(0);
   const [url, setUrl] = useSearchParamsState("url");
   const [status, setStatus] = useState("");
 
   useEffect(() => {
-    registerSelf();
-  }, [registerSelf]);
+    if (!windowMetaModal) {
+      registerSelf();
+    }
+  }, [registerSelf, windowMetaModal]);
 
   const handleClose = useCallback(() => {
-    location.href = "/desktop";
-  }, []);
+    if (windowMetaModal) {
+      handleCloseModal();
+    } else {
+      location.href = "/desktop";
+    }
+  }, [handleCloseModal, windowMetaModal]);
 
   const handleBack = useCallback(() => {
     history.back();
@@ -194,12 +209,12 @@ export function InternetNavigator({
   return (
     <Window
       icon="toolbarWebDocument"
-      fullscreen
+      fullscreen={!modal}
       noPadding
       onClose={handleClose}
-      size="large"
+      size={modal ? "medium" : "large"}
       title={`${title} – Web 1.0 Internet Navigator`}
-      windowMeta={windowMeta}
+      windowMeta={windowMetaModal ?? windowMeta}
     >
       <Toolbar>
         <ToolbarHandle />

@@ -100,6 +100,7 @@ const WindowTitle = styled.span`
 `;
 
 const WindowButton = styled(Button)`
+  flex-shrink: 0;
   &:last-child {
     margin-inline-start: 4px;
   }
@@ -198,9 +199,9 @@ export function Window({
     </WindowStyled>
   );
 
-  if (windowMeta.active && windowMeta.modal) {
-    return <FocusTrap>{component}</FocusTrap>;
-  }
-
-  return component;
+  return (
+    <FocusTrap active={windowMeta.active && windowMeta.modal}>
+      {component}
+    </FocusTrap>
+  );
 }

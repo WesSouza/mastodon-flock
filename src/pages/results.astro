@@ -35,9 +35,17 @@ Astro.response.headers.set("cache-control", "s-maxage=86400, max-age=600");
 </style>
 
 <script>
-  setTimeout(() => {
+  function removeSplashScreen() {
     document
       .querySelectorAll(".SplashScreen")
       .forEach((element) => element.remove());
+  }
+  document
+    .querySelectorAll(".SplashScreen")
+    .forEach((element) =>
+      element.addEventListener("click", removeSplashScreen),
+    );
+  setTimeout(() => {
+    removeSplashScreen();
   }, 3000);
 </script>

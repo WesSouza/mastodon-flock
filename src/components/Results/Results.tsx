@@ -18,6 +18,7 @@ import { useWindowManager } from "../../hooks/useWindowManager";
 import type { AccountWithTwitter } from "../../types";
 import { getAccountInstanceUri } from "../../utils/fediverse";
 import { collect } from "../../utils/plausible";
+import { RevokeAccess } from "../RevokeAccess/RevokeAccess";
 import {
   Toolbar,
   ToolbarButtonIcon,
@@ -25,6 +26,7 @@ import {
   ToolbarIcon,
   ToolbarLabel,
 } from "../Toolbar";
+import { ButtonAnchor } from "../typography/Anchor";
 import { Paragraph } from "../typography/Paragraph";
 import { Window } from "../WindowManager/Window";
 import { ResultPerson } from "./ResultPerson";
@@ -161,13 +163,12 @@ const NoResults = styled.div`
   text-align: center;
 `;
 
-const StatusBar = styled(Frame).attrs({
-  variant: "well",
-})`
-  height: calc(calc(1em * 1.5) + 10px);
-  padding: 4px 6px;
+const StatusBar = styled.div`
   width: 100%;
   margin-block-start: 4px;
+  display: flex;
+  gap: 4px;
+  justify-items: stretch;
 
   @media print {
     & {
@@ -176,8 +177,16 @@ const StatusBar = styled(Frame).attrs({
   }
 `;
 
+const StatusBarItem = styled(Frame).attrs({
+  variant: "well",
+})<{ flexGrow?: number }>`
+  height: calc(calc(1em * 1.5) + 10px);
+  padding: 4px 6px;
+  flex-grow: ${({ flexGrow }) => flexGrow ?? "0"};
+`;
+
 export function Results() {
-  const { registerSelf, windowMeta } = useWindowManager();
+  const { openWindow, registerSelf, windowMeta } = useWindowManager();
 
   useEffect(() => {
     registerSelf();
@@ -303,6 +312,10 @@ export function Results() {
     followUnfollowSelected("unfollow");
   }, [followUnfollowSelected]);
 
+  const handleRevokeAppAccess = useCallback(() => {
+    openWindow(RevokeAccess, {}, { modal: true });
+  }, [openWindow]);
+
   const status = useMemo(
     () =>
       `${results?.accounts.length} account${
@@ -322,7 +335,8 @@ export function Results() {
   return (
     <Window
       icon="toolbarMastodon"
-      noPadding={true}
+      fullscreen
+      noPadding
       onClose={handleClose}
       size="large"
       title="Mastodon Flock"
@@ -412,7 +426,14 @@ export function Results() {
           </NoResults>
         ) : undefined}
       </ScrollViewStyled>
-      <StatusBar>{status}</StatusBar>
+      <StatusBar>
+        <StatusBarItem flexGrow={1}>{status}</StatusBarItem>
+        <StatusBarItem>
+          <ButtonAnchor onClick={handleRevokeAppAccess}>
+            Revoke App Access
+          </ButtonAnchor>
+        </StatusBarItem>
+      </StatusBar>
     </Window>
   );
 }

@@ -145,12 +145,14 @@ export const get: APIRoute = async function get(context) {
       });
       const mastodonCreateAppData =
         (await mastodonCreateAppResponse.json()) as {
+          id?: string;
           client_id?: string;
           client_secret?: string;
           vapid_key?: string;
         };
 
       if (
+        typeof mastodonCreateAppData.id !== "string" ||
         typeof mastodonCreateAppData.client_id !== "string" ||
         typeof mastodonCreateAppData.client_secret !== "string" ||
         (mastodonCreateAppData.vapid_key &&
@@ -165,6 +167,7 @@ export const get: APIRoute = async function get(context) {
         uri: mastodonInstanceData.uri,
         instanceUrl: new URL("/", nodeInfoLink.href).href,
         app: {
+          id: mastodonCreateAppData.id,
           clientId: mastodonCreateAppData.client_id,
           clientSecret: encryptor.encrypt(mastodonCreateAppData.client_secret),
           vapidKey: mastodonCreateAppData.vapid_key

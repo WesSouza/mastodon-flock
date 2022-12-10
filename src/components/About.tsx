@@ -1,5 +1,6 @@
 import { config } from "../config";
 import { InternetNavigator } from "./InternetNavigator";
+import { RevokeAccessContent } from "./RevokeAccess/RevokeAccessContent";
 import { Anchor } from "./typography/Anchor";
 import { Heading } from "./typography/Heading";
 import { ListItem } from "./typography/ListItem";
@@ -49,6 +50,7 @@ export function About() {
         </Anchor>{" "}
         if you wish.
       </Paragraph>
+
       <Heading level={2} anchorName="how-to-use-it">
         How to use it?
       </Heading>
@@ -77,6 +79,7 @@ export function About() {
         window, which displays every found account, as well as other options to
         help you follow them.
       </Paragraph>
+
       <Heading level={2} anchorName="how-does-it-work">
         How Does it Work?
       </Heading>
@@ -98,6 +101,9 @@ export function About() {
         A comprehensive <Anchor href="/privacy">Privacy Policy</Anchor> is
         available detailing what information is used and how it is handled.
       </Paragraph>
+
+      <RevokeAccessContent headingLevel={2} />
+
       <Heading level={2} anchorName="technology-stack">
         Technology Stack
       </Heading>
@@ -165,6 +171,7 @@ export function About() {
         tokens registered with them to enable user authentication (user tokens
         are never stored).
       </Paragraph>
+
       <Heading level={3} anchorName="source-code">
         Thanks and Acknowledgements
       </Heading>
@@ -231,6 +238,7 @@ export function About() {
         </Anchor>
         .
       </Paragraph>
+
       <Heading level={3} anchorName="source-code">
         Source Code
       </Heading>
@@ -245,6 +253,7 @@ export function About() {
         </Anchor>
         .
       </Paragraph>
+
       <Heading level={2} anchorName="questions-and-comments">
         Questions and Comments
       </Heading>
