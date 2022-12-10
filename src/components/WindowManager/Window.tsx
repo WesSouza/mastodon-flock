@@ -6,7 +6,7 @@ import {
   WindowContent,
   WindowHeader,
 } from "react95";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import type { WindowMeta } from "../../stores/WindowStore";
 import { Icon, IconProps } from "../Icon";
@@ -28,6 +28,7 @@ const windowWidths = {
 };
 
 const WindowStyled = styled(React95Window)<{
+  fullscreen: boolean;
   size: "small" | "medium" | "large";
 }>`
   position: relative;
@@ -36,20 +37,32 @@ const WindowStyled = styled(React95Window)<{
   align-self: center;
   z-index: 1;
 
-  @media (max-width: 767px) {
-    width: ${({ size }) => windowWidths.constrainedViewport[size]};
-  }
-
-  @media (min-width: 768px) {
-    width: ${({ size }) => windowWidths.unconstrainedViewport[size]};
-  }
-
   @media (max-height: 767px) {
   }
 
-  @media (min-height: 768px) {
-    max-height: calc(100% - 100px);
-  }
+  ${({ fullscreen, size }) =>
+    fullscreen
+      ? css`
+          width: 100%;
+          height: calc(100vh - var(--taskbar-height));
+          overflow: hidden;
+          border: 0;
+          box-shadow: none;
+          padding: 0;
+        `
+      : css`
+          @media (max-width: 767px) {
+            width: ${windowWidths.constrainedViewport[size]};
+          }
+
+          @media (min-width: 768px) {
+            width: ${windowWidths.unconstrainedViewport[size]};
+          }
+
+          @media (min-height: 768px) {
+            max-height: calc(100% - 100px);
+          }
+        `}
 
   @media print {
     max-height: none;
@@ -104,7 +117,13 @@ const WindowContentStyled = styled(WindowContent)<{
   flex-direction: column;
   overflow: hidden;
   height: 100%;
-  ${({ noPadding }) => (noPadding ? `padding: 2px;` : "")}
+
+  ${({ noPadding }) =>
+    noPadding
+      ? css`
+          padding: 2px;
+        `
+      : ""}
 
   @media print {
     overflow: visible;
@@ -114,6 +133,7 @@ const WindowContentStyled = styled(WindowContent)<{
 export function Window({
   children,
   icon,
+  fullscreen,
   noPadding,
   onClose,
   size = "large",
@@ -122,6 +142,7 @@ export function Window({
 }: {
   children: React.ReactNode;
   icon?: IconProps["icon"];
+  fullscreen?: boolean;
   noPadding?: boolean;
   onClose: () => void;
   size?: "small" | "medium" | "large";
@@ -157,7 +178,7 @@ export function Window({
   }, [windowMeta.titleBlink]);
 
   const component = (
-    <WindowStyled size={size}>
+    <WindowStyled fullscreen={fullscreen ?? false} size={size}>
       <WindowHeaderStyled active={animatedActive ?? windowMeta.active}>
         {icon ? (
           <WindowIcon>

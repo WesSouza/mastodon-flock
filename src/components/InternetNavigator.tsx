@@ -16,8 +16,8 @@ import {
 import { Window } from "./WindowManager/Window";
 
 const WindowContent = styled(ScrollView).attrs({ variant: "field" })<{
-  noPadding: boolean;
   fontSizeModifier: number;
+  noPadding: boolean;
 }>`
   width: 100%;
   flex: 1 1 0%;
@@ -42,8 +42,8 @@ const WindowContent = styled(ScrollView).attrs({ variant: "field" })<{
 
 const WebViewWrapper = styled(Frame).attrs({ variant: "field" })`
   width: 100%;
-  flex: 1 1 0%;
-  padding: 0;
+  padding: 2px;
+  height: 100%;
 `;
 
 const WebView = styled.iframe`
@@ -194,7 +194,8 @@ export function InternetNavigator({
   return (
     <Window
       icon="toolbarWebDocument"
-      noPadding={true}
+      fullscreen
+      noPadding
       onClose={handleClose}
       size="large"
       title={`${title} – Web 1.0 Internet Navigator`}
@@ -293,7 +294,7 @@ export function InternetNavigator({
             src={url}
             referrerPolicy="no-referrer"
             allow="fullscreen picture-in-picture speaker-selection web-share"
-            sandbox="allow-forms allow-popups allow-scripts"
+            sandbox="allow-forms allow-popups allow-same-origin allow-scripts"
           />
         </WebViewWrapper>
       )}
