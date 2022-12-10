@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { Frame, ScrollView } from "react95";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { config } from "../config";
 import { useSearchParamsState } from "../hooks/useSearchParamsState";
 
@@ -41,10 +41,20 @@ const WindowContent = styled(ScrollView).attrs({ variant: "field" })<{
   }
 `;
 
-const WebViewWrapper = styled(Frame).attrs({ variant: "field" })`
+const WebViewWrapper = styled(Frame).attrs({ variant: "field" })<{
+  fullscreen: boolean;
+}>`
   width: 100%;
   padding: 2px;
-  height: 100%;
+
+  ${({ fullscreen }) =>
+    fullscreen
+      ? css`
+          height: 100%;
+        `
+      : css`
+          height: min(calc(calc(100vh - var(--taskbar-height)) - 192px), 800px);
+        `}
 `;
 
 const WebView = styled.iframe`
@@ -304,7 +314,7 @@ export function InternetNavigator({
           {children}
         </WindowContent>
       ) : (
-        <WebViewWrapper>
+        <WebViewWrapper fullscreen={!modal}>
           <WebView
             src={url}
             referrerPolicy="no-referrer"

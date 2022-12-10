@@ -7,8 +7,20 @@ import type { MastodonFlockResults } from "../../hooks/useResults";
 import { FocusableButton } from "../FocusableButton";
 import { Paragraph } from "../typography/Paragraph";
 
+const FillHeight = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: calc(100vh - var(--taskbar-height));
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
 const FrameStyled = styled(Frame)`
-  width: min(calc(100% - 4em), 700px);
+  width: min(calc(100vw - 4em), 700px);
   padding: 16px;
   display: flex;
   flex-direction: column;
@@ -55,18 +67,20 @@ export function Installer({
   }, [cancel, findBirdsAndMammoths, method]);
 
   return (
-    <FrameStyled>
-      <Paragraph>
-        {status ?? " "}
-        <br />
-        {subStatus ?? " "}
-      </Paragraph>
-      <ProgressBar value={progress} shadow={false} />
-      <Center>
-        <CancelButton primary={true} onPress={cancel}>
-          Cancel
-        </CancelButton>
-      </Center>
-    </FrameStyled>
+    <FillHeight>
+      <FrameStyled>
+        <Paragraph>
+          {status ?? " "}
+          <br />
+          {subStatus ?? " "}
+        </Paragraph>
+        <ProgressBar value={progress} shadow={false} />
+        <Center>
+          <CancelButton primary={true} onPress={cancel}>
+            Cancel
+          </CancelButton>
+        </Center>
+      </FrameStyled>
+    </FillHeight>
   );
 }

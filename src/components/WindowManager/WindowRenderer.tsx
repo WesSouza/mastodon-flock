@@ -5,20 +5,24 @@ import type { WindowMeta, WindowRecord } from "../../stores/WindowStore";
 import { getMetaFromWindowRecord } from "./utils";
 
 const ModalOverlay = styled.div`
-  position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  bottom: 0;
+  padding-block-end: var(--taskbar-height);
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
   z-index: 1;
 
   @media (max-height: 767px) {
     position: absolute;
     justify-content: flex-start;
+  }
+
+  @media (min-height: 768px) {
+    position: fixed;
+    justify-content: center;
+    bottom: 0;
   }
 `;
 

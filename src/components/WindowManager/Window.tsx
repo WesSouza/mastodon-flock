@@ -37,12 +37,10 @@ const WindowStyled = styled(React95Window)<{
   align-self: center;
   z-index: 1;
 
-  @media (max-height: 767px) {
-  }
-
   ${({ fullscreen, size }) =>
     fullscreen
       ? css`
+          position: fixed;
           width: 100%;
           height: calc(100vh - var(--taskbar-height));
           overflow: hidden;
@@ -60,7 +58,7 @@ const WindowStyled = styled(React95Window)<{
           }
 
           @media (min-height: 768px) {
-            max-height: calc(100% - 100px);
+            max-height: calc(100vh - var(--taskbar-height));
           }
         `}
 
