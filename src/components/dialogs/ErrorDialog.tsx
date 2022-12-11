@@ -37,6 +37,7 @@ const errorMessagesByError: Record<string, string[]> = {
   ],
   incompatibleServer: mastodonIncompatibleError,
   incompatibleServerSoftware: mastodonIncompatibleError,
+  installationError: defaultError,
   invalidOauthCode: mastodonIncompatibleError,
   invalidTwitterState: twitterLoginError,
   invalidUri: [

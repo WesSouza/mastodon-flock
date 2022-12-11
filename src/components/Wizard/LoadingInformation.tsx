@@ -4,6 +4,7 @@ import styled from "styled-components";
 
 import { useMastodonFlock } from "../../hooks/useMastodonFlock";
 import type { MastodonFlockResults } from "../../hooks/useResults";
+import type { SimpleError } from "../../types";
 import { FocusableButton } from "../FocusableButton";
 import { Paragraph } from "../typography/Paragraph";
 
@@ -41,7 +42,7 @@ export function Installer({
   onResults,
 }: {
   method: string;
-  onError: (error: string) => void;
+  onError: (error: SimpleError) => void;
   onResults: (results: MastodonFlockResults) => void;
 }) {
   const { cancel, findBirdsAndMammoths, progress, status, subStatus } =

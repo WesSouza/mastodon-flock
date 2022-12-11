@@ -17,7 +17,7 @@ export type AccountWithTwitter = Account & {
   twitterUsername: string;
 };
 
-export type APIResult<T> = T | { error: string; reason?: unknown };
+export type APIResult<T> = T | SimpleError;
 
 export type MastodonInstance = {
   name: string;
@@ -47,6 +47,11 @@ export type PotentialInstanceProfile = {
   href: string;
   hostname: string;
   pathname: string;
+};
+
+export type SimpleError = {
+  error: string;
+  reason?: unknown;
 };
 
 export type TwitterSearchResults = {
