@@ -27,6 +27,9 @@
     "@astrojs/react": "^1.2.2",
     "@astrojs/vercel": "^2.3.4",
     "@nanostores/react": "^0.4.0",
+    "@sentry/browser": "^7.24.2",
+    "@sentry/integrations": "^7.24.2",
+    "@sentry/tracing": "^7.24.2",
     "@types/react": "^18.0.25",
     "@types/react-dom": "^18.0.9",
     "astro": "^1.6.11",
@@ -45,6 +48,7 @@
     "twitter-api-v2": "^1.12.9"
   },
   "devDependencies": {
+    "@sentry/vite-plugin": "^0.2.4",
     "@types/cookie": "^0.5.1",
     "@types/node": "^18.11.9",
     "@types/react-window": "^1.8.5",
