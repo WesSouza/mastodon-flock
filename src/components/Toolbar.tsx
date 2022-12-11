@@ -5,7 +5,6 @@ import { Icon, IconProps } from "./Icon";
 export const Toolbar = styled.div`
   position: relative;
   display: flex;
-  overflow: hidden;
   flex-shrink: 0;
   margin-block: 4px;
   justify-content: stretch;
