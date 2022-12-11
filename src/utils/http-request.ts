@@ -67,31 +67,48 @@ export async function http<T>({
   }
 
   if (!response.headers.get("content-type")?.startsWith(accept)) {
-    switch (true) {
-      case response.status >= 500:
-        return { error: "serverError" };
-      case response.status === 400:
-        return { error: "badRequest" };
-      case response.status === 401:
-        return { error: "unauthorized" };
-      case response.status === 403:
-        return { error: "forbidden" };
-      case response.status === 404:
-        return { error: "notFound" };
-      case response.status >= 400:
-        return { error: "clientError" };
-      case response.status >= 300:
-        return { error: "redirectionResponse" };
-      case response.status < 200:
-        return { error: "informationalResponse" };
-    }
-
     return { error: "unsupportedContentType" };
   }
 
-  let data;
+  let data: T | undefined;
+  let error: string | undefined;
+
+  switch (true) {
+    case response.status >= 500:
+      error = "serverError";
+      break;
+    case response.status === 400:
+      error = "badRequest";
+      break;
+    case response.status === 401:
+      error = "unauthorized";
+      break;
+    case response.status === 403:
+      error = "forbidden";
+      break;
+    case response.status === 404:
+      error = "notFound";
+      break;
+    case response.status >= 400:
+      error = "clientError";
+      break;
+    case response.status >= 300:
+      error = "redirectionResponse";
+      break;
+    case response.status < 200:
+      error = "informationalResponse";
+      break;
+  }
+
+  if (!response.headers.get("content-type")?.startsWith(accept)) {
+    return { error: error ?? "unsupportedContentType" };
+  }
+
   try {
     data = (await response.json()) as T;
+    if (error) {
+      return { error, reason: data };
+    }
   } catch (error) {
     return { error: "jsonParseError", reason: error };
   }
