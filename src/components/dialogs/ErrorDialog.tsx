@@ -29,6 +29,7 @@ const defaultError = ["There was an unknown error.", "Please try again."];
 
 const errorMessagesByError: Record<string, string[]> = {
   badInstanceResponse: mastodonIncompatibleError,
+  badMastodonFollowingNextUrl: defaultError,
   badOauthTokenResponse: mastodonLoginError,
   databaseConnectionError: [
     "There was a problem connecting to the database.",

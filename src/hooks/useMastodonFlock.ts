@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import { config } from "../config";
 import type {
+  Account,
   AccountWithTwitter,
   MastodonFollowAccountResults,
   MastodonLookupAccountResult,
@@ -72,34 +73,43 @@ export function useMastodonFlock({
       const accountLookups: { account: string; twitterUsername: string }[] = [];
 
       if (options.method === "typical") {
-        setStatus("Searching Mastodon Followers...");
+        setStatus("Reading Mastodon Followers...");
         setSubStatus("mastodon.exe");
 
-        const mastodonAccountFollowing =
-          await http<MastodonFollowAccountResults>({
-            url: config.urls.mastodonAccountFollowing,
-            signal: abortController.current.signal,
+        const followingEmails = new Map<string, Account>();
+        const followingUrls = new Map<string, Account>();
+        const mastodonAccountFollowingUrl = new URL(
+          config.urls.mastodonAccountFollowing,
+        );
+
+        while (true) {
+          const mastodonAccountFollowing =
+            await http<MastodonFollowAccountResults>({
+              url: mastodonAccountFollowingUrl.href,
+              signal: abortController.current.signal,
+            });
+          if ("error" in mastodonAccountFollowing) {
+            onError(mastodonAccountFollowing.error);
+            return;
+          }
+          setProgress(20);
+
+          const { following, next } = mastodonAccountFollowing;
+
+          following.forEach((followAccount) => {
+            followingEmails.set(
+              followAccount.account.toLowerCase(),
+              followAccount,
+            );
+            followingUrls.set(followAccount.url.toLowerCase(), followAccount);
           });
-        if ("error" in mastodonAccountFollowing) {
-          onError(mastodonAccountFollowing.error);
-          return;
+
+          if (next) {
+            mastodonAccountFollowingUrl.searchParams.set("next", next);
+          } else {
+            break;
+          }
         }
-        setProgress(20);
-
-        const { following } = mastodonAccountFollowing;
-
-        const followingEmails = new Map(
-          following.map((followAccount) => [
-            followAccount.account.toLowerCase(),
-            followAccount,
-          ]),
-        );
-        const followingUrls = new Map(
-          following.map((followAccount) => [
-            followAccount.url.toLowerCase(),
-            followAccount,
-          ]),
-        );
 
         potentialEmails.forEach(({ email, twitterUsername }) => {
           const followingEmail = followingEmails.get(email.toLowerCase());

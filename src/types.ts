@@ -67,4 +67,5 @@ export type MastodonLookupAccountResult = {
 
 export type MastodonFollowAccountResults = {
   following: Account[];
+  next?: string | undefined;
 };

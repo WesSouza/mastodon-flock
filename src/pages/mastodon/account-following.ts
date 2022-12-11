@@ -21,6 +21,11 @@ export const get: APIRoute = async function get(context) {
     return responseJsonError(403, "missingMastodonSessionData");
   }
 
+  const next = context.url.searchParams.get("next");
+  if (next && !next.startsWith(instanceUrl)) {
+    return responseJsonError(403, "badMastodonFollowingNextUrl");
+  }
+
   try {
     const verifyCredentialsUrl = new URL(
       "/api/v1/accounts/verify_credentials",
@@ -45,35 +50,31 @@ export const get: APIRoute = async function get(context) {
       return responseJsonError(403, "invalidCredentials");
     }
 
-    let followingURL: string | undefined = new URL(
-      `/api/v1/accounts/${accountId}/following`,
+    const followingURL = new URL(
+      next ?? `/api/v1/accounts/${accountId}/following`,
       instanceUrl,
     ).href;
 
     const result: MastodonFollowAccountResults = { following: [] };
 
-    while (followingURL) {
-      const followingResponse: FetchResponse = await fetch(followingURL, {
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${mastodonAccessToken}`,
-        },
-      });
+    const followingResponse: FetchResponse = await fetch(followingURL, {
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${mastodonAccessToken}`,
+      },
+    });
 
-      if (followingResponse.status === 200) {
-        const followingData = (await followingResponse.json()) as APIAccount[];
+    if (followingResponse.status === 200) {
+      const followingData = (await followingResponse.json()) as APIAccount[];
 
-        result.following = result.following.concat(
-          followingData.map((followingAccount) =>
-            mapApiAccount(followingAccount, { following: true, uri }),
-          ),
-        );
+      result.following = followingData.map((followingAccount) =>
+        mapApiAccount(followingAccount, { following: true, uri }),
+      );
 
-        const link = followingResponse.headers.get("link");
-        followingURL = link ? getLinkHrefWithRel(link, "next") : undefined;
-      } else {
-        return responseJsonError(500, "errorFetchingFollowing");
-      }
+      const link = followingResponse.headers.get("link");
+      result.next = link ? getLinkHrefWithRel(link, "next") : undefined;
+    } else {
+      return responseJsonError(500, "errorFetchingFollowing");
     }
 
     return new Response(JSON.stringify(result), {
