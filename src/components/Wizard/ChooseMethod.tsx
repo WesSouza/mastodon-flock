@@ -3,20 +3,16 @@ import { Radio } from "react95";
 import styled from "styled-components";
 
 import type { WindowMeta } from "../../stores/WindowStore";
+import { Paragraph } from "../typography/Paragraph";
 import { WizardWindow } from "./WizardWindow";
 
-const Option = styled.div`
+const Option = styled(Paragraph)`
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
 
   @media (max-width: 767px) {
-    margin-block-start: 16px;
     flex-direction: column;
-  }
-
-  @media (min-width: 768px) {
-    margin-block-start: 24px;
   }
 `;
 
@@ -68,7 +64,9 @@ export function ChooseMethod({
       title="Installation Method"
       windowMeta={windowMeta}
     >
-      Click the type of Setup you prefer, then click Next.
+      <Paragraph>
+        Select which installation method you&rsquo;d prefer.
+      </Paragraph>
       <Option>
         <Radio
           autoFocus
@@ -79,8 +77,8 @@ export function ChooseMethod({
           name="method"
         />
         <OptionDescription>
-          Connects to your Mastodon instance. You are able to see who you
-          already follow, as well as follow people in bulk.
+          Connects to your Twitter and Mastodon instance. You are able to see
+          who you already follow, as well as follow people in bulk.
         </OptionDescription>
       </Option>
       <Option>
@@ -96,6 +94,14 @@ export function ChooseMethod({
           externally.
         </OptionDescription>
       </Option>
+      {method === "typical" ? (
+        <Paragraph>
+          Click Next to authorize the setup to read the necessary information
+          from your Twitter account.
+        </Paragraph>
+      ) : (
+        <Paragraph>Click Next continue.</Paragraph>
+      )}
     </WizardWindow>
   );
 }

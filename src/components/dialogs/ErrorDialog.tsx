@@ -45,6 +45,7 @@ const errorMessagesByError: Record<string, string[]> = {
   mastodonAppCreationError: mastodonIncompatibleError,
   mastodonAuthError: mastodonIncompatibleError,
   missingMastodonSessionData: mastodonLoginError,
+  missingMethod: twitterLoginError,
   missingTwitterSessionData: twitterLoginError,
   missingTwitterState: twitterLoginError,
   theFuckDidMyDataGo: impossibleError,

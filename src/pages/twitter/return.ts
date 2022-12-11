@@ -5,7 +5,11 @@ import { config } from "../../config";
 import { Session } from "../../utils/session";
 import { statIncrement } from "../../utils/stats";
 
-const nextWizardStep = "chooseMethod";
+const currentWizardStep = "chooseMethod";
+const nextWizardSteps: Record<string, string> = {
+  typical: "chooseMastodonInstance",
+  advanced: "loadingInformation",
+};
 
 export const get: APIRoute = async function get(context) {
   const { redirect, request } = context;
@@ -15,26 +19,45 @@ export const get: APIRoute = async function get(context) {
   const sessionTokenSecret = session.get("twitterOauthTokenSecret");
 
   if (!sessionToken || !sessionTokenSecret) {
-    return redirect(`${config.urls.home}?error=missingTwitterSessionData`, 302);
+    return redirect(
+      `${config.urls.home}?step=${currentWizardStep}&error=missingTwitterSessionData`,
+      302,
+    );
+  }
+
+  const method = url.searchParams.get("method");
+  if (!method || !(method in nextWizardSteps)) {
+    session.set("twitterOauthToken", null);
+    session.set("twitterOauthTokenSecret", null);
+    return redirect(
+      `${config.urls.home}?step=${currentWizardStep}&error=missingMethod`,
+      302,
+    );
   }
 
   const denied = url.searchParams.get("denied");
   if (denied) {
     session.set("twitterOauthToken", null);
     session.set("twitterOauthTokenSecret", null);
-    return redirect(config.urls.home, 302);
+    return redirect(`${config.urls.home}?step=${currentWizardStep}`, 302);
   }
 
   const oauthToken = url.searchParams.get("oauth_token");
   const oauthVerifier = url.searchParams.get("oauth_verifier");
   if (!oauthToken || !oauthVerifier) {
-    return redirect(`${config.urls.home}?error=missingTwitterState`, 302);
+    return redirect(
+      `${config.urls.home}?step=${currentWizardStep}&error=missingTwitterState`,
+      302,
+    );
   }
 
   if (oauthToken !== sessionToken) {
     session.set("twitterOauthToken", null);
     session.set("twitterOauthTokenSecret", null);
-    return redirect(`${config.urls.home}?error=invalidTwitterState`, 302);
+    return redirect(
+      `${config.urls.home}?step=${currentWizardStep}&error=invalidTwitterState`,
+      302,
+    );
   }
 
   try {
@@ -52,10 +75,18 @@ export const get: APIRoute = async function get(context) {
 
     statIncrement("twitterLogins");
 
-    return redirect(`${config.urls.home}?step=${nextWizardStep}`, 302);
+    return redirect(
+      `${config.urls.home}?step=${
+        nextWizardSteps[method]
+      }&method=${encodeURIComponent(method)}`,
+      302,
+    );
   } catch (error) {
     console.error(error);
-    return redirect(`${config.urls.home}?error=twitterAuthError`, 302);
+    return redirect(
+      `${config.urls.home}?step=${currentWizardStep}&error=twitterAuthError`,
+      302,
+    );
   } finally {
     session.set("twitterOauthToken", null);
     session.set("twitterOauthTokenSecret", null);

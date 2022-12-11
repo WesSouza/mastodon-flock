@@ -34,9 +34,7 @@ export function Welcome({
         </Anchor>
         , and our <Anchor href="/privacy">privacy policy</Anchor>.
       </Paragraph>
-      <Paragraph>
-        Click Next to authorize this program to read your Twitter information.
-      </Paragraph>
+      <Paragraph>Click Next to select an installation method.</Paragraph>
     </WizardWindow>
   );
 }

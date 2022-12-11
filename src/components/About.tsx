@@ -56,10 +56,8 @@ export function About() {
       </Heading>
       <Paragraph>
         On the <Anchor href={config.urls.home}>Setup Wizard</Anchor>, click
-        Next. You will be redirected to Twitter where you should authorize our
-        app to read your information.
+        Next. You will be presented with two choices:
       </Paragraph>
-      <Paragraph>After that you have two choices:</Paragraph>
       <UnorderedList>
         <ListItem>
           &ldquo;Typical&rdquo; uses your Mastodon instance to find accounts.
@@ -75,9 +73,19 @@ export function About() {
         </ListItem>
       </UnorderedList>
       <Paragraph>
+        Once you proceed, you will be asked to authenticate our software on
+        Twitter, which allows us to read the necessary information from your
+        follows.
+      </Paragraph>
+      <Paragraph>
+        Then, if you chose the &ldquo;Typical&rdquo; method, you will be
+        prompted about your Mastodon instance, and asked to authenticate our
+        software on it. That allows us to perform our search, as well as to let
+        you follow and unfollow accounts.
+      </Paragraph>
+      <Paragraph>
         After the Setup concludes, you are taken to the Mastodon Flock results
-        window, which displays every found account, as well as other options to
-        help you follow them.
+        window, which displays every account that we could find.
       </Paragraph>
 
       <Heading level={2} anchorName="how-does-it-work">

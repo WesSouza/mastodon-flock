@@ -72,29 +72,27 @@ export function Wizard() {
     [handleFlockResults, method, navigateTo, setError],
   );
 
-  const connectTwitter = useCallback(() => {
-    location.href = config.urls.twitterLogin;
+  const connectTwitterWithMethod = useCallback((method: string) => {
+    const url = new URL(config.urls.twitterLogin);
+    url.searchParams.set("method", method);
+    location.href = url.href;
   }, []);
 
-  const goWelcome = useCallback(() => {
+  const welcomeStep = useCallback(() => {
     navigateTo(undefined);
   }, [navigateTo]);
 
-  const goChooseMethod = useCallback(() => {
+  const chooseMethodStep = useCallback(() => {
     navigateTo("chooseMethod");
   }, [navigateTo]);
 
   const chooseMethod = useCallback(
     (newMethod: string) => {
       setMethod(newMethod);
-      if (newMethod === "typical") {
-        navigateTo("chooseMastodonInstance");
-      } else {
-        navigateTo("loadingInformation");
-      }
       collect("Wizard Method", { Method: newMethod });
+      connectTwitterWithMethod(newMethod);
     },
-    [navigateTo, setMethod],
+    [connectTwitterWithMethod, setMethod],
   );
 
   const loadData = useCallback(
@@ -131,7 +129,7 @@ export function Wizard() {
       stepNode = (
         <Welcome
           cancel={closeWizard}
-          goNext={connectTwitter}
+          goNext={chooseMethodStep}
           windowMeta={windowMeta}
         />
       );
@@ -142,7 +140,7 @@ export function Wizard() {
         <ChooseMethod
           initialMethod={method ?? "typical"}
           cancel={closeWizard}
-          goBack={goWelcome}
+          goBack={welcomeStep}
           goNext={chooseMethod}
           windowMeta={windowMeta}
         />
@@ -154,7 +152,7 @@ export function Wizard() {
         <ChooseMastodonInstance
           initialMastodonHostname={mastodonHostname}
           cancel={closeWizard}
-          goBack={goChooseMethod}
+          goBack={chooseMethodStep}
           goNext={loadData}
           windowMeta={windowMeta}
         />
