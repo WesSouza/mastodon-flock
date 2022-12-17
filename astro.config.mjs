@@ -30,7 +30,7 @@ export default defineConfig({
       : process.env.VERCEL_GIT_COMMIT_REF === "preview"
       ? "https://mastodon-flock-preview.vercel.app"
       : process.env.VERCEL_URL
-      ? `https://${VERCEL_URL}`
+      ? `https://${process.env.VERCEL_URL}`
       : "http://localhost:3000",
   output: "server",
   adapter: vercel(),
