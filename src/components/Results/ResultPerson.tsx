@@ -1,4 +1,4 @@
-import formatDistanceToNow from "date-fns/formatDistanceToNow";
+import { formatDistanceToNow } from "date-fns";
 import { useCallback } from "react";
 import { Button, Checkbox } from "react95";
 import styled, { css } from "styled-components";
