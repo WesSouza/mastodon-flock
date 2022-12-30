@@ -112,7 +112,7 @@ const { sentryDsn, sentryRelease } = config.urls;
               levels: ["error"],
             }),
           ],
-          tracesSampleRate: 1.0,
+          tracesSampleRate: 0.1,
           release,
         });
       }
