@@ -10,7 +10,6 @@ import type {
   TwitterSearchUser,
 } from "../types";
 import { http } from "../utils/http-request";
-import { collect } from "../utils/plausible";
 
 import type { MastodonFlockResults } from "./useResults";
 
@@ -176,11 +175,6 @@ export function useMastodonFlock({
 
           finished.current = true;
           const accounts = dedupeAccounts(foundAccounts);
-          collect("Finished", {
-            "Found Count": accounts.length,
-            "Potential Emails Count": potentialEmails.length,
-            "Potential URLs Count": potentialInstanceProfiles.length,
-          });
           onResults({
             accounts,
             twitterUsers: removeIrrelevantTwitterUsers(
@@ -242,11 +236,6 @@ export function useMastodonFlock({
 
           finished.current = true;
           const accounts = dedupeAccounts(foundAccounts);
-          collect("Finished", {
-            "Found Count": accounts.length,
-            "Potential Emails Count": potentialEmails.length,
-            "Potential URLs Count": potentialInstanceProfiles.length,
-          });
           onResults({ accounts, twitterUsers });
         }
       } catch (error) {
@@ -261,7 +250,6 @@ export function useMastodonFlock({
       return;
     }
 
-    collect("Cancelled");
     abortController.current.abort();
     finished.current = true;
   }, []);

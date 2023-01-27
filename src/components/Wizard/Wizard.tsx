@@ -6,7 +6,6 @@ import { MastodonFlockResults, useResults } from "../../hooks/useResults";
 import { useSearchParamsState } from "../../hooks/useSearchParamsState";
 import { useWindowManager } from "../../hooks/useWindowManager";
 import type { SimpleError } from "../../types";
-import { collect } from "../../utils/plausible";
 import { ChooseMastodonInstance } from "./ChooseMastodonInstance";
 import { ChooseMethod } from "./ChooseMethod";
 import { Finish } from "./Finish";
@@ -36,7 +35,6 @@ export function Wizard() {
   const navigateTo = useCallback(
     (step: string | undefined) => {
       setStep(step);
-      collect("Wizard Step", { Step: step ?? "welcome" });
     },
     [setStep],
   );
@@ -90,7 +88,6 @@ export function Wizard() {
   const chooseMethod = useCallback(
     (newMethod: string) => {
       setMethod(newMethod);
-      collect("Wizard Method", { Method: newMethod });
       connectTwitterWithMethod(newMethod);
     },
     [connectTwitterWithMethod, setMethod],

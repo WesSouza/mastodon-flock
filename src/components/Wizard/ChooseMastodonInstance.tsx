@@ -15,7 +15,6 @@ import { useWindowManager } from "../../hooks/useWindowManager";
 import type { WindowMeta } from "../../stores/WindowStore";
 import type { MastodonInstance } from "../../types";
 import { http } from "../../utils/http-request";
-import { collect } from "../../utils/plausible";
 import { AlertDialog } from "../dialogs/AlertDialog";
 import { Paragraph } from "../typography/Paragraph";
 import { WizardWindow } from "./WizardWindow";
@@ -143,8 +142,6 @@ export function ChooseMastodonInstance({
       return;
     }
     goNext(uri);
-
-    collect("Instance Selection", { Mode: selectionMode.current });
   }, [goNext, instanceUri, openWindow]);
 
   const filteredInstances = useMemo(
