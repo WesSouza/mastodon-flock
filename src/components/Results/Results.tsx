@@ -327,9 +327,9 @@ export function Results() {
       title="Mastodon Flock"
       windowMeta={windowMeta}
     >
-      {method === "typical" ? (
-        <>
-          <Toolbar>
+      <Toolbar>
+        {method === "typical" ? (
+          <>
             <ToolbarHandle />
             <ToolbarButtonIcon
               icon="toolbarFollow"
@@ -344,47 +344,26 @@ export function Results() {
               onClick={handleUnfollowSelected}
               title="Unfollow Selected Accounts"
             />
+          </>
+        ) : undefined}
 
-            <ToolbarHandle />
-            <ToolbarIcon icon="toolbarSort" title="Sort" />
-            <ToolbarLabel>
-              <Select
-                id="sortOptions"
-                options={sortOptions}
-                value={sortValue}
-                onChange={handleSortChange}
-              />
-            </ToolbarLabel>
-            <Separator orientation="vertical" size="auto" />
-            <ToolbarButtonIcon
-              icon="toolbarExportMastodon"
-              onClick={handleExportCsv}
-              title="Download Mastodon CSV File"
-            />
-          </Toolbar>
-        </>
-      ) : (
-        <>
-          <Toolbar>
-            <ToolbarHandle />
-            <ToolbarIcon icon="toolbarSort" title="Sort" />
-            <ToolbarLabel>
-              <Select
-                id="sortOptions"
-                options={sortOptions}
-                value={sortValue}
-                onChange={handleSortChange}
-              />
-            </ToolbarLabel>
-            <Separator orientation="vertical" size="auto" />
-            <ToolbarButtonIcon
-              icon="toolbarExportMastodon"
-              onClick={handleExportCsv}
-              title="Download Mastodon CSV File"
-            />
-          </Toolbar>
-        </>
-      )}
+        <ToolbarHandle />
+        <ToolbarIcon icon="toolbarSort" title="Sort" />
+        <ToolbarLabel>
+          <Select
+            id="sortOptions"
+            options={sortOptions}
+            value={sortValue}
+            onChange={handleSortChange}
+          />
+        </ToolbarLabel>
+        <Separator orientation="vertical" size="auto" />
+        <ToolbarButtonIcon
+          icon="toolbarExportMastodon"
+          onClick={handleExportCsv}
+          title="Download Mastodon CSV File"
+        />
+      </Toolbar>
       <ScrollViewStyled shadow={false}>
         <PeopleListHeader method={method}>
           {method === "typical" ? (
