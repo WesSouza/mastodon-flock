@@ -363,7 +363,28 @@ export function Results() {
             />
           </Toolbar>
         </>
-      ) : undefined}
+      ) : (
+        <>
+          <Toolbar>
+            <ToolbarHandle />
+            <ToolbarIcon icon="toolbarSort" title="Sort" />
+            <ToolbarLabel>
+              <Select
+                id="sortOptions"
+                options={sortOptions}
+                value={sortValue}
+                onChange={handleSortChange}
+              />
+            </ToolbarLabel>
+            <Separator orientation="vertical" size="auto" />
+            <ToolbarButtonIcon
+              icon="toolbarExportMastodon"
+              onClick={handleExportCsv}
+              title="Download Mastodon CSV File"
+            />
+          </Toolbar>
+        </>
+      )}
       <ScrollViewStyled shadow={false}>
         <PeopleListHeader method={method}>
           {method === "typical" ? (
