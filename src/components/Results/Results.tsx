@@ -30,17 +30,24 @@ import { Paragraph } from "../typography/Paragraph";
 import { Window } from "../WindowManager/Window";
 import { ResultPerson } from "./ResultPerson";
 
-const sortOptions = [
-  {
-    label: "Status",
-    value: "followStatus",
-    sort: (accountLeft: AccountWithTwitter, accountRight: AccountWithTwitter) =>
-      accountLeft.following && !accountRight.following
-        ? 1
-        : !accountLeft.following && accountRight.following
-        ? -1
-        : accountLeft.name.localeCompare(accountRight.name),
-  },
+const sortOptions = (method: string | undefined) => [
+  ...(method === "typical"
+    ? [
+        {
+          label: "Status",
+          value: "followStatus",
+          sort: (
+            accountLeft: AccountWithTwitter,
+            accountRight: AccountWithTwitter,
+          ) =>
+            accountLeft.following && !accountRight.following
+              ? 1
+              : !accountLeft.following && accountRight.following
+              ? -1
+              : accountLeft.name.localeCompare(accountRight.name),
+        },
+      ]
+    : []),
   {
     label: "Name",
     value: "name",
@@ -246,10 +253,11 @@ export function Results() {
     useSearchParamsState("sortBy");
   const sortedAccounts = useMemo(() => {
     const sortOption =
-      sortOptions.find((sortOption) => sortOption.value === sortValue) ??
-      sortOptions[0];
+      sortOptions(method).find(
+        (sortOption) => sortOption.value === sortValue,
+      ) ?? sortOptions(method)[0];
     return results?.accounts.sort(sortOption?.sort) ?? [];
-  }, [results?.accounts, sortValue]);
+  }, [results?.accounts, sortValue, method]);
 
   const handleSortChange = useCallback(
     (option: { value: string }) => {
@@ -352,7 +360,7 @@ export function Results() {
         <ToolbarLabel>
           <Select
             id="sortOptions"
-            options={sortOptions}
+            options={sortOptions(method)}
             value={sortValue}
             onChange={handleSortChange}
           />
