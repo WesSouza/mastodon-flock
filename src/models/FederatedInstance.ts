@@ -51,7 +51,7 @@ const FederatedInstanceSchema = new Schema<IFederatedInstance>({
     },
   },
   software: {
-    name: { type: String, enum: ["mastodon"], required: true },
+    name: { type: String, required: true },
     version: {
       type: String,
       maxlength: 50,
