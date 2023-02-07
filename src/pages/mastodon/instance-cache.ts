@@ -49,7 +49,11 @@ async function crawlUri(uri: string) {
       return { error: "badInstanceResponse" };
     }
 
-    if (!config.mastodon.compatibleSoftwareNames.includes(nodeInfoData.software.name)) {
+    if (
+      !config.mastodon.compatibleSoftwareNames.includes(
+        nodeInfoData.software.name,
+      )
+    ) {
       console.error(
         `Unsupported software on ${uri}: ${nodeInfoData.software.name} (${nodeInfoData.software.version})`,
       );
