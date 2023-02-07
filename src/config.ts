@@ -66,6 +66,7 @@ export const config = {
   },
   mastodon: {
     minimumUpdateCacheInterval: 60 * 60 * 1000,
+    compatibleSoftwareNames: ["mastodon", "hometown"],
   },
   twitter: {
     maxResultsPerPage: 1000,

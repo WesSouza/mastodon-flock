@@ -100,7 +100,11 @@ export const get: APIRoute = async function get(context) {
         return redirectWithError("badInstanceResponse");
       }
 
-      if (nodeInfoData.software.name !== "mastodon") {
+      if (
+        !config.mastodon.compatibleSoftwareNames.includes(
+          nodeInfoData.software.name,
+        )
+      ) {
         console.error(
           `Unsupported software on ${uri}: ${nodeInfoData.software.name} (${nodeInfoData.software.version})`,
         );
