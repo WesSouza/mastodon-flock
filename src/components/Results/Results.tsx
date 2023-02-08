@@ -30,7 +30,18 @@ import { Paragraph } from "../typography/Paragraph";
 import { Window } from "../WindowManager/Window";
 import { ResultPerson } from "./ResultPerson";
 
-const sortOptions = (method: string | undefined) => [
+type SortOption = {
+  label: string;
+  value: string;
+  sort: (
+    accountLeft: AccountWithTwitter,
+    accountRight: AccountWithTwitter,
+  ) => number;
+};
+
+const sortOptions = (
+  method: string | undefined,
+): SortOption[] & { 0: SortOption } => [
   ...(method === "typical"
     ? [
         {
