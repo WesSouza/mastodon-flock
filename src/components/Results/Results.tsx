@@ -30,16 +30,24 @@ import { Paragraph } from "../typography/Paragraph";
 import { Window } from "../WindowManager/Window";
 import { ResultPerson } from "./ResultPerson";
 
-type SortOption = {
-  label: string;
-  value: string;
-  sort: (
-    accountLeft: AccountWithTwitter,
-    accountRight: AccountWithTwitter,
-  ) => number;
-};
-
-const sortOptionsAlwaysAvailable: SortOption[] & { 0: SortOption } = [
+const sortOptions = (method: string | undefined) => [
+  ...(method === "typical"
+    ? [
+        {
+          label: "Status",
+          value: "followStatus",
+          sort: (
+            accountLeft: AccountWithTwitter,
+            accountRight: AccountWithTwitter,
+          ) =>
+            accountLeft.following && !accountRight.following
+              ? 1
+              : !accountLeft.following && accountRight.following
+              ? -1
+              : accountLeft.name.localeCompare(accountRight.name),
+        },
+      ]
+    : []),
   {
     label: "Name",
     value: "name",
@@ -75,27 +83,10 @@ const sortOptionsAlwaysAvailable: SortOption[] & { 0: SortOption } = [
   },
 ];
 
-const sortOptions = (
-  method: string | undefined,
-): SortOption[] & { 0: SortOption } =>
-  method === "typical"
-    ? [
-        {
-          label: "Status",
-          value: "followStatus",
-          sort: (
-            accountLeft: AccountWithTwitter,
-            accountRight: AccountWithTwitter,
-          ) =>
-            accountLeft.following && !accountRight.following
-              ? 1
-              : !accountLeft.following && accountRight.following
-              ? -1
-              : accountLeft.name.localeCompare(accountRight.name),
-        },
-        ...sortOptionsAlwaysAvailable,
-      ]
-    : sortOptionsAlwaysAvailable;
+// sortOptions always returns a non-empty array
+const defaultSortValue = (method: string | undefined) =>
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  sortOptions(method)[0]!.value;
 
 const ScrollViewStyled = styled(ScrollView)`
   position: relative;
@@ -263,8 +254,7 @@ export function Results() {
     });
   }, [results?.accounts, selectedAccountIds]);
 
-  const defaultSortValue = sortOptions(method)[0].value;
-  const [sortValue = defaultSortValue, setSortValue] =
+  const [sortValue = defaultSortValue(method), setSortValue] =
     useSearchParamsState("sortBy");
   const sortedAccounts = useMemo(() => {
     const sortOption =
