@@ -39,26 +39,7 @@ type SortOption = {
   ) => number;
 };
 
-const sortOptions = (
-  method: string | undefined,
-): SortOption[] & { 0: SortOption } => [
-  ...(method === "typical"
-    ? [
-        {
-          label: "Status",
-          value: "followStatus",
-          sort: (
-            accountLeft: AccountWithTwitter,
-            accountRight: AccountWithTwitter,
-          ) =>
-            accountLeft.following && !accountRight.following
-              ? 1
-              : !accountLeft.following && accountRight.following
-              ? -1
-              : accountLeft.name.localeCompare(accountRight.name),
-        },
-      ]
-    : []),
+const sortOptionsAlwaysAvailable: SortOption[] & { 0: SortOption } = [
   {
     label: "Name",
     value: "name",
@@ -93,6 +74,28 @@ const sortOptions = (
       (accountLeft.lastStatusAt ? Date.parse(accountLeft.lastStatusAt) : 0),
   },
 ];
+
+const sortOptions = (
+  method: string | undefined,
+): SortOption[] & { 0: SortOption } =>
+  method === "typical"
+    ? [
+        {
+          label: "Status",
+          value: "followStatus",
+          sort: (
+            accountLeft: AccountWithTwitter,
+            accountRight: AccountWithTwitter,
+          ) =>
+            accountLeft.following && !accountRight.following
+              ? 1
+              : !accountLeft.following && accountRight.following
+              ? -1
+              : accountLeft.name.localeCompare(accountRight.name),
+        },
+        ...sortOptionsAlwaysAvailable,
+      ]
+    : sortOptionsAlwaysAvailable;
 
 const ScrollViewStyled = styled(ScrollView)`
   position: relative;
