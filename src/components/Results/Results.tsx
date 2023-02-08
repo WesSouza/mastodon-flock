@@ -249,7 +249,8 @@ export function Results() {
     });
   }, [results?.accounts, selectedAccountIds]);
 
-  const [sortValue = "followStatus", setSortValue] =
+  const defaultSortValue = sortOptions(method)[0].value;
+  const [sortValue = defaultSortValue, setSortValue] =
     useSearchParamsState("sortBy");
   const sortedAccounts = useMemo(() => {
     const sortOption =
