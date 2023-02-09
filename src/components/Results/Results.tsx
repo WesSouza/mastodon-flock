@@ -30,8 +30,8 @@ import { Paragraph } from "../typography/Paragraph";
 import { Window } from "../WindowManager/Window";
 import { ResultPerson } from "./ResultPerson";
 
-const sortOptions = [
-  {
+const getSortOptions = (method: string | undefined) => {
+  const sortByStatus = {
     label: "Status",
     value: "followStatus",
     sort: (accountLeft: AccountWithTwitter, accountRight: AccountWithTwitter) =>
@@ -40,41 +40,54 @@ const sortOptions = [
         : !accountLeft.following && accountRight.following
         ? -1
         : accountLeft.name.localeCompare(accountRight.name),
-  },
-  {
+  };
+  const sortByName = {
     label: "Name",
     value: "name",
     sort: (accountLeft: AccountWithTwitter, accountRight: AccountWithTwitter) =>
       accountLeft.name.localeCompare(accountRight.name),
-  },
-  {
+  };
+  const sortByFollowers = {
     label: "Followers",
     value: "followers",
     sort: (accountLeft: AccountWithTwitter, accountRight: AccountWithTwitter) =>
       (accountRight.followersCount ?? 0) - (accountLeft.followersCount ?? 0),
-  },
-  {
+  };
+  const sortByFollowing = {
     label: "Following",
     value: "following",
     sort: (accountLeft: AccountWithTwitter, accountRight: AccountWithTwitter) =>
       (accountRight.followingCount ?? 0) - (accountLeft.followingCount ?? 0),
-  },
-  {
+  };
+  const sortByInstance = {
     label: "Instance",
     value: "instance",
     sort: (accountLeft: AccountWithTwitter, accountRight: AccountWithTwitter) =>
       getAccountInstanceUri(accountLeft.account)?.localeCompare(
         getAccountInstanceUri(accountRight.account) ?? "",
       ) ?? 0,
-  },
-  {
+  };
+  const sortByActivity = {
     label: "Activity",
     value: "activity",
     sort: (accountLeft: AccountWithTwitter, accountRight: AccountWithTwitter) =>
       (accountRight.lastStatusAt ? Date.parse(accountRight.lastStatusAt) : 0) -
       (accountLeft.lastStatusAt ? Date.parse(accountLeft.lastStatusAt) : 0),
-  },
-];
+  };
+
+  if (method === "typical") {
+    return [
+      sortByStatus,
+      sortByName,
+      sortByFollowers,
+      sortByFollowing,
+      sortByInstance,
+      sortByActivity,
+    ];
+  }
+
+  return [sortByName, sortByInstance];
+};
 
 const ScrollViewStyled = styled(ScrollView)`
   position: relative;
@@ -105,7 +118,7 @@ const PeopleListHeader = styled.div<{ method: string | undefined }>`
     grid-template: ${({ method }) =>
       method === "typical"
         ? `"Checkbox Account Account Details Actions" auto / 40px 68px 2fr 2fr 1fr`
-        : `"Account Account Actions" auto / 68px 2fr 1fr`};
+        : `"Checkbox Account Account Actions" auto / 40px 68px 2fr 1fr`};
   }
 `;
 
@@ -242,14 +255,16 @@ export function Results() {
     });
   }, [results?.accounts, selectedAccountIds]);
 
-  const [sortValue = "followStatus", setSortValue] =
+  const sortOptions = useMemo(() => getSortOptions(method), [method]);
+  const defaultSortValue = sortOptions[0]?.value;
+  const [sortValue = defaultSortValue, setSortValue] =
     useSearchParamsState("sortBy");
   const sortedAccounts = useMemo(() => {
     const sortOption =
       sortOptions.find((sortOption) => sortOption.value === sortValue) ??
       sortOptions[0];
     return results?.accounts.sort(sortOption?.sort) ?? [];
-  }, [results?.accounts, sortValue]);
+  }, [sortOptions, results?.accounts, sortValue]);
 
   const handleSortChange = useCallback(
     (option: { value: string }) => {
@@ -327,9 +342,9 @@ export function Results() {
       title="Mastodon Flock"
       windowMeta={windowMeta}
     >
-      {method === "typical" ? (
-        <>
-          <Toolbar>
+      <Toolbar>
+        {method === "typical" ? (
+          <>
             <ToolbarHandle />
             <ToolbarButtonIcon
               icon="toolbarFollow"
@@ -344,41 +359,38 @@ export function Results() {
               onClick={handleUnfollowSelected}
               title="Unfollow Selected Accounts"
             />
+          </>
+        ) : undefined}
 
-            <ToolbarHandle />
-            <ToolbarIcon icon="toolbarSort" title="Sort" />
-            <ToolbarLabel>
-              <Select
-                id="sortOptions"
-                options={sortOptions}
-                value={sortValue}
-                onChange={handleSortChange}
-              />
-            </ToolbarLabel>
-            <Separator orientation="vertical" size="auto" />
-            <ToolbarButtonIcon
-              icon="toolbarExportMastodon"
-              onClick={handleExportCsv}
-              title="Download Mastodon CSV File"
-            />
-          </Toolbar>
-        </>
-      ) : undefined}
+        <ToolbarHandle />
+        <ToolbarIcon icon="toolbarSort" title="Sort" />
+        <ToolbarLabel>
+          <Select
+            id="sortOptions"
+            options={sortOptions}
+            value={sortValue ?? ""}
+            onChange={handleSortChange}
+          />
+        </ToolbarLabel>
+        <Separator orientation="vertical" size="auto" />
+        <ToolbarButtonIcon
+          icon="toolbarExportMastodon"
+          onClick={handleExportCsv}
+          title="Download Mastodon CSV File"
+        />
+      </Toolbar>
       <ScrollViewStyled shadow={false}>
         <PeopleListHeader method={method}>
-          {method === "typical" ? (
-            <PeopleListHeaderCheckbox>
-              <PeopleCheckbox
-                checked={selectedAccountIds.size === sortedAccounts.length}
-                indeterminate={Boolean(
-                  selectedAccountIds.size &&
-                    selectedAccountIds.size < sortedAccounts.length,
-                )}
-                onClick={handleSelectAll}
-              />
-            </PeopleListHeaderCheckbox>
-          ) : undefined}
-
+          <PeopleListHeaderCheckbox>
+            <PeopleCheckbox
+              checked={selectedAccountIds.size === sortedAccounts.length}
+              indeterminate={Boolean(
+                selectedAccountIds.size &&
+                  selectedAccountIds.size < sortedAccounts.length,
+              )}
+              onClick={handleSelectAll}
+            />
+          </PeopleListHeaderCheckbox>
           <PeopleListHeaderAccount>Account</PeopleListHeaderAccount>
           {method === "typical" ? (
             <PeopleListHeaderDetails>Details</PeopleListHeaderDetails>
