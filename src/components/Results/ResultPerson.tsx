@@ -20,18 +20,18 @@ const PersonListItem = styled.li<{ method: string | undefined }>`
           "Checkbox Image Stats" auto
           "Checkbox Image Actions" auto
           / 40px 68px 1fr`
-          : `"Image Account" auto
-          "Image Stats" auto
-          "Image Actions" auto
-          / 68px 1fr`};
+          : `"Checkbox Image Account" auto
+          "Checkbox Image Stats" auto
+          "Checkbox Image Actions" auto
+          / 40px 68px 1fr`};
       }
 
       @media (min-width: 768px) {
         grid-template: ${typical
           ? `"Checkbox Image Account Stats Actions" 1fr
         / 40px 68px 2fr 2fr 1fr;`
-          : `"Image Account Actions" 1fr
-        / 68px 2fr 1fr;`};
+          : `"Checkbox Image Account Actions" 1fr
+        / 40px 68px 2fr 1fr;`};
       }
     `;
   }}
@@ -197,16 +197,14 @@ export function ResultPerson({
 
   return (
     <PersonListItem method={method}>
-      {method === "typical" ? (
-        <PersonCellCheckbox>
-          <PersonCheckbox
-            disabled={loading}
-            checked={selected}
-            onChange={handleSelectedChange}
-            variant="flat"
-          />
-        </PersonCellCheckbox>
-      ) : undefined}
+      <PersonCellCheckbox>
+        <PersonCheckbox
+          disabled={loading}
+          checked={selected}
+          onChange={handleSelectedChange}
+          variant="flat"
+        />
+      </PersonCellCheckbox>
       <PersonCellImage>
         {account.avatarImageUrl || twitterUser.profileImageUrl ? (
           <PersonSocialAccountImage
