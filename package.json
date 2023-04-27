@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "mastodon-flock",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Migration assistant from Twitter to Mastodon",
   "homepage": "https://mastodon-flock.vercel.app/",
   "repository": "github:WesSouza/mastodon-flock",
