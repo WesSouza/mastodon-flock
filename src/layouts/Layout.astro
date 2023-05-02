@@ -95,7 +95,6 @@ const { sentryDsn, sentryRelease } = config.urls;
 
     <script>
       import * as Sentry from "@sentry/browser";
-      import { BrowserTracing } from "@sentry/tracing";
       import { CaptureConsole } from "@sentry/integrations";
 
       const dsn = (document.querySelector("[data-dsn]") as HTMLElement)?.dataset
@@ -107,12 +106,13 @@ const { sentryDsn, sentryRelease } = config.urls;
         Sentry.init({
           dsn,
           integrations: [
-            new BrowserTracing(),
+            new Sentry.BrowserTracing(),
+            new Sentry.Replay(),
             new CaptureConsole({
               levels: ["error"],
             }),
           ],
-          tracesSampleRate: 0.1,
+          tracesSampleRate: 0.2,
           release,
         });
       }
