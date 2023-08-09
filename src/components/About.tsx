@@ -12,22 +12,22 @@ export function About() {
     <InternetNavigator defaultUrl={config.urls.about} title="About">
       <Heading>About</Heading>
       <Paragraph>
-        Mastodon Flock is a web application that looks for Twitter users on
+        Mastodon Flock was a web application that looked for Twitter users on
         ActivityPub-enabled platforms (the &ldquo;Fediverse&rdquo;), such as
         Mastodon.
       </Paragraph>
       <Paragraph>
-        It works by connecting to your Twitter account, reading your contacts
+        It worked by connecting to your Twitter account, reading your contacts
         profile information, and checking if they have mentioned any external
         accounts with a URL or email.
       </Paragraph>
       <Paragraph>
-        Matching accounts are then listed so you can connect with them. If you
-        use Mastodon, you are able to automatically follow, unfollow or export
+        Matching accounts were then listed so you can connect with them. If you
+        use Mastodon, you were able to automatically follow, unfollow or export
         the results in a CSV format.
       </Paragraph>
       <Paragraph>
-        This is a personal project from{" "}
+        This was a personal project from{" "}
         <Anchor href="https://wes.dev/" target="_blank" rel="noopener">
           Wes Souza
         </Anchor>
@@ -55,59 +55,67 @@ export function About() {
         How to use it?
       </Heading>
       <Paragraph>
+        You can&rsquo;t. Unless I can raise at least US$ 100 a month for the API
+        costs. Fuck Elon.
+      </Paragraph>
+
+      <Heading level={2} anchorName="how-to-use-it">
+        Ok, but how did we use it before?
+      </Heading>
+      <Paragraph>
         On the <Anchor href={config.urls.home}>Setup Wizard</Anchor>, click
-        Next. You will be presented with two choices:
+        Next. You would be presented with two choices:
       </Paragraph>
       <UnorderedList>
         <ListItem>
-          &ldquo;Typical&rdquo; uses your Mastodon instance to find accounts.
-          Once finished, it will allow you to review, follow or unfollow the
+          &ldquo;Typical&rdquo; used your Mastodon instance to find accounts.
+          Once finished, it would allow you to review, follow or unfollow the
           discovered accounts.
         </ListItem>
         <ListItem>
-          &ldquo;Advanced&rdquo; can be used to search every account on their
-          own instance. This can be used if you are not on Mastodon, but another
-          ActivityPub-compatible network. Note: this process is slower, and you
-          won&rsquo;t be able to follow or unfollow accounts using this
-          software.
+          &ldquo;Advanced&rdquo; could be used to search every account on their
+          own instance. This could be used if you were not on Mastodon, but
+          another ActivityPub-compatible network. Note: this process was slower,
+          and you weren&rsquo;t be able to follow or unfollow accounts using
+          this software.
         </ListItem>
       </UnorderedList>
       <Paragraph>
-        Once you proceed, you will be asked to authenticate our software on
-        Twitter, which allows us to read the necessary information from your
+        Once you proceed, you would be asked to authenticate our software on
+        Twitter, which allowed us to read the necessary information from your
         follows.
       </Paragraph>
       <Paragraph>
-        Then, if you chose the &ldquo;Typical&rdquo; method, you will be
+        Then, if you chose the &ldquo;Typical&rdquo; method, you would be
         prompted about your Mastodon instance, and asked to authenticate our
-        software on it. That allows us to perform our search, as well as to let
+        software on it. That allowed us to perform our search, as well as to let
         you follow and unfollow accounts.
       </Paragraph>
       <Paragraph>
-        After the Setup concludes, you are taken to the Mastodon Flock results
-        window, which displays every account that we could find.
+        After the Setup concludes, you were taken to the Mastodon Flock results
+        window, which displayed every account that we could find.
       </Paragraph>
 
       <Heading level={2} anchorName="how-does-it-work">
-        How Does it Work?
+        How Did it Work?
       </Heading>
       <Paragraph>
-        Mastodon Flock relies on your Twitter follows information to discover
-        their Fediverse account. The Setup process will look for potential
-        emails or URLs on their name, bio, location, website and pinned tweet.
+        Mastodon Flock relied on your Twitter follows information to discover
+        their Fediverse account. The Setup process looked for potential emails
+        or URLs on their name, bio, location, website and pinned tweet.
       </Paragraph>
       <Paragraph>
-        Afterwards, a search process navigates through each potential account,
-        and if it finds a match, stores it locally. Once the process finishes,
-        you are presented with the results, where you can perform actions.
+        Afterwards, a search process navigated through each potential account,
+        and if it found a match, stored it locally. Once the process finished,
+        you were presented with the results, where you could perform actions.
       </Paragraph>
       <Paragraph>
-        Everything is stored in your browser. Once you navigate away, all
-        information is deleted.
+        Everything was stored in your browser. Once you navigated away, all
+        information was deleted.
       </Paragraph>
       <Paragraph>
         A comprehensive <Anchor href="/privacy">Privacy Policy</Anchor> is
-        available detailing what information is used and how it is handled.
+        available detailing what information was used and how it was handled.
       </Paragraph>
 
       <RevokeAccessContent headingLevel={2} />
@@ -272,7 +280,7 @@ export function About() {
         </Anchor>{" "}
         or{" "}
         <Anchor
-          href="https://twitter.com/__WesSouza"
+          href="https://twitter.com/WesSouza_"
           target="_blank"
           rel="nofollow noopener noreferrer"
         >

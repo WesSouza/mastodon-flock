@@ -1,6 +1,7 @@
 import type { APIRoute } from "astro";
 import mongoose from "mongoose";
 
+import { config } from "../../config";
 import {
   FederatedInstance,
   IFederatedInstance,
@@ -9,6 +10,10 @@ import type { MastodonInstance } from "../../types";
 import { responseJsonError } from "../../utils/http-response";
 
 export const get: APIRoute = async function get(context) {
+  if (Date.now() >= config.timeOfDeath) {
+    return responseJsonError(500, "☠️");
+  }
+
   const { request, url } = context;
   if (!request.headers.get("accept")?.startsWith("application/json")) {
     return responseJsonError(400, "badRequest");

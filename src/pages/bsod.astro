@@ -1,0 +1,48 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+Astro.response.headers.set("cache-control", "s-maxage=86400, max-age=600");
+---
+<Layout
+  title="Mastodon Flock Stopped Responding"
+  description="Elon killed all the birds."
+  bare={true}
+>
+  A problem has been detected and this tab has been shut down because of Elon
+  Musk's greed and lack of basic understanding of how the Internet works.
+
+  ERR_ELON_KILLED_ALL_THE_BIRDS
+
+  Twitter (or 𝕏) removed all functionality from the free API that Mastodon Flock
+  relied on for working. Unfortunately, the basic version is quite expensive to
+  keep this a free service, so it was shut down.
+
+  In the time the Mastodon Flock was alive, it helped 12,494 people find 109,311
+  accounts on the Fediverse.
+
+  Thanks everyone. It was nice while it lasted.
+
+  &mdash;
+  Wes
+  <a href="https://wes.dev">wes.dev</a>
+</Layout>
+
+<style>
+  :global(.bare body) {
+    color: white;
+    background-color: #00009d;
+    padding: 20px;
+    font-family: monospace;
+    font-weight: bold;
+    font-size: 20px;
+    white-space: pre;
+  }
+
+  :global(.bare main) {
+    display: block;
+  }
+
+  a {
+    text-decoration: underline;
+  }
+</style>

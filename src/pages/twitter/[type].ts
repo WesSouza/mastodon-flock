@@ -17,6 +17,10 @@ import { Session } from "../../utils/session";
 const endpointTypes = new Set(["following", "followers"]);
 
 export const get: APIRoute = async function get(context) {
+  if (Date.now() >= config.timeOfDeath) {
+    return responseJsonError(500, "☠️");
+  }
+
   const { params } = context;
   if (!endpointTypes.has(params["type"] as string)) {
     return responseJsonError(404, "notFound");

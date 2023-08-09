@@ -14,6 +14,7 @@ const name = isLocal
 const origin = import.meta.env.SITE.replace(/\/$/, "");
 
 export const config = {
+  timeOfDeath: 1691624743206,
   isLocal,
   isPreview,
   host: siteUrl.hostname,
@@ -21,6 +22,7 @@ export const config = {
   urls: {
     about: `${origin}/about`,
     acknowledgements: `${origin}/acknowledgements.txt`,
+    bsod: `${origin}/bsod`,
     home: origin,
     activityPubApp: !isLocal
       ? `${origin}/app`

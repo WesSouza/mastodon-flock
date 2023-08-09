@@ -2,11 +2,16 @@ import type { APIRoute } from "astro";
 import { TwitterApi } from "twitter-api-v2";
 
 import { config } from "../../config";
+import { responseJsonError } from "../../utils/http-response";
 import { Session } from "../../utils/session";
 
 const currentWizardStep = "chooseMethod";
 
 export const get: APIRoute = async function get(context) {
+  if (Date.now() >= config.timeOfDeath) {
+    return responseJsonError(500, "☠️");
+  }
+
   const { redirect, url } = context;
   const client = new TwitterApi({
     appKey: import.meta.env.TWITTER_API_KEY,

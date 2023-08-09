@@ -8,16 +8,17 @@ export interface Props {
   title: string;
   description?: string;
   canonicalUrl?: string;
+  bare: boolean
 }
 
-const { title, description = "", canonicalUrl } = Astro.props;
+const { title, description = "", canonicalUrl, bare = false } = Astro.props;
 
 const domain = new URL(Astro.site ?? "").hostname;
 const { sentryDsn, sentryRelease } = config.urls;
 ---
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class:list={{ "bare": bare }}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
@@ -91,7 +92,7 @@ const { sentryDsn, sentryRelease } = config.urls;
     <main>
       <slot />
     </main>
-    <Taskbar client:only="react" />
+    { !bare && <Taskbar client:only="react" />}
 
     <script>
       import * as Sentry from "@sentry/browser";

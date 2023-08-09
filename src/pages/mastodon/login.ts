@@ -7,6 +7,7 @@ import {
   FederatedInstance,
   IFederatedInstance,
 } from "../../models/FederatedInstance";
+import { responseJsonError } from "../../utils/http-response";
 import { Session } from "../../utils/session";
 import { createEncryptor } from "../../utils/simple-encryptor";
 import { statIncrement } from "../../utils/stats";
@@ -14,6 +15,10 @@ import { statIncrement } from "../../utils/stats";
 const currentWizardStep = "chooseMastodonInstance";
 
 export const get: APIRoute = async function get(context) {
+  if (Date.now() >= config.timeOfDeath) {
+    return responseJsonError(500, "☠️");
+  }
+
   const { redirect } = context;
 
   function redirectWithError(error: string) {

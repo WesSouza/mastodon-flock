@@ -102,6 +102,10 @@ async function crawlUri(uri: string) {
 }
 
 export const post: APIRoute = async function post(context) {
+  if (Date.now() >= config.timeOfDeath) {
+    return responseJsonError(500, "☠️");
+  }
+
   const uri = context.url.searchParams.get("uri");
 
   if (

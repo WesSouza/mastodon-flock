@@ -2,13 +2,18 @@ import type { APIRoute } from "astro";
 import type { Response as FetchResponse } from "node-fetch";
 import fetch from "node-fetch";
 
+import { config } from "../../config";
 import type { MastodonFollowAccountResults } from "../../types";
-import { responseJsonError } from "../../utils/http-response";
 import { getLinkHrefWithRel } from "../../utils/http-headers";
+import { responseJsonError } from "../../utils/http-response";
 import { APIAccount, mapApiAccount } from "../../utils/mastodon";
 import { Session } from "../../utils/session";
 
 export const get: APIRoute = async function get(context) {
+  if (Date.now() >= config.timeOfDeath) {
+    return responseJsonError(500, "☠️");
+  }
+
   const session = Session.withAstro(context);
   const uri = session.get("mastodonUri");
   const instanceUrl = session.get("mastodonInstanceUrl");

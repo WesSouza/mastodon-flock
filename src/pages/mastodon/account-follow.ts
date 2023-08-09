@@ -2,12 +2,17 @@ import type { APIRoute } from "astro";
 import type { Response as FetchResponse } from "node-fetch";
 import fetch from "node-fetch";
 
+import { config } from "../../config";
 import { responseJsonError } from "../../utils/http-response";
 import { Session } from "../../utils/session";
 import { statIncrement } from "../../utils/stats";
 
 const makeHandler = (operation: "follow" | "unfollow"): APIRoute =>
   async function postOrDelete(context) {
+    if (Date.now() >= config.timeOfDeath) {
+      return responseJsonError(500, "☠️");
+    }
+
     const session = Session.withAstro(context);
     const uri = session.get("mastodonUri");
     const instanceUrl = session.get("mastodonInstanceUrl");

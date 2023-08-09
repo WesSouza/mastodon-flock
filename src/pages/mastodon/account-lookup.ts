@@ -1,6 +1,7 @@
 import type { APIRoute } from "astro";
 import fetch from "node-fetch";
 
+import { config } from "../../config";
 import type { MastodonLookupAccountResult } from "../../types";
 import { responseJsonError } from "../../utils/http-response";
 import { APIAccount, mapApiAccount } from "../../utils/mastodon";
@@ -8,6 +9,10 @@ import { Session } from "../../utils/session";
 import { statIncrement } from "../../utils/stats";
 
 export const get: APIRoute = async function get(context) {
+  if (Date.now() >= config.timeOfDeath) {
+    return responseJsonError(500, "☠️");
+  }
+
   const { url } = context;
 
   const session = Session.withAstro(context);

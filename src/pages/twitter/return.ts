@@ -2,6 +2,7 @@ import type { APIRoute } from "astro";
 import { TwitterApi } from "twitter-api-v2";
 
 import { config } from "../../config";
+import { responseJsonError } from "../../utils/http-response";
 import { Session } from "../../utils/session";
 import { statIncrement } from "../../utils/stats";
 
@@ -12,6 +13,10 @@ const nextWizardSteps: Record<string, string> = {
 };
 
 export const get: APIRoute = async function get(context) {
+  if (Date.now() >= config.timeOfDeath) {
+    return responseJsonError(500, "☠️");
+  }
+
   const { redirect, request } = context;
   const url = new URL(request.url);
   const session = Session.withAstro(context);

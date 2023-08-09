@@ -9,6 +9,10 @@ import type { WebFingerResource } from "../../utils/web-finger";
 import { splitAccountParts } from "../../utils/web-finger";
 
 export const get: APIRoute = async function get(context) {
+  if (Date.now() >= config.timeOfDeath) {
+    return responseJsonError(500, "☠️");
+  }
+
   const { url } = context;
   const accountId = url.searchParams.get("account");
   if (typeof accountId !== "string" || !accountId) {
