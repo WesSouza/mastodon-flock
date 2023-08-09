@@ -16,7 +16,7 @@ import {
 } from "./Toolbar";
 import { Window } from "./WindowManager/Window";
 
-const WindowContent = styled(ScrollView).attrs({ variant: "field" })<{
+const WindowContent = styled(ScrollView)<{
   fontSizeModifier: number;
   noPadding: boolean;
 }>`

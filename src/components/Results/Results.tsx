@@ -34,7 +34,10 @@ const getSortOptions = (method: string | undefined) => {
   const sortByStatus = {
     label: "Status",
     value: "followStatus",
-    sort: (accountLeft: AccountWithTwitter, accountRight: AccountWithTwitter) =>
+    sort: (
+      accountLeft: AccountWithTwitter,
+      accountRight: AccountWithTwitter,
+    ) =>
       accountLeft.following && !accountRight.following
         ? 1
         : !accountLeft.following && accountRight.following
