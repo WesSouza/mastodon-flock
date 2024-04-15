@@ -1,6 +1,5 @@
 ---
 import { styleReset } from "react95";
-import { config } from "../config";
 
 import { Taskbar } from "../react-islands/Taskbar";
 
@@ -14,7 +13,6 @@ export interface Props {
 const { title, description = "", canonicalUrl, bare = false } = Astro.props;
 
 const domain = new URL(Astro.site ?? "").hostname;
-const { sentryDsn, sentryRelease } = config.urls;
 ---
 
 <!DOCTYPE html>
@@ -88,36 +86,11 @@ const { sentryDsn, sentryRelease } = config.urls;
 
     <style set:html={styleReset}></style>
   </head>
-  <body data-dsn={sentryDsn} data-release={sentryRelease}>
+  <body >
     <main>
       <slot />
     </main>
     { !bare && <Taskbar client:only="react" />}
-
-    <script>
-      import * as Sentry from "@sentry/browser";
-      import { CaptureConsole } from "@sentry/integrations";
-
-      const dsn = (document.querySelector("[data-dsn]") as HTMLElement)?.dataset
-        .dsn;
-      const release = (document.querySelector("[data-release]") as HTMLElement)
-        ?.dataset.release;
-
-      if (dsn && release) {
-        Sentry.init({
-          dsn,
-          integrations: [
-            new Sentry.BrowserTracing(),
-            new Sentry.Replay(),
-            new CaptureConsole({
-              levels: ["error"],
-            }),
-          ],
-          tracesSampleRate: 0.2,
-          release,
-        });
-      }
-    </script>
   </body>
 </html>
 

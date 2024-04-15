@@ -1,6 +1,5 @@
 import react from "@astrojs/react";
 import vercel from "@astrojs/vercel/serverless";
-import { sentryVitePlugin } from "@sentry/vite-plugin";
 import { defineConfig } from "astro/config";
 
 const vite = process.env.VERCEL_URL
@@ -8,18 +7,7 @@ const vite = process.env.VERCEL_URL
       build: {
         sourcemap: true,
       },
-      plugins: [
-        sentryVitePlugin({
-          org: "wes-souza",
-          project:
-            process.env.VERCEL_ENV === "production"
-              ? "mastodon-flock"
-              : "mastodon-flock-preview",
-          include: "./.vercel/output/static",
-          authToken: process.env.SENTRY_AUTH_TOKEN,
-          release: process.env.VERCEL_URL,
-        }),
-      ],
+      plugins: [],
     }
   : {};
 
