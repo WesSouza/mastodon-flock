@@ -8,8 +8,8 @@ const siteUrl = new URL(import.meta.env.SITE);
 const name = isLocal
   ? "Mastodon Flock Development"
   : isPreview
-  ? "Mastodon Flock Preview"
-  : "Mastodon Flock";
+    ? "Mastodon Flock Preview"
+    : "Mastodon Flock";
 
 const origin = import.meta.env.SITE.replace(/\/$/, "");
 

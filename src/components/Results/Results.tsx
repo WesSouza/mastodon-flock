@@ -41,8 +41,8 @@ const getSortOptions = (method: string | undefined) => {
       accountLeft.following && !accountRight.following
         ? 1
         : !accountLeft.following && accountRight.following
-        ? -1
-        : accountLeft.name.localeCompare(accountRight.name),
+          ? -1
+          : accountLeft.name.localeCompare(accountRight.name),
   };
   const sortByName = {
     label: "Name",
