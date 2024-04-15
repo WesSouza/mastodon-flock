@@ -42,12 +42,6 @@ export const config = {
     mastodonReturn: `${origin}/mastodon/return`,
     privacy: `${origin}/privacy`,
     results: `${origin}/results`,
-    sentryDsn: isLocal
-      ? ""
-      : isPreview
-      ? "https://b49802d053db46a2aec8730d2eb32b7b@o4504311714676736.ingest.sentry.io/4504311718281216"
-      : "https://cd075d5a995043f3bb876a9b38b1a27f@o4504311714676736.ingest.sentry.io/4504311753408512",
-    sentryRelease: import.meta.env.VERCEL_URL,
     twitterAppRevoke: `https://twitter.com/settings/connected_apps/${
       isLocal ? "26152973" : isPreview ? "26152969" : "26152908"
     }`,

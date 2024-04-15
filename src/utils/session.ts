@@ -30,7 +30,7 @@ const enc = createEncryptor(secret);
 
 export class Session {
   static withAstro(context: APIContext) {
-    const sessionCookie = context.cookies.get(cookieName).value;
+    const sessionCookie = context.cookies.get(cookieName)?.value;
     if (sessionCookie) {
       return new Session(enc.decrypt(sessionCookie) as SessionProps, context);
     }

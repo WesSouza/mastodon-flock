@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 import { config } from "../../config";
 import {
   FederatedInstance,
-  IFederatedInstance,
+  type IFederatedInstance,
 } from "../../models/FederatedInstance";
 import type { MastodonInstance } from "../../types";
 import { responseJsonError } from "../../utils/http-response";

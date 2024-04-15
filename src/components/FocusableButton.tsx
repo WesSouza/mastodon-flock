@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { Button, ButtonProps } from "react95";
+import { Button, type ButtonProps } from "react95";
 import { useFocusableButton } from "../hooks/useFocusableButton";
 
 export function FocusableButton({

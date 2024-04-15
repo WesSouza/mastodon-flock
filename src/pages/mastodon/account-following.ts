@@ -6,7 +6,7 @@ import { config } from "../../config";
 import type { MastodonFollowAccountResults } from "../../types";
 import { getLinkHrefWithRel } from "../../utils/http-headers";
 import { responseJsonError } from "../../utils/http-response";
-import { APIAccount, mapApiAccount } from "../../utils/mastodon";
+import { type APIAccount, mapApiAccount } from "../../utils/mastodon";
 import { Session } from "../../utils/session";
 
 export const get: APIRoute = async function get(context) {

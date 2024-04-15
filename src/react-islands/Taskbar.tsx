@@ -3,7 +3,7 @@ import { Button, Frame } from "react95";
 import styled from "styled-components";
 
 import { AboutDialog } from "../components/dialogs/AboutDialog";
-import { Icon, IconProps } from "../components/Icon";
+import { Icon, type IconProps } from "../components/Icon";
 import { useWinAmp } from "../hooks/useWinAmp";
 import { useWindowManager } from "../hooks/useWindowManager";
 import { React95 } from "../layouts/React95";

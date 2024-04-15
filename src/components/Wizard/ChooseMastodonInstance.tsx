@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { FixedSizeList, ListChildComponentProps } from "react-window";
+import { FixedSizeList, type ListChildComponentProps } from "react-window";
 import { Frame, ScrollView, TextInput } from "react95";
 import styled from "styled-components";
 
