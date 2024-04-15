@@ -7,7 +7,7 @@ export interface Props {
   title: string;
   description?: string;
   canonicalUrl?: string;
-  bare: boolean
+  bare?: boolean
 }
 
 const { title, description = "", canonicalUrl, bare = false } = Astro.props;
