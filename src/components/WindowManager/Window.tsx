@@ -9,7 +9,7 @@ import {
 import styled, { css } from "styled-components";
 
 import type { WindowMeta } from "../../stores/WindowStore";
-import { Icon, IconProps } from "../Icon";
+import { Icon, type IconProps } from "../Icon";
 
 const blinkTimerInterval = 100;
 const blinkTimerRepeat = 3;

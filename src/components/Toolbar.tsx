@@ -1,6 +1,12 @@
-import { Button, ButtonProps, Handle, Separator, TextInput } from "react95";
+import {
+  Button,
+  type ButtonProps,
+  Handle,
+  Separator,
+  TextInput,
+} from "react95";
 import styled from "styled-components";
-import { Icon, IconProps } from "./Icon";
+import { Icon, type IconProps } from "./Icon";
 
 export const Toolbar = styled.div`
   position: relative;

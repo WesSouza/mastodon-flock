@@ -5,7 +5,7 @@ import fetch from "node-fetch";
 import { config } from "../../config";
 import {
   FederatedInstance,
-  IFederatedInstance,
+  type IFederatedInstance,
 } from "../../models/FederatedInstance";
 import { responseJsonError } from "../../utils/http-response";
 import { Session } from "../../utils/session";

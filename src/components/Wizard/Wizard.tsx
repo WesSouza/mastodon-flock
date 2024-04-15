@@ -2,7 +2,7 @@ import { useCallback, useEffect } from "react";
 
 import { config } from "../../config";
 import { useErrorInSearchParams } from "../../hooks/useErrorInSearchParams";
-import { MastodonFlockResults, useResults } from "../../hooks/useResults";
+import { type MastodonFlockResults, useResults } from "../../hooks/useResults";
 import { useSearchParamsState } from "../../hooks/useSearchParamsState";
 import { useWindowManager } from "../../hooks/useWindowManager";
 import type { SimpleError } from "../../types";

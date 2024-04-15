@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-import { IStats, Stats } from "../models/Stats";
+import { type IStats, Stats } from "../models/Stats";
 
 export async function statIncrement(counter: keyof IStats) {
   if (mongoose.connection.readyState !== mongoose.ConnectionStates.connected) {

@@ -24,10 +24,10 @@
   },
   "packageManager": "pnpm@8.6.9",
   "dependencies": {
-    "@astrojs/react": "^2.2.1",
-    "@astrojs/vercel": "^3.8.0",
+    "@astrojs/react": "^3.3.0",
+    "@astrojs/vercel": "^7.5.3",
     "@nanostores/react": "^0.6.0",
-    "astro": "^2.10.4",
+    "astro": "^4.6.1",
     "cookie": "^0.5.0",
     "date-fns": "^2.30.0",
     "focus-trap-react": "^10.2.1",
@@ -43,6 +43,7 @@
     "twitter-api-v2": "^1.15.1"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.5.10",
     "@types/cookie": "^0.5.1",
     "@types/node": "^20.4.9",
     "@types/react": "^18.2.20",
